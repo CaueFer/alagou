@@ -3,3 +3,5 @@ dev-docs/*
 CLAUDE.md
 .env
 api/target/
+todo.md
+.gitignore
