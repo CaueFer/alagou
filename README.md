@@ -211,11 +211,10 @@ Foram analisadas **cinco soluções** que, em alguma medida, abordam parcialment
 O **Alagou** se posiciona em uma lacuna ainda não preenchida: ser uma plataforma **especializada, georreferenciada, colaborativa e validada** para alagamentos urbanos. Seus diferenciais são:
 
 1. **Especialização local:** focado na realidade hidrográfica de Joinville (rios Cachoeira, Águas Vermelhas, Cubatão + tábua de marés).
-2. **Foto obrigatória no relato:** *(melhoria sugerida pelo professor Walter Theodoro)* - cada reporte exige fotografia tirada no momento, aumentando a credibilidade e permitindo validação visual cruzada.
-3. **Indicador de severidade objetivo:** *(melhoria sugerida pelo professor Walter Theodoro)* - o relato informa o nível aproximado da água (carro passa / só ônibus e caminhão passam / via intransitável).
-4. **Visualização em mapa com áreas circulares:** *(melhoria sugerida pelo professor Walter Theodoro)* - em vez de pontos isolados, o sistema marca **círculos (raios) na região alagada**, dando ao usuário uma noção espacial da extensão do problema.
-5. **Integração com fontes oficiais:** consome sensores de nível dos rios, dados de marés e alertas da Defesa Civil.
-6. **Validação coletiva (TTL dinâmico):** relatos têm tempo de vida que se renova com confirmações de outros usuários e se encerra após 3 relatos de "Pista Limpa".
+2. **Indicador de severidade objetivo:** *(melhoria sugerida pelo professor Walter Theodoro)* - o relato informa o nível aproximado da água (carro passa / só ônibus e caminhão passam / via intransitável).
+3. **Visualização em mapa com áreas circulares:** *(melhoria sugerida pelo professor Walter Theodoro)* - em vez de pontos isolados, o sistema marca **círculos (raios) na região alagada**, dando ao usuário uma noção espacial da extensão do problema.
+4. **Integração com fontes oficiais:** consome sensores de nível dos rios, dados de marés e alertas da Defesa Civil.
+5. **Validação coletiva (TTL dinâmico):** relatos têm tempo de vida que se renova com confirmações de outros usuários e se encerra após 3 relatos de "Pista Limpa".
 
 ---
 
