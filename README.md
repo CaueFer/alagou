@@ -862,7 +862,7 @@ Os módulos centrais do sistema são:
 | **Módulo de Validação Coletiva** | Processa confirmações e "Pista Limpa", aplica regra dos 3 relatos, prorroga ou encerra TTL. |
 | **Módulo Geoespacial** | Consultas espaciais via PostGIS (raios, vizinhança, intersecção com vias). |
 | **Módulo de Notificações Push** | Identifica usuários em raio relevante e dispara mensagens via Web Push API. |
-| **Módulo de Mapa (Frontend)** | Renderização do mapa com Mapbox GL JS / Leaflet, exibição de círculos coloridos por severidade, integração com WebSocket para atualização em tempo real. |
+| **Módulo de Mapa (Frontend)** | Renderização do mapa com MapCN, exibição de círculos coloridos por severidade, integração com WebSocket para atualização em tempo real. |
 | **Módulo de Câmera (Frontend)** | Captura de fotografia obrigatória via `getUserMedia` (apenas câmera, sem galeria). |
 | **Worker de Integrações Externas** | Consome e padroniza dados de sensores, marés e Defesa Civil; persiste em `fontes_oficiais`. |
 | **Painel Administrativo** | Interface dedicada ao perfil "defesa_civil"; exportação CSV/PDF e mapa de calor. |
@@ -881,7 +881,7 @@ A escolha tecnológica considera maturidade do ecossistema, alinhamento ao Portf
 | **React 18 + TypeScript** | Ecossistema maduro, alto suporte da comunidade, type safety para reduzir bugs em domínio complexo. |
 | **Vite** | Build moderno e ágil, melhor experiência de desenvolvimento que CRA. |
 | **TailwindCSS + shadcn/ui** | Estilização produtiva e Design System consistente; alinhado à seção "Diferenciais" do Portfolio Directions. |
-| **Mapbox GL JS** *(alternativa: Leaflet + OpenStreetMap)* | Renderização performática de mapas, suporte nativo a círculos, polígonos e marcadores; ideal para aplicação geoespacial. |
+| **MapCN** | Biblioteca de mapas interativos (mapcn.dev); renderização de pontos, círculos e camadas geoespaciais. |
 | **Workbox (Service Worker)** | Suporte a PWA - funcionamento parcial offline, fila de envio de relatos quando sem conexão (FA03). |
 
 ### Backend
