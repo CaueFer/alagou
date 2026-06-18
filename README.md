@@ -1,31 +1,25 @@
-# RFC: Request for Comments - Projeto Alagou
+# RFC: Request for Comments — Projeto Alagou
 
-**Engenharia de Software - Católica SC**
+**Engenharia de Software – Católica SC**
 
 ---
 
 # Identificação
 
 - **Título do Projeto:**
-  **Alagou** - Plataforma Web de Mobilidade Urbana com Resiliência Climática para Joinville/SC
+  Alagou - Plataforma Web de Mobilidade Urbana com Resiliência Climática para Joinville/SC
 
 - **Linha de Projeto (Direction):**
   Web Apps
 
 - **Autor:**
-  Caue Fernandes
+  Cauê Fernandes Caetano
 
 - **Data da Proposta:**
   24/05/2026
 
 - **Versão:**
-  2.0
-
-- **Status:**
-  Rascunho (Draft) - em revisão pelo comitê
-
-- **Repositório:**
-  https://github.com/CaueFer/alagou
+  1.0
 
 ---
 
@@ -35,13 +29,13 @@ O objetivo desta seção é responder uma pergunta fundamental:
 
 **Este projeto resolve um problema real ou é apenas um exercício técnico?**
 
-A resposta para o **Alagou** é direta: trata-se de uma plataforma desenhada para mitigar um problema crônico, recorrente e documentado da cidade de Joinville - a falta de informação confiável sobre o estado das vias urbanas durante eventos de alagamento. O impacto esperado é a **redução de acidentes**, a **economia de tempo em deslocamentos** e o **apoio à gestão pública de emergências**.
+A resposta para o Alagou é direta: trata-se de uma plataforma desenhada para mitigar um problema crônico, recorrente e documentado da cidade de Joinville — a **falta de informação confiável sobre o estado das vias urbanas durante eventos de alagamento**. O impacto esperado é a **redução de acidentes**, a **economia de tempo em deslocamentos** e o **apoio à gestão pública de emergências**.
 
 ---
 
 ## 1.1 Contexto e Problema
 
-Joinville é o maior município de Santa Catarina e está localizado em uma região com **alta suscetibilidade a alagamentos**, especialmente nas bacias hidrográficas dos rios Cachoeira, Águas Vermelhas e Cubatão. Eventos de chuva intensa, combinados com fenômenos de maré alta (ressaca) que afetam a drenagem urbana, geram bloqueios viários recorrentes que prejudicam a mobilidade de milhares de moradores.
+Joinville é o maior município de Santa Catarina e está localizado em uma região com alta suscetibilidade a alagamentos, especialmente nas bacias hidrográficas dos rios Cachoeira, Águas Vermelhas e Cubatão. Eventos de chuva intensa, combinados com fenômenos de maré alta (ressaca) que afetam a drenagem urbana, geram bloqueios viários recorrentes que prejudicam a mobilidade de milhares de moradores.
 
 ### Quem sofre com o problema
 
@@ -60,12 +54,12 @@ O problema se manifesta com mais intensidade em:
 
 ### Como o problema é resolvido atualmente
 
-Hoje, o cidadão de Joinville recorre a fontes **dispersas e não integradas**:
+Hoje, o cidadão de Joinville recorre a fontes dispersas e não integradas:
 
-1. Publicações em redes sociais (Facebook, Instagram, X/Twitter) de bairros e grupos comunitários - informais, sem padronização e com baixa confiabilidade.
-2. Câmeras públicas de monitoramento do portal NDMais - visuais, mas exigem que o usuário saiba exatamente onde olhar.
-3. Boletins esporádicos da Defesa Civil - assertivos, porém pouco frequentes e não georreferenciados ao trajeto do usuário.
-4. WhatsApp de bairro - alta latência, sem validação coletiva.
+- **Publicações em redes sociais** (Facebook, Instagram, X/Twitter) de bairros e grupos comunitários — informais, sem padronização e com baixa confiabilidade.
+- **Câmeras públicas de monitoramento** do portal NDMais — visuais, mas exigem que o usuário saiba exatamente onde olhar.
+- **Boletins esporádicos da Defesa Civil** — assertivos, porém pouco frequentes e não georreferenciados ao trajeto do usuário.
+- **WhatsApp de bairro** — alta latência, sem validação coletiva.
 
 ### Limitações das soluções atuais
 
@@ -77,21 +71,19 @@ Hoje, o cidadão de Joinville recorre a fontes **dispersas e não integradas**:
 
 ### Exemplos do problema observados em campo
 
-Levantamento realizado em **grupos públicos de Facebook de Joinville** durante eventos chuvosos de fevereiro a abril/2026, mostrando o tipo de informação que circula hoje:
+Levantamento realizado em grupos públicos de Facebook de Joinville durante eventos chuvosos de fevereiro a abril/2026, mostrando o tipo de informação que circula hoje:
 
-> *"Pessoal, tá alagado lá pelo Bucarein?"* (sem foto, sem rua específica - 12 comentários divergentes em 30 minutos)
+- "Pessoal, tá alagado lá pelo Bucarein?" (sem foto, sem rua específica — 12 comentários divergentes em 30 minutos)
+- "Tá tudo parado na Otto Boehm" — (resposta após 47 minutos) "Já passou, tá liberado" — (15 minutos depois) "Voltou a alagar agora"
+- "Alguém sabe se passa carro na Procópio Gomes?" — sem resposta
 
-> *"Tá tudo parado na Otto Boehm"* - *(resposta após 47 minutos)* *"Já passou, tá liberado"* - *(15 minutos depois)* *"Voltou a alagar agora"*
-
-> *"Alguém sabe se passa carro na Procópio Gomes?"* - sem resposta
-
-Esses três padrões - **falta de geolocalização precisa**, **defasagem temporal das informações** e **perguntas sem resposta** - sintetizam a oportunidade do Alagou.
+Esses três padrões — **falta de geolocalização precisa**, **defasagem temporal das informações** e **perguntas sem resposta** — sintetizam a oportunidade do Alagou.
 
 ---
 
 ## 1.2 Origem da Demanda e Evidências
 
-A demanda pelo **Alagou** se fundamenta em três pilares de evidência: **registros históricos públicos** dos eventos climáticos em Joinville, **manifestações da comunidade** nas redes sociais durante alagamentos e **observação direta dos processos atuais**.
+A demanda pelo Alagou se fundamenta em três pilares de evidência: registros históricos públicos dos eventos climáticos em Joinville, manifestações da comunidade nas redes sociais durante alagamentos e observação direta dos processos atuais.
 
 ### Demanda da Comunidade
 
@@ -99,13 +91,13 @@ O projeto se enquadra na modalidade **Projeto Voltado à Comunidade** (conforme 
 
 **Histórico de eventos relevantes:**
 
-- Janeiro de 2024: enchentes no bairro Bom Retiro e Vila Nova com necessidade de remoção de famílias.
-- Outubro de 2024: alagamentos generalizados na região central durante chuvas associadas à ressaca de maré.
-- Verão de 2025: múltiplos boletins da Defesa Civil de Joinville sobre transbordamento do Rio Cachoeira.
+- **Janeiro de 2024:** enchentes no bairro Bom Retiro e Vila Nova com necessidade de remoção de famílias.
+- **Outubro de 2024:** alagamentos generalizados na região central durante chuvas associadas à ressaca de maré.
+- **Verão de 2025:** múltiplos boletins da Defesa Civil de Joinville sobre transbordamento do Rio Cachoeira.
 
 ### Pesquisa com Usuários
 
-Foi conduzida uma pesquisa estruturada entre **março e abril de 2026** com o público-alvo do Alagou, combinando questionário online amplo e entrevistas semiestruturadas com motoristas de aplicativo.
+Foi conduzida uma pesquisa estruturada entre março e abril de 2026 com o público-alvo do Alagou, combinando questionário online amplo e entrevistas semiestruturadas com motoristas de aplicativo.
 
 #### Questionário online (18 respondentes)
 
@@ -113,86 +105,81 @@ Divulgado em grupos de Facebook locais ("Joinville Alerta", "Eu Amo Joinville", 
 
 | Pergunta | Resultado |
 |---|---|
-| Você já entrou em uma rua alagada sem saber que estava alagada? | **16 de 18 (89%)** sim |
-| Já sofreu algum prejuízo material por causa de alagamento em via? | **7 de 18 (39%)** sim (de pequenos danos a perda de veículo) |
-| Em dias de chuva forte, você se sente seguro para sair com seu veículo? | **4 de 18 (22%)** sim - **14 de 18 (78%)** não |
-| Você usaria um app/site que mostre em tempo real onde há alagamentos? | **17 de 18 (94%)** sim, usaria com frequência |
-| Você contribuiria com relatos se o processo fosse simples (< 1 min)? | **12 de 18 (67%)** sim - **4 de 18 (22%)** talvez - **2 de 18 (11%)** não |
-| O que aumentaria sua confiança em um relato? *(múltipla escolha)* | **14 de 18 (78%)** foto recente do local; **9 de 18 (50%)** validação por outros usuários; **7 de 18 (39%)** dado oficial integrado |
-| Você tentaria descobrir o estado de uma rua antes de sair de casa em dia chuvoso? | **15 de 18 (83%)** sim, mas hoje não tem fonte confiável |
+| Você já entrou em uma rua alagada sem saber que estava alagada? | 16 de 18 (89%) sim |
+| Já sofreu algum prejuízo material por causa de alagamento em via? | 7 de 18 (39%) sim (de pequenos danos a perda de veículo) |
+| Em dias de chuva forte, você se sente seguro para sair com seu veículo? | 4 de 18 (22%) sim — 14 de 18 (78%) não |
+| Você usaria um app/site que mostre em tempo real onde há alagamentos? | 17 de 18 (94%) sim, usaria com frequência |
+| Você contribuiria com relatos se o processo fosse simples (< 1 min)? | 12 de 18 (67%) sim — 4 de 18 (22%) talvez — 2 de 18 (11%) não |
+| O que aumentaria sua confiança em um relato? (múltipla escolha) | 14 de 18 (78%) foto recente do local; 9 de 18 (50%) validação por outros usuários; 7 de 18 (39%) dado oficial integrado |
+| Você tentaria descobrir o estado de uma rua antes de sair de casa em dia chuvoso? | 15 de 18 (83%) sim, mas hoje não tem fonte confiável |
 
-**Bairros mais citados como críticos** (questão aberta): Bucarein (9 menções), Bom Retiro (6), Vila Nova (4), Saguaçu (3), América (3), Boa Vista (2), Fátima (2), Iririú (1).
+**Bairros mais citados como críticos (questão aberta):** Bucarein (9 menções), Bom Retiro (6), Vila Nova (4), Saguaçu (3), América (3), Boa Vista (2), Fátima (2), Iririú (1).
 
-#### Entrevistas semiestruturadas - 5 motoristas de aplicativo
+#### Entrevistas semiestruturadas — 5 motoristas de aplicativo
 
 Identidades preservadas; idades e perfis profissionais reais conforme declarado.
 
 | ID | Perfil | Frase representativa |
 |---|---|---|
-| E1 | Homem, 38 anos, Uber há 4 anos | *"Já tive prejuízo de R$ 1.800 com motor depois de pegar uma rua alagada na Otto Boehm. Não tinha como saber que ia ter."* |
-| E2 | Mulher, 29 anos, 99 há 2 anos | *"Se tivesse uma foto eu confiava. Só ler 'tá alagado' eu já não acredito mais - muita gente exagera."* |
-| E3 | Homem, 45 anos, ambos os apps | *"O que eu queria saber é se passa carro ou não. Esse negócio de 'leve', 'médio', 'pesado' confunde. Tem que ser direto."* |
-| E4 | Mulher, 31 anos, motoboy iFood | *"De moto é pior. Se tiver 20cm de água eu já não passo. Preciso de informação por trecho, não por bairro inteiro."* |
-| E5 | Homem, 50 anos, Uber há 6 anos | *"Eu reportaria sim, mas só se for rápido. Se tiver muita pergunta eu desisto e sigo viagem."* |
+| E1 | Homem, 38 anos, Uber há 4 anos | "Já tive prejuízo de R$ 1.800 com motor depois de pegar uma rua alagada na Otto Boehm. Não tinha como saber que ia ter." |
+| E2 | Mulher, 29 anos, 99 há 2 anos | "Se tivesse uma foto eu confiava. Só ler 'tá alagado' eu já não acredito mais — muita gente exagera." |
+| E3 | Homem, 45 anos, ambos os apps | "O que eu queria saber é se passa carro ou não. Esse negócio de 'leve', 'médio', 'pesado' confunde. Tem que ser direto." |
+| E4 | Mulher, 31 anos, motoboy iFood | "De moto é pior. Se tiver 20cm de água eu já não passo. Preciso de informação por trecho, não por bairro inteiro." |
+| E5 | Homem, 50 anos, Uber há 6 anos | "Eu reportaria sim, mas só se for rápido. Se tiver muita pergunta eu desisto e sigo viagem." |
 
-#### Padrões observados
+**Padrões observados**
 
-- **5/5** entrevistados tiveram pelo menos uma experiência negativa direta com via alagada.
-- **5/5** declararam que usariam o sistema com frequência diária em períodos chuvosos.
-- **4/5** apontaram a **foto** como o elemento que mais aumentaria a confiança no relato.
-- **3/5** reforçaram a importância de uma **escala de severidade simples e direta** - o que motivou diretamente o desenho dos 3 níveis (carro passa / só veículo grande / nenhum veículo).
-- **5/5** apoiaram a obrigatoriedade da foto, mesmo cientes do custo adicional de captura.
-- **3/5** demonstraram preocupação com a velocidade do fluxo de relato (o que motivou a meta de "menos de 4 toques" em RNF14).
+- 5/5 entrevistados tiveram pelo menos uma experiência negativa direta com via alagada.
+- 5/5 declararam que usariam o sistema com frequência diária em períodos chuvosos.
+- 4/5 apontaram a foto como o elemento que mais aumentaria a confiança no relato.
+- 3/5 reforçaram a importância de uma escala de severidade simples e direta — o que motivou diretamente o desenho dos 3 níveis (carro passa / só veículo grande / nenhum veículo).
+- 5/5 apoiaram a obrigatoriedade da foto, mesmo cientes do custo adicional de captura.
+- 3/5 demonstraram preocupação com a velocidade do fluxo de relato (o que motivou a meta de "menos de 4 toques" em RNF14).
 
 ### Evidência de Interesse
 
-- **Engajamento orgânico em redes sociais:** levantamento manual realizado durante **7 dias chuvosos entre fevereiro e abril/2026** identificou em média **34 postagens diárias** sobre alagamentos nos grupos analisados, com média de **18 comentários e 27 reações** cada - confirmando interesse ativo, porém fragmentado e sem persistência.
-
-- **Contato com a Coordenadoria Municipal de Defesa Civil:** reunião exploratória conduzida em **15/04/2026**. A coordenadoria demonstrou interesse no recebimento dos dados agregados gerados pela plataforma e indicou que **não existe atualmente sistema unificado de relatos cidadãos integrado às suas operações**. A formalização por carta de intenção está prevista para a próxima etapa do projeto.
-
-- **Feedback espontâneo durante o questionário:** entre os 18 respondentes, **8 deixaram comentários abertos**, dos quais **6 (75%)** eram sugestões construtivas - destacando-se três pedidos repetidos: (i) integração com Waze/Google Maps para abrir rota alternativa, (ii) possibilidade de marcar a área como segura novamente, e (iii) histórico para conferir se um trecho costuma alagar. Os dois primeiros já estão contemplados no escopo (UC06 "Pista Limpa" e link externo para apps de navegação); o terceiro corresponde ao RF15.
+- **Engajamento orgânico em redes sociais:** levantamento manual realizado durante 7 dias chuvosos entre fevereiro e abril/2026 identificou em média 34 postagens diárias sobre alagamentos nos grupos analisados, com média de 18 comentários e 27 reações cada — confirmando interesse ativo, porém fragmentado e sem persistência.
+- **Contato com a Coordenadoria Municipal de Defesa Civil:** reunião exploratória conduzida em 15/04/2026. A coordenadoria demonstrou interesse no recebimento dos dados agregados gerados pela plataforma e indicou que não existe atualmente sistema unificado de relatos cidadãos integrado às suas operações. A formalização por carta de intenção está prevista para a próxima etapa do projeto.
+- **Feedback espontâneo durante o questionário:** entre os 18 respondentes, 8 deixaram comentários abertos, dos quais 6 (75%) eram sugestões construtivas — destacando-se três pedidos repetidos: (i) integração com Waze/Google Maps para abrir rota alternativa, (ii) possibilidade de marcar a área como segura novamente, e (iii) histórico para conferir se um trecho costuma alagar. Os dois primeiros já estão contemplados no escopo (UC06 "Pista Limpa" e link externo para apps de navegação); o terceiro corresponde ao RF15.
 
 ---
 
 ## 1.3 Análise de Soluções Existentes (Benchmark)
 
-Foram analisadas **cinco soluções** que, em alguma medida, abordam parcialmente o problema da informação sobre vias alagadas. Para cada uma, foram identificados público-alvo, funcionalidades principais e limitações.
+Foram analisadas cinco soluções que, em alguma medida, abordam parcialmente o problema da informação sobre vias alagadas. Para cada uma, foram identificados público-alvo, funcionalidades principais e limitações.
 
-### Solução 1 - Waze
+### Solução 1 — Waze
 
 - **Link:** https://www.waze.com
 - **Público-Alvo:** Motoristas em geral, foco em trânsito urbano.
 - **Funcionalidades principais:** Navegação assistida, relatos colaborativos de trânsito, polícia, acidentes e alagamentos como categoria genérica.
 - **Limitações:** A categoria "alagamento" é tratada como mais um evento entre dezenas. Não há classificação de severidade (carro passa? Ônibus passa?), não exige foto, não integra dados de sensores de rios ou marés. Em cidades menores como Joinville, a base de usuários é menor e os relatos demoram a aparecer.
-
-### Solução 2 - Google Maps
+### Solução 2 — Google Maps
 
 - **Link:** https://maps.google.com
 - **Público-Alvo:** Público geral.
 - **Funcionalidades principais:** Mapa, navegação, dados de trânsito em tempo real.
 - **Limitações:** Não possui categoria específica para alagamentos. Detecta lentidão, mas não a causa. Não permite relato cidadão direto sobre estado da via.
 
-### Solução 3 - Portal NDMais / Câmeras da Defesa Civil
+### Solução 3 — Portal NDMais / Câmeras da Defesa Civil
 
 - **Link:** https://ndmais.com.br
 - **Público-Alvo:** Público geral, jornalistas, gestores municipais.
 - **Funcionalidades principais:** Transmissão ao vivo de câmeras urbanas em pontos críticos de Joinville.
 - **Limitações:** Exige que o usuário saiba exatamente em qual câmera olhar. Não há mapa unificado. Cobertura limitada a pontos pré-definidos. Sem alertas ativos.
 
-### Solução 4 - Aplicativos da Defesa Civil (Defesa Civil Alerta / SGB)
+### Solução 4 — Aplicativos da Defesa Civil (Defesa Civil Alerta / SGB)
 
 - **Link:** https://www.gov.br/mdr/defesacivil
 - **Público-Alvo:** Cidadãos em áreas de risco cadastradas.
 - **Funcionalidades principais:** Envio de alertas via SMS e push para CEPs em risco; mapa nacional de emergências.
 - **Limitações:** Comunicação unidirecional (do órgão para o cidadão). Não permite relato. Não foca em mobilidade urbana, mas em risco a vidas em áreas de desastre.
 
-### Solução 5 - Grupos de WhatsApp/Facebook de Bairro
+### Solução 5 — Grupos de WhatsApp/Facebook de Bairro
 
 - **Público-Alvo:** Moradores de bairros específicos.
 - **Funcionalidades principais:** Compartilhamento informal de fotos e relatos.
 - **Limitações:** Sem georreferenciamento, sem validação, sem persistência (a mensagem se perde), restritos por adesão a um grupo.
-
----
 
 ### Comparação
 
@@ -204,17 +191,16 @@ Foram analisadas **cinco soluções** que, em alguma medida, abordam parcialment
 | Defesa Civil Alerta | Alerta oficial; abrangência nacional | Comunicação unidirecional; sem foco em mobilidade |
 | WhatsApp/Facebook | Engajamento alto; relatos com foto | Sem geolocalização; sem validação; informações se perdem |
 
----
-
 ### Diferencial do Projeto
 
-O **Alagou** se posiciona em uma lacuna ainda não preenchida: ser uma plataforma **especializada, georreferenciada, colaborativa e validada** para alagamentos urbanos. Seus diferenciais são:
+O Alagou se posiciona em uma lacuna ainda não preenchida: ser uma plataforma **especializada, georreferenciada, colaborativa e validada** para alagamentos urbanos. Seus diferenciais são:
 
-1. **Especialização local:** focado na realidade hidrográfica de Joinville (rios Cachoeira, Águas Vermelhas, Cubatão + tábua de marés).
-2. **Indicador de severidade objetivo:** *(melhoria sugerida pelo professor Walter Theodoro)* - o relato informa o nível aproximado da água (carro passa / só ônibus e caminhão passam / via intransitável).
-3. **Visualização em mapa com áreas circulares:** *(melhoria sugerida pelo professor Walter Theodoro)* - em vez de pontos isolados, o sistema marca **círculos (raios) na região alagada**, dando ao usuário uma noção espacial da extensão do problema.
-4. **Integração com fontes oficiais:** consome sensores de nível dos rios, dados de marés e alertas da Defesa Civil.
-5. **Validação coletiva (TTL dinâmico):** relatos têm tempo de vida que se renova com confirmações de outros usuários e se encerra após 3 relatos de "Pista Limpa".
+- **Especialização local:** focado na realidade hidrográfica de Joinville (rios Cachoeira, Águas Vermelhas, Cubatão + tábua de marés).
+- **Foto obrigatória no relato:** (melhoria sugerida pelo professor Walter Theodoro) — cada reporte exige fotografia tirada no momento, aumentando a credibilidade e permitindo validação visual cruzada.
+- **Indicador de severidade objetivo:** (melhoria sugerida pelo professor Walter Theodoro) — o relato informa o nível aproximado da água (carro passa / só ônibus e caminhão passam / via intransitável).
+- **Visualização em mapa com áreas circulares:** (melhoria sugerida pelo professor Walter Theodoro) — em vez de pontos isolados, o sistema marca círculos (raios) na região alagada, dando ao usuário uma noção espacial da extensão do problema.
+- **Integração com fontes oficiais:** consome sensores de nível dos rios, dados de marés e alertas da Defesa Civil.
+- **Validação coletiva (TTL dinâmico):** relatos têm tempo de vida que se renova com confirmações de outros usuários e se encerra após 3 relatos de "Pista Limpa".
 
 ---
 
@@ -224,17 +210,17 @@ O **Alagou** se posiciona em uma lacuna ainda não preenchida: ser uma plataform
 
 | Segmento | Perfil | Contexto de Uso | Conhecimento Técnico |
 |---|---|---|---|
-| **Motoristas e motociclistas comuns** | Moradores de Joinville que se deslocam diariamente de carro/moto | Antes e durante deslocamentos em dias chuvosos | Baixo a médio - usa apps de mapas |
-| **Motoristas de aplicativo** | Profissionais de Uber, 99, iFood | Trabalho contínuo na cidade; alta frequência de uso | Médio - familiarizado com múltiplos apps |
-| **Agentes da Defesa Civil / Trânsito** | Servidores públicos da Prefeitura de Joinville | Tomada de decisão em sala de operação durante eventos críticos | Médio - usa dashboards e sistemas de informação |
-| **Cidadãos colaboradores** | Voluntários, líderes comunitários, moradores engajados | Pontual: reportam quando passam por uma via alagada | Baixo - interface deve ser simples |
+| Motoristas e motociclistas comuns | Moradores de Joinville que se deslocam diariamente de carro/moto | Antes e durante deslocamentos em dias chuvosos | Baixo a médio — usa apps de mapas |
+| Motoristas de aplicativo | Profissionais de Uber, 99, iFood | Trabalho contínuo na cidade; alta frequência de uso | Médio — familiarizado com múltiplos apps |
+| Agentes da Defesa Civil / Trânsito | Servidores públicos da Prefeitura de Joinville | Tomada de decisão em sala de operação durante eventos críticos | Médio — usa dashboards e sistemas de informação |
+| Cidadãos colaboradores | Voluntários, líderes comunitários, moradores engajados | Pontual: reportam quando passam por uma via alagada | Baixo — interface deve ser simples |
 
-### Características gerais do público
+**Características gerais do público**
 
-- Localização: predominantemente Joinville/SC e região (Araquari, Garuva, São Francisco do Sul).
-- Faixa etária esperada: 18 a 65 anos.
-- Dispositivos: navegador web em desktop (uso institucional) e navegador mobile (uso em campo) - sistema responsivo é requisito.
-- Conexão: 4G/5G em mobilidade; banda larga em estações de monitoramento.
+- **Localização:** predominantemente Joinville/SC e região (Araquari, Garuva, São Francisco do Sul).
+- **Faixa etária esperada:** 18 a 65 anos.
+- **Dispositivos:** navegador web em desktop (uso institucional) e navegador mobile (uso em campo) — sistema responsivo é requisito.
+- **Conexão:** 4G/5G em mobilidade; banda larga em estações de monitoramento.
 
 ---
 
@@ -242,15 +228,15 @@ O **Alagou** se posiciona em uma lacuna ainda não preenchida: ser uma plataform
 
 ### Objetivo Geral
 
-Desenvolver uma **plataforma web colaborativa e geoespacial** que centralize informações em tempo real sobre alagamentos nas vias urbanas de Joinville, integrando relatos validados de cidadãos a dados de fontes oficiais, com o propósito de **reduzir o número de incidentes em vias alagadas** e **apoiar a gestão municipal de emergências**.
+Desenvolver uma **plataforma web colaborativa e geoespacial** que centralize informações em tempo real sobre alagamentos nas vias urbanas de Joinville, integrando relatos validados de cidadãos a dados de fontes oficiais, com o propósito de **reduzir o número de incidentes em vias alagadas e apoiar a gestão municipal de emergências**.
 
 ### Objetivos Específicos
 
-1. **Construir um mapa interativo** que exiba áreas alagadas representadas por círculos georreferenciados, classificadas por severidade (Moderado, Grave, Crítico).
-2. **Implementar o fluxo de relato cidadão** com captura obrigatória de foto no momento do registro e indicação do nível da água.
-3. **Desenvolver o sistema de validação coletiva** baseado em TTL dinâmico (relatos expiram em 45 minutos se não confirmados e podem ser encerrados via relato "Pista Limpa" após 3 validações).
-4. **Integrar fontes oficiais externas** (sensores de rios, tábua de marés do Porto de São Francisco do Sul, alertas SMS da Defesa Civil).
-5. **Construir um painel administrativo** voltado à Defesa Civil para visualização agregada e exportação de dados históricos.
+- Construir um mapa interativo que exiba áreas alagadas representadas por círculos georreferenciados, classificadas por severidade (Moderado, Grave, Crítico).
+- Implementar o fluxo de relato cidadão com captura obrigatória de foto no momento do registro e indicação do nível da água.
+- Desenvolver o sistema de validação coletiva baseado em TTL dinâmico (relatos expiram em 45 minutos se não confirmados e podem ser encerrados via relato "Pista Limpa" após 3 validações).
+- Integrar fontes oficiais externas (sensores de rios, tábua de marés do Porto de São Francisco do Sul, alertas SMS da Defesa Civil).
+- Construir um painel administrativo voltado à Defesa Civil para visualização agregada e exportação de dados históricos.
 
 ---
 
@@ -273,38 +259,38 @@ Desenvolver uma **plataforma web colaborativa e geoespacial** que centralize inf
 
 Esta seção define **o que o sistema fará**.
 
-A engenharia de requisitos do Alagou foi construída em torno do fluxo principal "**relatar → validar → consultar**" e incorpora explicitamente as melhorias sugeridas pelo professor Walter Theodoro (círculo de alagamento no mapa, foto obrigatória, indicador de nível da água).
+A engenharia de requisitos do Alagou foi construída em torno do fluxo principal "relatar → validar → consultar" e incorpora explicitamente as melhorias sugeridas pelo professor Walter Theodoro (círculo de alagamento no mapa, foto obrigatória, indicador de nível da água).
 
 ---
 
 ## 2.1 Personas
 
-### Persona 1 - Marcos, o motorista de aplicativo
+### Persona 1 — Marcos, o motorista de aplicativo
 
 - **Idade:** 34 anos
 - **Profissão:** Motorista de Uber e 99 em tempo integral
 - **Contexto:** Roda em média 10 horas por dia em Joinville, sob qualquer condição climática.
 - **Objetivos:** Maximizar corridas seguras; evitar danos ao veículo (única fonte de renda).
 - **Dificuldades:** Em dias de chuva, perde corridas porque rejeita áreas desconhecidas por receio de alagamento. Já teve o motor afetado por entrar em via inundada.
-- **Frase típica:** *"Se eu soubesse que tinha alagamento, eu teria pegado outro caminho."*
+- **Frase típica:** "Se eu soubesse que tinha alagamento, eu teria pegado outro caminho."
 
-### Persona 2 - Helena, a moradora preocupada
+### Persona 2 — Helena, a moradora preocupada
 
 - **Idade:** 47 anos
 - **Profissão:** Professora de escola pública, mora no bairro Bucarein
 - **Contexto:** Usa carro próprio para levar filho à escola e ir ao trabalho. Em dias chuvosos fica ansiosa.
 - **Objetivos:** Sair de casa com segurança; saber se a rota habitual está livre.
 - **Dificuldades:** Não confia em postagens de Facebook; quer ver uma foto recente do ponto crítico.
-- **Frase típica:** *"Eu queria ver com meus olhos se ainda está alagado antes de sair."*
+- **Frase típica:** "Eu queria ver com meus olhos se ainda está alagado antes de sair."
 
-### Persona 3 - Diego, o agente da Defesa Civil
+### Persona 3 — Diego, o agente da Defesa Civil
 
 - **Idade:** 41 anos
 - **Profissão:** Coordenador de operações na Defesa Civil de Joinville
 - **Contexto:** Em eventos críticos, coordena equipes de campo a partir da sala de operações.
 - **Objetivos:** Ter visão consolidada em tempo real para decidir onde alocar recursos (bombeiros, bloqueios, sinalização).
 - **Dificuldades:** Hoje depende de chamadas de moradores e patrulhamento das equipes; informação chega fragmentada.
-- **Frase típica:** *"Preciso de um mapa único que mostre tudo que está acontecendo na cidade agora."*
+- **Frase típica:** "Preciso de um mapa único que mostre tudo que está acontecendo na cidade agora."
 
 ---
 
@@ -312,16 +298,16 @@ A engenharia de requisitos do Alagou foi construída em torno do fluxo principal
 
 Os principais fluxos do sistema são:
 
-1. **UC01 - Criar conta** (cadastro com e-mail e senha; verificação opcional por SMS)
-2. **UC02 - Autenticar-se** (login)
-3. **UC03 - Visualizar mapa de alagamentos** (sem login, modo público)
-4. **UC04 - Reportar alagamento** (login obrigatório; exige foto e nível da água)
-5. **UC05 - Confirmar relato de outro usuário** ("Ainda está alagado")
-6. **UC06 - Reportar via desbloqueada** ("Pista Limpa")
-7. **UC07 - Receber alertas de áreas próximas** (notificação web push)
-8. **UC08 - Consultar histórico de relatos** (próprios e da cidade)
-9. **UC09 - Acessar painel administrativo** (perfil Defesa Civil)
-10. **UC10 - Exportar dados agregados** (relatórios CSV/PDF, perfil administrativo)
+- **UC01** — Criar conta (cadastro com e-mail e senha; verificação opcional por SMS)
+- **UC02** — Autenticar-se (login)
+- **UC03** — Visualizar mapa de alagamentos (sem login, modo público)
+- **UC04** — Reportar alagamento (login obrigatório; exige foto e nível da água)
+- **UC05** — Confirmar relato de outro usuário ("Ainda está alagado")
+- **UC06** — Reportar via desbloqueada ("Pista Limpa")
+- **UC07** — Receber alertas de áreas próximas (notificação web push)
+- **UC08** — Consultar histórico de relatos (próprios e da cidade)
+- **UC09** — Acessar painel administrativo (perfil Defesa Civil)
+- **UC10** — Exportar dados agregados (relatórios CSV/PDF, perfil administrativo)
 
 ---
 
@@ -329,94 +315,100 @@ Os principais fluxos do sistema são:
 
 | ID | Requisito |
 |---|---|
-| **RF01** | O sistema deve permitir que o **usuário cidadão** crie uma conta com e-mail, senha e nome de exibição. |
-| **RF02** | O sistema deve permitir que o **usuário cidadão** se autentique para acessar funcionalidades de relato. |
-| **RF03** | O sistema deve permitir que **qualquer visitante** (sem autenticação) visualize o mapa público de alagamentos ativos. |
-| **RF04** | O sistema deve permitir que o **usuário autenticado** reporte um alagamento em sua localização atual obtida via GPS do navegador. |
-| **RF05** | O sistema deve **obrigar o envio de uma fotografia** do local alagado no ato do relato (não permitir upload de imagens da galeria - apenas captura via câmera do dispositivo). *[Melhoria sugerida pelo Prof. Walter Theodoro]* |
-| **RF06** | O sistema deve permitir que o usuário **informe o nível da água** segundo três categorias: **(a)** carros e ônibus passam normalmente *(Moderado)*; **(b)** apenas ônibus/caminhões/SUVs conseguem passar *(Grave)*; **(c)** nenhum veículo passa com segurança *(Crítico)*. *[Melhoria sugerida pelo Prof. Walter Theodoro]* |
-| **RF07** | O sistema deve representar cada relato no mapa como um **círculo georreferenciado** (raio configurável conforme o nível, ex.: 30m / 60m / 100m) e não como ponto isolado. *[Melhoria sugerida pelo Prof. Walter Theodoro]* |
-| **RF08** | O sistema deve permitir que outros usuários **confirmem ou contestem** um relato existente. |
-| **RF09** | O sistema deve permitir que o usuário marque uma área anteriormente alagada como **"Pista Limpa"**, encerrando o relato após 3 confirmações distintas. |
-| **RF10** | O sistema deve aplicar **TTL (Time To Live) automático de 45 minutos** a cada relato, prorrogável a cada confirmação positiva. |
-| **RF11** | O sistema deve **integrar dados de fontes oficiais externas**: sensores de nível dos rios Cachoeira, Águas Vermelhas e Cubatão; tábua de marés do Porto de São Francisco do Sul; alertas oficiais da Defesa Civil de Joinville. |
-| **RF12** | O sistema deve enviar **notificações web push** ao usuário autenticado quando um novo alagamento for confirmado em raio de 2 km de sua localização. |
-| **RF13** | O sistema deve disponibilizar um **painel administrativo** para perfis "Defesa Civil" com visualização consolidada e mapa de calor. |
-| **RF14** | O sistema deve permitir **exportação de relatórios** (CSV e PDF) com dados agregados (perfil administrativo). |
-| **RF15** | O sistema deve manter **histórico permanente** de todos os eventos para análise temporal e planejamento urbano. |
-| **RF16** | O sistema deve permitir ao usuário **consultar seus próprios relatos** anteriores e acompanhar seu impacto (quantas confirmações recebeu). |
+| RF01 | O sistema deve permitir que o usuário cidadão crie uma conta com e-mail, senha e nome de exibição. |
+| RF02 | O sistema deve permitir que o usuário cidadão se autentique para acessar funcionalidades de relato. |
+| RF03 | O sistema deve permitir que qualquer visitante (sem autenticação) visualize o mapa público de alagamentos ativos. |
+| RF04 | O sistema deve permitir que o usuário autenticado reporte um alagamento em sua localização atual obtida via GPS do navegador. |
+| RF05 | O sistema deve obrigar o envio de uma fotografia do local alagado no ato do relato (não permitir upload de imagens da galeria — apenas captura via câmera do dispositivo). [Melhoria sugerida pelo Prof. Walter Theodoro] |
+| RF06 | O sistema deve permitir que o usuário informe o nível da água segundo três categorias: (a) carros e ônibus passam normalmente (Moderado); (b) apenas ônibus/caminhões/SUVs conseguem passar (Grave); (c) nenhum veículo passa com segurança (Crítico). [Melhoria sugerida pelo Prof. Walter Theodoro] |
+| RF07 | O sistema deve representar cada relato no mapa como um círculo georreferenciado (raio configurável conforme o nível, ex.: 30m / 60m / 100m) e não como ponto isolado. [Melhoria sugerida pelo Prof. Walter Theodoro] |
+| RF08 | O sistema deve permitir que outros usuários confirmem ou contestem um relato existente. |
+| RF09 | O sistema deve permitir que o usuário marque uma área anteriormente alagada como "Pista Limpa", encerrando o relato após 3 confirmações distintas. |
+| RF10 | O sistema deve aplicar TTL (Time To Live) automático de 45 minutos a cada relato, prorrogável a cada confirmação positiva. |
+| RF11 | O sistema deve integrar dados de fontes oficiais externas: sensores de nível dos rios Cachoeira, Águas Vermelhas e Cubatão; tábua de marés do Porto de São Francisco do Sul; alertas oficiais da Defesa Civil de Joinville. |
+| RF12 | O sistema deve enviar notificações web push ao usuário autenticado quando um novo alagamento for confirmado em raio de 2 km de sua localização. |
+| RF13 | O sistema deve disponibilizar um painel administrativo para perfis "Defesa Civil" com visualização consolidada e mapa de calor. |
+| RF14 | O sistema deve permitir exportação de relatórios (CSV e PDF) com dados agregados (perfil administrativo). |
+| RF15 | O sistema deve manter histórico permanente de todos os eventos para análise temporal e planejamento urbano. |
+| RF16 | O sistema deve permitir ao usuário consultar seus próprios relatos anteriores e acompanhar seu impacto (quantas confirmações recebeu). |
 
 ---
 
 ## 2.4 Requisitos Não Funcionais (RNF)
 
 ### Desempenho
+
 | ID | Requisito |
 |---|---|
-| **RNF01** | O tempo de resposta para consultas ao mapa deve ser inferior a **300 ms** (p95) sob carga de 100 usuários simultâneos. |
-| **RNF02** | O upload de fotografias do relato deve ser concluído em até **5 segundos** em conexão 4G. |
-| **RNF03** | O sistema deve suportar **500 usuários simultâneos** em eventos de pico, com escalabilidade horizontal. |
+| RNF01 | O tempo de resposta para consultas ao mapa deve ser inferior a 300 ms (p95) sob carga de 100 usuários simultâneos. |
+| RNF02 | O upload de fotografias do relato deve ser concluído em até 5 segundos em conexão 4G. |
+| RNF03 | O sistema deve suportar 500 usuários simultâneos em eventos de pico, com escalabilidade horizontal. |
 
 ### Segurança
+
 | ID | Requisito |
 |---|---|
-| **RNF04** | O sistema deve utilizar **autenticação baseada em JWT** com expiração e refresh token. |
-| **RNF05** | Todas as comunicações cliente-servidor devem ocorrer via **HTTPS (TLS 1.3)**. |
-| **RNF06** | O sistema deve mitigar as principais ameaças do **OWASP Top 10** (especialmente injeção, XSS, CSRF e broken access control). |
-| **RNF07** | Senhas devem ser armazenadas com **hash bcrypt** (custo ≥ 10). |
-| **RNF08** | O sistema deve estar em conformidade com a **LGPD** quanto à coleta, armazenamento e descarte de dados pessoais. |
+| RNF04 | O sistema deve utilizar autenticação baseada em JWT com expiração e refresh token. |
+| RNF05 | Todas as comunicações cliente-servidor devem ocorrer via HTTPS (TLS 1.3). |
+| RNF06 | O sistema deve mitigar as principais ameaças do OWASP Top 10 (especialmente injeção, XSS, CSRF e broken access control). |
+| RNF07 | Senhas devem ser armazenadas com hash bcrypt (custo ≥ 10). |
+| RNF08 | O sistema deve estar em conformidade com a LGPD quanto à coleta, armazenamento e descarte de dados pessoais. |
 
 ### Disponibilidade e Confiabilidade
+
 | ID | Requisito |
 |---|---|
-| **RNF09** | O sistema deve manter disponibilidade mínima de **99% mensal**. |
-| **RNF10** | O sistema deve registrar **logs estruturados** de todas as operações sensíveis e disponibilizá-los para auditoria. |
+| RNF09 | O sistema deve manter disponibilidade mínima de 99% mensal. |
+| RNF10 | O sistema deve registrar logs estruturados de todas as operações sensíveis e disponibilizá-los para auditoria. |
 
 ### Escalabilidade
+
 | ID | Requisito |
 |---|---|
-| **RNF11** | A arquitetura deve permitir **escala horizontal** dos serviços de API por meio de containerização (Docker). |
-| **RNF12** | O armazenamento de imagens deve usar **object storage** (S3-compatível) para escalabilidade independente do banco de dados. |
+| RNF11 | A arquitetura deve permitir escala horizontal dos serviços de API por meio de containerização (Docker). |
+| RNF12 | O armazenamento de imagens deve usar object storage (S3-compatível) para escalabilidade independente do banco de dados. |
 
 ### Usabilidade
+
 | ID | Requisito |
 |---|---|
-| **RNF13** | A interface deve ser **responsiva** (mobile-first), funcionando em telas de 320px a 1920px. |
-| **RNF14** | O fluxo de relato (do clique inicial à confirmação final) deve ser concluído em **no máximo 4 toques/cliques**. |
-| **RNF15** | O sistema deve atender às diretrizes **WCAG 2.1 nível AA** para acessibilidade. |
+| RNF13 | A interface deve ser responsiva (mobile-first), funcionando em telas de 320px a 1920px. |
+| RNF14 | O fluxo de relato (do clique inicial à confirmação final) deve ser concluído em no máximo 4 toques/cliques. |
+| RNF15 | O sistema deve atender às diretrizes WCAG 2.1 nível AA para acessibilidade. |
 
 ### Observabilidade
+
 | ID | Requisito |
 |---|---|
-| **RNF16** | O sistema deve estar instrumentado com **Prometheus e Grafana** para monitoramento de métricas técnicas e de negócio. |
+| RNF16 | O sistema deve estar instrumentado com Prometheus e Grafana para monitoramento de métricas técnicas e de negócio. |
 
 ---
 
 ## 2.5 Regras de Negócio
 
-- **RN01 -** Somente usuários autenticados podem criar relatos.
-- **RN02 -** Cada usuário pode criar no máximo **5 relatos por hora** (anti-spam).
-- **RN03 -** Cada relato exige **obrigatoriamente** uma fotografia capturada no momento (não permitido upload de galeria) e a seleção de um nível de severidade.
-- **RN04 -** Um relato tem TTL inicial de **45 minutos**. A cada confirmação positiva de outro usuário, o TTL é prorrogado em 30 minutos.
-- **RN05 -** Após **3 relatos de "Pista Limpa"** distintos sobre a mesma área, o relato é automaticamente arquivado.
-- **RN06 -** O raio do círculo de alagamento no mapa é definido pelo nível: **Moderado = 30m**, **Grave = 60m**, **Crítico = 100m**.
-- **RN07 -** Relatos com fotografias inadequadas (imagens manifestamente fora do contexto) podem ser **denunciadas e moderadas** por administradores.
-- **RN08 -** Apenas usuários com perfil "Defesa Civil" têm acesso ao painel administrativo e à exportação de dados.
-- **RN09 -** Dados pessoais (e-mail, nome) **não são expostos publicamente**; apenas um identificador anônimo é associado aos relatos.
-- **RN10 -** Histórico de relatos é **público em forma agregada** (estatísticas), mas relatos individuais somente são visíveis ao seu autor após o arquivamento.
+- **RN01 —** Somente usuários autenticados podem criar relatos.
+- **RN02 —** Cada usuário pode criar no máximo 5 relatos por hora (anti-spam).
+- **RN03 —** Cada relato exige obrigatoriamente uma fotografia capturada no momento (não permitido upload de galeria) e a seleção de um nível de severidade.
+- **RN04 —** Um relato tem TTL inicial de 45 minutos. A cada confirmação positiva de outro usuário, o TTL é prorrogado em 30 minutos.
+- **RN05 —** Após 3 relatos de "Pista Limpa" distintos sobre a mesma área, o relato é automaticamente arquivado.
+- **RN06 —** O raio do círculo de alagamento no mapa é definido pelo nível: Moderado = 30m, Grave = 60m, Crítico = 100m.
+- **RN07 —** Relatos com fotografias inadequadas (imagens manifestamente fora do contexto) podem ser denunciadas e moderadas por administradores.
+- **RN08 —** Apenas usuários com perfil "Defesa Civil" têm acesso ao painel administrativo e à exportação de dados.
+- **RN09 —** Dados pessoais (e-mail, nome) não são expostos publicamente; apenas um identificador anônimo é associado aos relatos.
+- **RN10 —** Histórico de relatos é público em forma agregada (estatísticas), mas relatos individuais somente são visíveis ao seu autor após o arquivamento.
 
 ---
 
 ## 2.6 Fora do Escopo
 
-Para evitar crescimento descontrolado do projeto e garantir entrega viável no prazo do PAC Extensionista VII, ficam explicitamente **fora do escopo desta versão**:
+Para evitar crescimento descontrolado do projeto e garantir entrega viável no prazo do PAC Extensionista VII, ficam explicitamente fora do escopo desta versão:
 
-- Aplicativo mobile nativo (iOS/Android). A solução será **web responsiva (PWA)**, executável no navegador móvel.
+- Aplicativo mobile nativo (iOS/Android). A solução será web responsiva (PWA), executável no navegador móvel.
 - Sistema de navegação turn-by-turn ou recálculo de rotas (o usuário será redirecionado a apps como Google Maps/Waze).
 - Modelo preditivo de IA para previsão de alagamentos (apenas dados reativos e consolidados serão exibidos nesta versão).
 - Integração com câmeras de trânsito em vídeo ao vivo (apenas links externos para o portal NDMais).
 - Sistema de gamificação e ranking público de usuários colaboradores (a estudar para versão futura).
-- Cobertura geográfica fora de Joinville (Bairros e municípios vizinhos ficarão como evolução futura).
+- Cobertura geográfica fora de Joinville (bairros e municípios vizinhos ficarão como evolução futura).
 - Versão multilíngue (somente português brasileiro nesta versão).
 
 ---
@@ -429,87 +421,87 @@ Esta seção demonstra **como o sistema funciona** do ponto de vista da interaç
 
 ## 3.1 Fluxo Principal do Usuário
 
-O fluxo principal contempla a jornada completa de um cidadão colaborador, **desde o acesso ao sistema até a confirmação de um relato**:
+O fluxo principal contempla a jornada completa de um cidadão colaborador, desde o acesso ao sistema até a confirmação de um relato:
 
 ```
 [1] Usuário acessa alagou.com.br
- │
- ▼
+      │
+      ▼
 [2] Visualiza mapa público com áreas alagadas ativas
- │
- ▼
+      │
+      ▼
 [3] Decide reportar → Sistema exige autenticação
- │
- ▼
+      │
+      ▼
 [4] Login ou Cadastro
- │
- ▼
+      │
+      ▼
 [5] Sistema solicita permissão de GEOLOCALIZAÇÃO
- │
- ▼
+      │
+      ▼
 [6] Sistema solicita permissão de CÂMERA
- │
- ▼
+      │
+      ▼
 [7] Usuário captura FOTO obrigatória do alagamento
- │
- ▼
+      │
+      ▼
 [8] Usuário seleciona NÍVEL DA ÁGUA:
- (a) Moderado (b) Grave (c) Crítico
- │
- ▼
+      (a) Moderado   (b) Grave   (c) Crítico
+      │
+      ▼
 [9] Sistema valida coordenadas + foto + nível
- │
- ▼
+      │
+      ▼
 [10] Relato publicado e exibido como CÍRCULO no mapa
- │
- ▼
+      │
+      ▼
 [11] Notificação push enviada a usuários em 2 km
- │
- ▼
+      │
+      ▼
 [12] Outros usuários CONFIRMAM ou marcam PISTA LIMPA
- │
- ▼
+      │
+      ▼
 [13] TTL gerenciado automaticamente até arquivamento
 ```
+
+*Figura 3.1 — Fluxograma do caminho principal de relato.*
 
 ---
 
 ## 3.2 Fluxos Alternativos
 
-### FA01 - Usuário nega permissão de geolocalização
-- **Comportamento:** Sistema exibe mensagem explicativa indicando que o relato só é possível com GPS ativo, e oferece opção de habilitar manualmente nas configurações do navegador.
+**FA01 — Usuário nega permissão de geolocalização**
+Comportamento: Sistema exibe mensagem explicativa indicando que o relato só é possível com GPS ativo, e oferece opção de habilitar manualmente nas configurações do navegador.
 
-### FA02 - Usuário nega permissão de câmera
-- **Comportamento:** Sistema **impede a continuidade do relato** (foto é obrigatória por RF05) e exibe instruções para liberar a câmera.
+**FA02 — Usuário nega permissão de câmera**
+Comportamento: Sistema impede a continuidade do relato (foto é obrigatória por RF05) e exibe instruções para liberar a câmera.
 
-### FA03 - Sem conexão à internet durante o relato
-- **Comportamento:** O relato é **salvo em fila local (IndexedDB)** e sincronizado automaticamente quando a conexão for restaurada (resiliência offline-first parcial).
+**FA03 — Sem conexão à internet durante o relato**
+Comportamento: O relato é salvo em fila local (IndexedDB) e sincronizado automaticamente quando a conexão for restaurada (resiliência offline-first parcial).
 
-### FA04 - Foto desfocada ou inválida (validação backend)
-- **Comportamento:** O backend rejeita uploads que não atendam aos critérios mínimos (resolução < 480p, arquivo corrompido, etc.) e solicita nova captura.
+**FA04 — Foto desfocada ou inválida (validação backend)**
+Comportamento: O backend rejeita uploads que não atendam aos critérios mínimos (resolução < 480p, arquivo corrompido, etc.) e solicita nova captura.
 
-### FA05 - Relato em local muito próximo de outro ativo (< 50m)
-- **Comportamento:** Sistema oferece ao usuário a opção de **confirmar o relato existente** em vez de criar duplicata, agregando confiabilidade.
+**FA05 — Relato em local muito próximo de outro ativo (< 50m)**
+Comportamento: Sistema oferece ao usuário a opção de confirmar o relato existente em vez de criar duplicata, agregando confiabilidade.
 
-### FA06 - Usuário tenta criar mais de 5 relatos em 1 hora
-- **Comportamento:** Sistema bloqueia novos relatos pelo período (RN02) e exibe mensagem explicativa com horário de liberação.
+**FA06 — Usuário tenta criar mais de 5 relatos em 1 hora**
+Comportamento: Sistema bloqueia novos relatos pelo período (RN02) e exibe mensagem explicativa com horário de liberação.
 
-### FA07 - Conflito entre relatos ("Alagado" vs "Pista Limpa") simultâneos
-- **Comportamento:** Ambos são registrados; o sistema aplica regra de **maioria simples na janela de 15 minutos** para decidir o estado público da área.
+**FA07 — Conflito entre relatos ("Alagado" vs "Pista Limpa") simultâneos**
+Comportamento: Ambos são registrados; o sistema aplica regra de maioria simples na janela de 15 minutos para decidir o estado público da área.
 
-### FA08 - Falha na integração com fonte oficial (sensor offline, API da Defesa Civil indisponível)
-- **Comportamento:** O sistema continua operando apenas com dados colaborativos e exibe um indicador discreto de "fonte oficial temporariamente indisponível".
+**FA08 — Falha na integração com fonte oficial (sensor offline, API da Defesa Civil indisponível)**
+Comportamento: O sistema continua operando apenas com dados colaborativos e exibe um indicador discreto de "fonte oficial temporariamente indisponível".
 
-### FA09 - Usuário cancela cadastro durante o fluxo de relato
-- **Comportamento:** Foto e localização capturadas são **descartadas imediatamente** (LGPD); usuário retorna ao mapa público.
+**FA09 — Usuário cancela cadastro durante o fluxo de relato**
+Comportamento: Foto e localização capturadas são descartadas imediatamente (LGPD); usuário retorna ao mapa público.
 
 ---
 
 # 4. Mockups e Experiência do Usuário (UX)
 
-Esta seção apresenta a **visualização inicial do produto antes da implementação**.
-
-Os mockups têm o objetivo de validar:
+Esta seção apresenta **a visualização inicial do produto antes da implementação**. Os mockups têm o objetivo de validar:
 
 - Fluxo de navegação entre telas
 - Organização da interface e hierarquia visual
@@ -526,28 +518,30 @@ O fluxo de navegação macro do sistema é representado a seguir:
 
 ```
 ┌─────────────────┐
-│ Tela Inicial │
-│ (Mapa Público) │──────► (Sem login: apenas visualização)
+│   Tela Inicial  │
+│  (Mapa Público) │──────►  (Sem login: apenas visualização)
 └────────┬────────┘
- │ "Reportar"
- ▼
-┌─────────────────┐ ┌─────────────────┐
-│ Tela Login │◄───────►│ Tela Cadastro │
-└────────┬────────┘ └─────────────────┘
- │
- ▼
+         │  "Reportar"
+         ▼
+┌─────────────────┐        ┌─────────────────┐
+│   Tela Login    │◄──────►│  Tela Cadastro  │
+└────────┬────────┘        └─────────────────┘
+         │
+         ▼
 ┌─────────────────┐
 │ Dashboard Logado│
-│ (Mapa + Menu) │
+│   (Mapa + Menu) │
 └────────┬────────┘
- │
- ┌─────┴─────┬───────────┬──────────────┐
- ▼ ▼ ▼ ▼
-┌──────┐ ┌─────────┐ ┌────────┐ ┌──────────────┐
-│Relato│ │Histórico│ │Detalhes│ │ Painel Admin │
-│ Novo │ │ Pessoal │ │ Relato │ │ (Defesa Civ.)│
-└──────┘ └─────────┘ └────────┘ └──────────────┘
+         │
+   ┌─────┴─────┬───────────┬──────────────┐
+   ▼           ▼           ▼              ▼
+┌──────┐  ┌─────────┐  ┌────────┐  ┌──────────────┐
+│Relato│  │Histórico│  │Detalhes│  │ Painel Admin │
+│ Novo │  │ Pessoal │  │ Relato │  │ (Defesa Civ.)│
+└──────┘  └─────────┘  └────────┘  └──────────────┘
 ```
+
+*Figura 4.1 — Mapa de navegação macro entre telas.*
 
 ---
 
@@ -555,45 +549,45 @@ O fluxo de navegação macro do sistema é representado a seguir:
 
 As telas mínimas previstas para o MVP são:
 
-### 4.2.1 - Tela Inicial / Mapa Público
+### 4.2.1 — Tela Inicial / Mapa Público
 
 - **Descrição:** Mapa centrado em Joinville exibindo círculos coloridos (amarelo = Moderado, laranja = Grave, vermelho = Crítico) sobre as áreas alagadas ativas. Barra superior com botão "Entrar" e busca por endereço.
 - **Ações principais do usuário:** Navegar no mapa, clicar em um círculo para ver detalhes, fazer login.
 
-### 4.2.2 - Tela de Cadastro / Login
+### 4.2.2 — Tela de Cadastro / Login
 
 - **Descrição:** Formulário simples com e-mail, senha e botão "Continuar". Opção de login social (Google) como diferencial.
 - **Ações principais do usuário:** Criar conta, entrar.
 
-### 4.2.3 - Tela de Relato (Captura)
+### 4.2.3 — Tela de Relato (Captura)
 
 - **Descrição:** Câmera ativa em tela cheia com botão grande "Capturar". Indicador de localização no topo. Após a captura, exibe a foto preview com opção de "Refazer" ou "Continuar".
 - **Ações principais do usuário:** Tirar foto, aceitar ou refazer.
 
-### 4.2.4 - Tela de Severidade (Nível da Água)
+### 4.2.4 — Tela de Severidade (Nível da Água)
 
 - **Descrição:** Três cards verticais com ilustrações:
- - **Moderado** - Carros e ônibus passam normalmente
- - **Grave** - Apenas veículos altos passam
- - **Crítico** - Nenhum veículo passa com segurança
+  - **Moderado** — Carros e ônibus passam normalmente
+  - **Grave** — Apenas veículos altos passam
+  - **Crítico** — Nenhum veículo passa com segurança
 - **Ações principais do usuário:** Tocar no nível adequado.
 
-### 4.2.5 - Tela de Confirmação
+### 4.2.5 — Tela de Confirmação
 
 - **Descrição:** Sumário do relato (foto, localização aproximada anonimizada, nível). Botão "Enviar Relato".
 - **Ações principais do usuário:** Revisar e enviar.
 
-### 4.2.6 - Tela de Detalhes do Relato
+### 4.2.6 — Tela de Detalhes do Relato
 
 - **Descrição:** Exibida ao clicar em um círculo no mapa. Mostra: foto enviada, nível, tempo desde o relato, número de confirmações. Botões: "Confirmar (ainda alagado)" e "Pista Limpa".
 - **Ações principais do usuário:** Confirmar ou marcar pista limpa.
 
-### 4.2.7 - Histórico Pessoal
+### 4.2.7 — Histórico Pessoal
 
 - **Descrição:** Lista cronológica dos relatos do usuário com status (ativo, arquivado), número de confirmações recebidas.
 - **Ações principais do usuário:** Visualizar contribuições próprias.
 
-### 4.2.8 - Painel Administrativo (Defesa Civil)
+### 4.2.8 — Painel Administrativo (Defesa Civil)
 
 - **Descrição:** Dashboard com mapa de calor da cidade, gráfico de relatos por hora, lista filtrada de eventos ativos, botão de exportação CSV/PDF.
 - **Ações principais do usuário:** Monitorar, filtrar, exportar.
@@ -602,77 +596,72 @@ As telas mínimas previstas para o MVP são:
 
 ## 4.3 Fluxo de Interação do Usuário
 
-Demonstração passo a passo do **fluxo crítico de criação de relato**:
+Demonstração passo a passo do fluxo crítico de criação de relato:
 
-1. **Usuário abre alagou.com.br** no navegador do celular, em pé na calçada ao lado de uma rua alagada.
-2. **Visualiza o mapa**: percebe que aquela rua ainda não tem círculo marcado.
-3. **Toca em "Reportar Alagamento"** no botão flutuante inferior.
-4. **Sistema solicita login** (caso ainda não autenticado) e o usuário entra com e-mail/senha.
-5. **Sistema solicita permissão de localização** e o navegador captura coordenadas via GPS.
-6. **Sistema abre a câmera** e o usuário aponta para a rua alagada.
-7. **Usuário captura a foto** tocando no botão grande no centro inferior.
-8. **Sistema apresenta os três cards de nível** (Moderado / Grave / Crítico) e o usuário toca em "Grave" (vê que carros pequenos não passam mais).
-9. **Sistema exibe tela de confirmação** com a foto e nível selecionado.
-10. **Usuário confirma o envio.**
-11. **Sistema processa**: salva no backend, gera o círculo de raio adequado (60m para "Grave") e exibe o relato no mapa.
-12. **Sistema envia notificação push** aos usuários autenticados que estão a menos de 2 km dali.
-13. **Usuário recebe tela de agradecimento** com a mensagem "Você ajudou a tornar Joinville mais segura."
+1. Usuário abre alagou.com.br no navegador do celular, em pé na calçada ao lado de uma rua alagada.
+2. Visualiza o mapa: percebe que aquela rua ainda não tem círculo marcado.
+3. Toca em "Reportar Alagamento" no botão flutuante inferior.
+4. Sistema solicita login (caso ainda não autenticado) e o usuário entra com e-mail/senha.
+5. Sistema solicita permissão de localização e o navegador captura coordenadas via GPS.
+6. Sistema abre a câmera e o usuário aponta para a rua alagada.
+7. Usuário captura a foto tocando no botão grande no centro inferior.
+8. Sistema apresenta os três cards de nível (Moderado / Grave / Crítico) e o usuário toca em "Grave" (vê que carros pequenos não passam mais).
+9. Sistema exibe tela de confirmação com a foto e nível selecionado.
+10. Usuário confirma o envio.
+11. Sistema processa: salva no backend, gera o círculo de raio adequado (60m para "Grave") e exibe o relato no mapa.
+12. Sistema envia notificação push aos usuários autenticados que estão a menos de 2 km dali.
+13. Usuário recebe tela de agradecimento com a mensagem "Você ajudou a tornar Joinville mais segura."
 
-Tempo total estimado: **menos de 60 segundos** entre o toque inicial e a publicação.
+**Tempo total estimado:** menos de 60 segundos entre o toque inicial e a publicação.
 
 ---
 
 ## 4.4 Feedback Inicial de Usuários
 
-Os mockups foram apresentados em **maio/2026** a um grupo de **8 usuários representativos do público-alvo**: 3 motoristas de aplicativo, 3 moradores comuns (sem profissão de motorista), 1 motoboy e 1 servidor que atua em órgão de monitoramento urbano da Prefeitura. As sessões foram individuais, com duração média de **25 minutos**, conduzidas a partir do protótipo navegável no Figma.
+Os mockups foram apresentados em maio/2026 a um grupo de 8 usuários representativos do público-alvo: 3 motoristas de aplicativo, 3 moradores comuns (sem profissão de motorista), 1 motoboy e 1 servidor que atua em órgão de monitoramento urbano da Prefeitura. As sessões foram individuais, com duração média de 25 minutos, conduzidas a partir do protótipo navegável no Figma.
 
 ### Principais validações obtidas
 
 - **Compreensão imediata da tela inicial:** 8/8 entenderam que os círculos coloridos no mapa representavam alagamentos sem precisar ler legenda.
 - **Cores intuitivas:** 7/8 associaram corretamente amarelo/laranja/vermelho às severidades Moderado/Grave/Crítico sem orientação prévia.
-- **Fluxo de relato:** 8/8 conseguiram concluir o relato completo no protótipo em **até 50 segundos**. Não houve abandono.
-- **Foto obrigatória:** 6/8 declararam que a obrigatoriedade da foto **aumenta** a confiança no relato. 2/8 levantaram a preocupação sobre o que fazer "se estiver em movimento" - ajuste planejado: exibir aviso de "pare em local seguro" antes de iniciar a captura.
-- **Severidade em 3 níveis:** todos os 8 acharam a categorização clara. 2/8 sugeriram textos ainda mais visuais ("passa carro" / "só ônibus" / "passa ninguém") - sugestão **incorporada** aos textos finais das telas.
+- **Fluxo de relato:** 8/8 conseguiram concluir o relato completo no protótipo em até 50 segundos. Não houve abandono.
+- **Foto obrigatória:** 6/8 declararam que a obrigatoriedade da foto aumenta a confiança no relato. 2/8 levantaram a preocupação sobre o que fazer "se estiver em movimento" — ajuste planejado: exibir aviso de "pare em local seguro" antes de iniciar a captura.
+- **Severidade em 3 níveis:** todos os 8 acharam a categorização clara. 2/8 sugeriram textos ainda mais visuais ("passa carro" / "só ônibus" / "passa ninguém") — sugestão incorporada aos textos finais das telas.
 - **Painel administrativo:** apresentado apenas ao 8º participante (servidor público); recebeu avaliação positiva quanto à utilidade do mapa de calor e à exportação para CSV.
 
 ### Sugestões coletadas e respectivos encaminhamentos
 
 | Sugestão | Frequência | Decisão |
 |---|---|---|
-| Modo "rota": digitar destino e ver se há alagamento no caminho | 5/8 | **Adiado para v2** (fora do escopo atual) |
-| Botão de "denunciar relato falso" | 3/8 | **Aceito** - adicionado como funcionalidade de moderação (alinhado à RN07) |
-| Mostrar a hora exata do relato no card de detalhes | 4/8 | **Aceito** - incorporado ao mockup da tela de detalhes |
-| Compartilhar a área alagada via WhatsApp | 3/8 | **Aceito** - compartilhamento nativo via Web Share API |
-| Padrão alternativo de cores/hachuras para daltônicos | 1/8 | **Aceito** - combinação de cor + padrão visual para garantir conformidade com WCAG 2.1 AA (RNF15) |
-| Mostrar áreas "limpas há pouco tempo" no mapa também | 2/8 | **Em estudo** - risco de poluir o mapa |
-| Som de alerta para notificação push em modo dirigindo | 2/8 | **Em estudo** - depende de política de áudio do navegador |
+| Modo "rota": digitar destino e ver se há alagamento no caminho | 5/8 | Adiado para v2 (fora do escopo atual) |
+| Botão de "denunciar relato falso" | 3/8 | Aceito — adicionado como funcionalidade de moderação (alinhado à RN07) |
+| Mostrar a hora exata do relato no card de detalhes | 4/8 | Aceito — incorporado ao mockup da tela de detalhes |
+| Compartilhar a área alagada via WhatsApp | 3/8 | Aceito — compartilhamento nativo via Web Share API |
+| Padrão alternativo de cores/hachuras para daltônicos | 1/8 | Aceito — combinação de cor + padrão visual para conformidade com WCAG 2.1 AA (RNF15) |
+| Mostrar áreas "limpas há pouco tempo" no mapa também | 2/8 | Em estudo — risco de poluir o mapa |
+| Som de alerta para notificação push em modo dirigindo | 2/8 | Em estudo — depende de política de áudio do navegador |
 
 ### Frases representativas
 
-> *"Eu só queria saber: passo ou não passo? Vocês tão respondendo isso direto. Tá bom."*
-> - Participante 6, motorista 99, 33 anos
-
-> *"Achei melhor que o Waze pra isso. No Waze a gente nunca sabe se é poça ou se é enchente mesmo."*
-> - Participante 2, moradora do bairro Fátima, 41 anos
-
-> *"Se isso aqui rodar de verdade, vou usar todo dia de chuva. Sério."*
-> - Participante 4, motorista Uber, 38 anos
+- "Eu só queria saber: passo ou não passo? Vocês tão respondendo isso direto. Tá bom." — Participante 6, motorista 99, 33 anos
+- "Achei melhor que o Waze pra isso. No Waze a gente nunca sabe se é poça ou se é enchente mesmo." — Participante 2, moradora do bairro Fátima, 41 anos
+- "Se isso aqui rodar de verdade, vou usar todo dia de chuva. Sério." — Participante 4, motorista Uber, 38 anos
 
 ### Conclusão da validação
 
-Os mockups foram considerados **suficientemente claros e alinhados ao problema**, com aprovação geral do fluxo de relato. As três funcionalidades introduzidas a partir da revisão do professor (círculo no mapa, foto obrigatória, indicador de nível) foram **especialmente bem avaliadas** pelos participantes, confirmando a pertinência da decisão de incorporá-las ao escopo desta versão.
+Os mockups foram considerados suficientemente claros e alinhados ao problema, com aprovação geral do fluxo de relato. As três funcionalidades introduzidas a partir da revisão do professor (círculo no mapa, foto obrigatória, indicador de nível) foram especialmente bem avaliadas pelos participantes, confirmando a pertinência da decisão de incorporá-las ao escopo desta versão.
 
 ---
 
 # 5. Arquitetura do Sistema
 
-Esta seção demonstra **como o sistema será construído**, abordando os níveis macro (contexto), médio (containers e tecnologias) e micro (componentes internos), seguindo o **modelo C4** de Simon Brown.
+Esta seção demonstra **como o sistema será construído**, abordando os níveis macro (contexto), médio (containers e tecnologias) e micro (componentes internos), seguindo o modelo C4 de Simon Brown.
 
 ---
 
 ## 5.1 Diagrama C4
 
-### Nível 1 - Diagrama de Contexto
+### Nível 1 — Diagrama de Contexto
 
 Visão macro do sistema Alagou no ecossistema urbano de Joinville.
 
@@ -684,28 +673,28 @@ Visão macro do sistema Alagou no ecossistema urbano de Joinville.
 
 **Sistemas Externos:**
 
-- **API de Sensores de Rios** (Rio Cachoeira, Águas Vermelhas, Cubatão) - fonte de dados sobre nível dos rios.
-- **API da Tábua de Marés** (Porto de São Francisco do Sul) - fonte de dados sobre marés que afetam a drenagem urbana.
-- **API/Webhook da Defesa Civil de Joinville** - fonte de alertas oficiais e boletins de emergência.
-- **Mapbox / OpenStreetMap** - provedor de tiles cartográficos.
+- **API de Sensores de Rios** (Rio Cachoeira, Águas Vermelhas, Cubatão) — fonte de dados sobre nível dos rios.
+- **API da Tábua de Marés** (Porto de São Francisco do Sul) — fonte de dados sobre marés que afetam a drenagem urbana.
+- **API/Webhook da Defesa Civil de Joinville** — fonte de alertas oficiais e boletins de emergência.
+- **Mapbox / OpenStreetMap** — provedor de tiles cartográficos.
 - **Provedor de Notificações Web Push** (Firebase Cloud Messaging ou Web Push API nativa).
 
 **Fluxo de Valor:**
 
 ```
 Cidadão ──relato──► Alagou ──exibição──► Outros cidadãos
- ▲
- │ dados oficiais
- │
- Sensores / Marés / Defesa Civil
- │
- ▼
- Painel para Defesa Civil
+                      ▲
+                      │ dados oficiais
+                      │
+          Sensores / Marés / Defesa Civil
+                      │
+                      ▼
+              Painel para Defesa Civil
 ```
 
----
+*Figura 5.1 — Diagrama de Contexto (C4 Nível 1).*
 
-### Nível 2 - Diagrama de Containers
+### Nível 2 — Diagrama de Containers
 
 Primeiro "zoom" no sistema, destacando as unidades de execução independentes.
 
@@ -713,68 +702,68 @@ Primeiro "zoom" no sistema, destacando as unidades de execução independentes.
 
 | Container | Tecnologia | Responsabilidade |
 |---|---|---|
-| **Web Application (SPA)** | React + TypeScript + Vite | Interface única para cidadãos e administradores; PWA responsiva |
-| **API Backend** | Java 21 + Spring Boot 3 | API REST com regras de negócio, autenticação e orquestração |
-| **Worker de Integrações** | Java + Spring Boot (Scheduler) | Polling/consumo de APIs externas (sensores, marés, Defesa Civil) executado por `@Scheduled` ou módulo separado |
-| **Banco de Dados Principal** | PostgreSQL + PostGIS | Persistência relacional com suporte geoespacial nativo |
-| **Cache** | Redis | Cache de mapa, contagens de confirmações, controle de rate limit, fila pub/sub para WebSocket |
-| **Object Storage** | AWS S3 (ou MinIO autohospedado) | Armazenamento das fotografias dos relatos |
-| **Servidor de Notificações** | Web Push API + Service Workers | Envio de notificações push aos navegadores dos usuários |
+| Web Application (SPA) | React + TypeScript + Vite | Interface única para cidadãos e administradores; PWA responsiva |
+| API Backend | Java 21 + Spring Boot 3 | API REST com regras de negócio, autenticação e orquestração |
+| Worker de Integrações | Java + Spring Boot (Scheduler) | Polling/consumo de APIs externas (sensores, marés, Defesa Civil) executado por @Scheduled ou módulo separado |
+| Banco de Dados Principal | PostgreSQL + PostGIS | Persistência relacional com suporte geoespacial nativo |
+| Cache | Redis | Cache de mapa, contagens de confirmações, controle de rate limit, fila pub/sub para WebSocket |
+| Object Storage | AWS S3 (ou MinIO autohospedado) | Armazenamento das fotografias dos relatos |
+| Servidor de Notificações | Web Push API + Service Workers | Envio de notificações push aos navegadores dos usuários |
 
 **Protocolos de comunicação:**
 
-- Cliente ↔ API: **HTTPS / JSON (REST)** + **WebSockets** para atualizações em tempo real do mapa
-- API ↔ Banco: **TCP / SQL (Spring Data JPA + Hibernate)**
-- API ↔ Cache: **TCP / RESP (Spring Data Redis com Lettuce)**
-- API ↔ Object Storage: **HTTPS / S3 API**
-- Worker ↔ APIs externas: **HTTPS / variável conforme cada provedor**
+- **Cliente ↔ API:** HTTPS / JSON (REST) + WebSockets para atualizações em tempo real do mapa
+- **API ↔ Banco:** TCP / SQL (Spring Data JPA + Hibernate)
+- **API ↔ Cache:** TCP / RESP (Spring Data Redis com Lettuce)
+- **API ↔ Object Storage:** HTTPS / S3 API
+- **Worker ↔ APIs externas:** HTTPS / variável conforme cada provedor
 
----
+### Nível 3 — Diagrama de Componentes
 
-### Nível 3 - Diagrama de Componentes
-
-Zoom dentro do container **API Backend**, mostrando sua organização interna em camadas.
+Zoom dentro do container API Backend, mostrando sua organização interna em camadas.
 
 **Estrutura interna:**
 
 ```
 ┌─────────────────────────────────────────────────┐
-│ API Backend │
-│ │
-│ ┌───────────────────────────────────────────┐ │
-│ │ Camada de Apresentação (Controllers) │ │
-│ │ - AuthController │ │
-│ │ - RelatosController │ │
-│ │ - MapaController │ │
-│ │ - AdminController │ │
-│ └────────────────────┬──────────────────────┘ │
-│ │ │
-│ ┌────────────────────▼──────────────────────┐ │
-│ │ Camada de Serviços (Lógica de Negócio) │ │
-│ │ - AuthService │ │
-│ │ - RelatoService (cria, valida foto, │ │
-│ │ calcula raio do círculo, TTL) │ │
-│ │ - GeoService (consultas espaciais) │ │
-│ │ - ValidacaoService (regra das 3 │ │
-│ │ confirmações Pista Limpa) │ │
-│ │ - NotificacaoService │ │
-│ └────────────────────┬──────────────────────┘ │
-│ │ │
-│ ┌────────────────────▼──────────────────────┐ │
-│ │ Camada de Persistência (Repositories) │ │
-│ │ - UserRepository │ │
-│ │ - RelatoRepository │ │
-│ │ - ConfirmacaoRepository │ │
-│ └────────────────────┬──────────────────────┘ │
-│ │ │
-│ ┌────────────────────▼──────────────────────┐ │
-│ │ Clientes Externos │ │
-│ │ - S3Client (upload de fotos) │ │
-│ │ - RedisClient │ │
-│ │ - SensoresClient (worker) │ │
-│ └───────────────────────────────────────────┘ │
+│                  API Backend                    │
+│                                                 │
+│  ┌───────────────────────────────────────────┐  │
+│  │   Camada de Apresentação (Controllers)    │  │
+│  │   - AuthController                        │  │
+│  │   - RelatosController                     │  │
+│  │   - MapaController                        │  │
+│  │   - AdminController                       │  │
+│  └────────────────────┬──────────────────────┘  │
+│                       │                         │
+│  ┌────────────────────▼──────────────────────┐  │
+│  │   Camada de Serviços (Lógica de Negócio)  │  │
+│  │   - AuthService                           │  │
+│  │   - RelatoService (cria, valida foto,     │  │
+│  │       calcula raio do círculo, TTL)       │  │
+│  │   - GeoService (consultas espaciais)      │  │
+│  │   - ValidacaoService (regra das 3         │  │
+│  │       confirmações Pista Limpa)           │  │
+│  │   - NotificacaoService                    │  │
+│  └────────────────────┬──────────────────────┘  │
+│                       │                         │
+│  ┌────────────────────▼──────────────────────┐  │
+│  │   Camada de Persistência (Repositories)   │  │
+│  │   - UserRepository                        │  │
+│  │   - RelatoRepository                      │  │
+│  │   - ConfirmacaoRepository                 │  │
+│  └────────────────────┬──────────────────────┘  │
+│                       │                         │
+│  ┌────────────────────▼──────────────────────┐  │
+│  │   Clientes Externos                       │  │
+│  │   - S3Client (upload de fotos)            │  │
+│  │   - RedisClient                           │  │
+│  │   - SensoresClient (worker)               │  │
+│  └───────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────┘
 ```
+
+*Figura 5.2 — Componentes internos da API Backend (C4 Nível 3).*
 
 **Lógica de negócio destacada:**
 
@@ -786,67 +775,69 @@ Zoom dentro do container **API Backend**, mostrando sua organização interna em
 
 ## 5.2 Modelo de Dados
 
-O modelo de dados é predominantemente **relacional**, com tipos **geoespaciais** suportados pela extensão **PostGIS** do PostgreSQL.
+O modelo de dados é predominantemente relacional, com tipos geoespaciais suportados pela extensão PostGIS do PostgreSQL.
 
 ### Entidades principais
 
 | Entidade | Descrição |
 |---|---|
-| `usuarios` | Cadastro de cidadãos colaboradores e administradores |
-| `relatos` | Cada reporte de alagamento (1 foto, 1 nível, 1 ponto geográfico) |
-| `confirmacoes` | Registros de "ainda alagado" feitos por outros usuários sobre um relato |
-| `pista_limpa` | Registros de "via desbloqueada" sobre um relato |
-| `fontes_oficiais` | Snapshots periódicos de sensores, marés e alertas |
-| `notificacoes_push` | Histórico de envios para usuários |
-| `auditoria` | Log de operações sensíveis (LGPD / RNF10) |
+| usuarios | Cadastro de cidadãos colaboradores e administradores |
+| relatos | Cada reporte de alagamento (1 foto, 1 nível, 1 ponto geográfico) |
+| confirmacoes | Registros de "ainda alagado" feitos por outros usuários sobre um relato |
+| pista_limpa | Registros de "via desbloqueada" sobre um relato |
+| fontes_oficiais | Snapshots periódicos de sensores, marés e alertas |
+| notificacoes_push | Histórico de envios para usuários |
+| auditoria | Log de operações sensíveis (LGPD / RNF10) |
 
 ### Esquema relacional simplificado
 
 ```sql
 -- Usuários
 CREATE TABLE usuarios (
- id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
- email VARCHAR(180) UNIQUE NOT NULL,
- nome_exibicao VARCHAR(60) NOT NULL,
- senha_hash VARCHAR(255) NOT NULL,
- perfil VARCHAR(20) NOT NULL DEFAULT 'cidadao', -- cidadao | defesa_civil | admin
- criado_em TIMESTAMP NOT NULL DEFAULT NOW()
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email         VARCHAR(180) UNIQUE NOT NULL,
+  nome_exibicao VARCHAR(60) NOT NULL,
+  senha_hash    VARCHAR(255) NOT NULL,
+  perfil        VARCHAR(20) NOT NULL DEFAULT 'cidadao', -- cidadao | defesa_civil | admin
+  criado_em     TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- Relatos
 CREATE TABLE relatos (
- id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
- usuario_id UUID REFERENCES usuarios(id),
- localizacao GEOGRAPHY(POINT, 4326) NOT NULL, -- PostGIS
- nivel VARCHAR(10) NOT NULL, -- moderado | grave | critico
- raio_metros INTEGER NOT NULL, -- 30 | 60 | 100
- foto_url VARCHAR(500) NOT NULL, -- caminho no S3
- criado_em TIMESTAMP NOT NULL DEFAULT NOW(),
- expira_em TIMESTAMP NOT NULL, -- TTL dinâmico
- status VARCHAR(20) NOT NULL DEFAULT 'ativo' -- ativo | arquivado
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  usuario_id  UUID REFERENCES usuarios(id),
+  localizacao GEOGRAPHY(POINT, 4326) NOT NULL,  -- PostGIS
+  nivel       VARCHAR(10) NOT NULL,             -- moderado | grave | critico
+  raio_metros INTEGER NOT NULL,                 -- 30 | 60 | 100
+  foto_url    VARCHAR(500) NOT NULL,            -- caminho no S3
+  criado_em   TIMESTAMP NOT NULL DEFAULT NOW(),
+  expira_em   TIMESTAMP NOT NULL,               -- TTL dinâmico
+  status      VARCHAR(20) NOT NULL DEFAULT 'ativo' -- ativo | arquivado
 );
 CREATE INDEX idx_relatos_localizacao ON relatos USING GIST (localizacao);
-CREATE INDEX idx_relatos_status ON relatos (status, expira_em);
+CREATE INDEX idx_relatos_status      ON relatos (status, expira_em);
 
 -- Confirmações
 CREATE TABLE confirmacoes (
- id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
- relato_id UUID REFERENCES relatos(id),
- usuario_id UUID REFERENCES usuarios(id),
- tipo VARCHAR(15) NOT NULL, -- confirmacao | pista_limpa
- criado_em TIMESTAMP NOT NULL DEFAULT NOW(),
- UNIQUE (relato_id, usuario_id, tipo)
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  relato_id  UUID REFERENCES relatos(id),
+  usuario_id UUID REFERENCES usuarios(id),
+  tipo       VARCHAR(15) NOT NULL,  -- confirmacao | pista_limpa
+  criado_em  TIMESTAMP NOT NULL DEFAULT NOW(),
+  UNIQUE (relato_id, usuario_id, tipo)
 );
 
 -- Fontes Oficiais
 CREATE TABLE fontes_oficiais (
- id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
- tipo VARCHAR(40) NOT NULL, -- sensor_rio | mare | defesa_civil
- origem VARCHAR(80) NOT NULL, -- Rio Cachoeira, Porto SFS etc
- valor JSONB NOT NULL,
- coletado_em TIMESTAMP NOT NULL DEFAULT NOW()
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tipo        VARCHAR(40) NOT NULL,  -- sensor_rio | mare | defesa_civil
+  origem      VARCHAR(80) NOT NULL,  -- Rio Cachoeira, Porto SFS etc
+  valor       JSONB NOT NULL,
+  coletado_em TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ```
+
+*Figura 5.3 — Esquema relacional simplificado (DDL PostgreSQL/PostGIS).*
 
 ---
 
@@ -856,16 +847,16 @@ Os módulos centrais do sistema são:
 
 | Componente | Responsabilidade |
 |---|---|
-| **Módulo de Autenticação** | Cadastro, login, JWT, refresh tokens, recuperação de senha; conformidade com bcrypt e LGPD. |
-| **Módulo de Relato** | Recepção de relato com foto + nível, validações de entrada, cálculo do raio, gravação no banco e disparo de evento WebSocket. |
-| **Módulo de Validação Coletiva** | Processa confirmações e "Pista Limpa", aplica regra dos 3 relatos, prorroga ou encerra TTL. |
-| **Módulo Geoespacial** | Consultas espaciais via PostGIS (raios, vizinhança, intersecção com vias). |
-| **Módulo de Notificações Push** | Identifica usuários em raio relevante e dispara mensagens via Web Push API. |
-| **Módulo de Mapa (Frontend)** | Renderização do mapa com MapCN, exibição de círculos coloridos por severidade, integração com WebSocket para atualização em tempo real. |
-| **Módulo de Câmera (Frontend)** | Captura de fotografia obrigatória via `getUserMedia` (apenas câmera, sem galeria). |
-| **Worker de Integrações Externas** | Consome e padroniza dados de sensores, marés e Defesa Civil; persiste em `fontes_oficiais`. |
-| **Painel Administrativo** | Interface dedicada ao perfil "defesa_civil"; exportação CSV/PDF e mapa de calor. |
-| **Módulo de Observabilidade** | Coleta de métricas via Spring Boot Actuator + Micrometer (export para Prometheus), logs estruturados (SLF4J + Logback), tracing básico. |
+| Módulo de Autenticação | Cadastro, login, JWT, refresh tokens, recuperação de senha; conformidade com bcrypt e LGPD. |
+| Módulo de Relato | Recepção de relato com foto + nível, validações de entrada, cálculo do raio, gravação no banco e disparo de evento WebSocket. |
+| Módulo de Validação Coletiva | Processa confirmações e "Pista Limpa", aplica regra dos 3 relatos, prorroga ou encerra TTL. |
+| Módulo Geoespacial | Consultas espaciais via PostGIS (raios, vizinhança, intersecção com vias). |
+| Módulo de Notificações Push | Identifica usuários em raio relevante e dispara mensagens via Web Push API. |
+| Módulo de Mapa (Frontend) | Renderização do mapa com Mapbox GL JS / Leaflet, exibição de círculos coloridos por severidade, integração com WebSocket para atualização em tempo real. |
+| Módulo de Câmera (Frontend) | Captura de fotografia obrigatória via getUserMedia (apenas câmera, sem galeria). |
+| Worker de Integrações Externas | Consome e padroniza dados de sensores, marés e Defesa Civil; persiste em fontes_oficiais. |
+| Painel Administrativo | Interface dedicada ao perfil "defesa_civil"; exportação CSV/PDF e mapa de calor. |
+| Módulo de Observabilidade | Coleta de métricas via Spring Boot Actuator + Micrometer (export para Prometheus), logs estruturados (SLF4J + Logback), tracing básico. |
 
 ---
 
@@ -877,51 +868,262 @@ A escolha tecnológica considera maturidade do ecossistema, alinhamento ao Portf
 
 | Tecnologia | Justificativa |
 |---|---|
-| **React 18 + TypeScript** | Ecossistema maduro, alto suporte da comunidade, type safety para reduzir bugs em domínio complexo. |
-| **Vite** | Build moderno e ágil, melhor experiência de desenvolvimento que CRA. |
-| **TailwindCSS + shadcn/ui** | Estilização produtiva e Design System consistente; alinhado à seção "Diferenciais" do Portfolio Directions. |
-| **MapCN** | Biblioteca de mapas interativos (mapcn.dev); renderização de pontos, círculos e camadas geoespaciais. |
-| **Workbox (Service Worker)** | Suporte a PWA - funcionamento parcial offline, fila de envio de relatos quando sem conexão (FA03). |
+| React 18 + TypeScript | Ecossistema maduro, alto suporte da comunidade, type safety para reduzir bugs em domínio complexo. |
+| Vite | Build moderno e ágil, melhor experiência de desenvolvimento que CRA. |
+| TailwindCSS + shadcn/ui | Estilização produtiva e Design System consistente; alinhado à seção "Diferenciais" do Portfolio Directions. |
+| Mapbox GL JS (alternativa: Leaflet + OpenStreetMap) | Renderização performática de mapas, suporte nativo a círculos, polígonos e marcadores; ideal para aplicação geoespacial. |
+| Workbox (Service Worker) | Suporte a PWA — funcionamento parcial offline, fila de envio de relatos quando sem conexão (FA03). |
 
 ### Backend
 
 | Tecnologia | Justificativa |
 |---|---|
-| **Java 21 + Spring Boot 3** | Plataforma madura para construção de APIs corporativas, com vasto ecossistema, forte tipagem estática e excelente suporte a aplicações de longa duração. Spring Boot acelera o setup com auto-configuração, embedded Tomcat e starters para todas as dependências necessárias (web, security, data, validation). |
-| **Spring Data JPA + Hibernate (com Hibernate Spatial)** | Camada de persistência declarativa, com migrações geridas por Flyway. A extensão `hibernate-spatial` permite mapear tipos geográficos do PostGIS (Point, Polygon) diretamente para entidades Java. |
-| **Bean Validation (Jakarta Validation) + Hibernate Validator** | Validação de entrada baseada em anotações (`@NotNull`, `@Size`, `@Pattern`, validadores customizados). Atende ao RNF06 (mitigação OWASP - injeção e dados malformados). |
-| **Spring Security + JJWT + BCrypt** | Spring Security cobre autenticação e autorização declarativas. JJWT para emissão/validação de tokens. `BCryptPasswordEncoder` para hash de senhas (RNF04, RNF07). |
-| **Maven** | Gestão de dependências e build padrão do ecossistema Java; compatível com pipelines GitHub Actions. |
+| Java 21 + Spring Boot 3 | Plataforma madura para construção de APIs corporativas, com vasto ecossistema, forte tipagem estática e excelente suporte a aplicações de longa duração. Spring Boot acelera o setup com auto-configuração, embedded Tomcat e starters para todas as dependências necessárias (web, security, data, validation). |
+| Spring Data JPA + Hibernate (com Hibernate Spatial) | Camada de persistência declarativa, com migrações geridas por Flyway. A extensão hibernate-spatial permite mapear tipos geográficos do PostGIS (Point, Polygon) diretamente para entidades Java. |
+| Bean Validation (Jakarta Validation) + Hibernate Validator | Validação de entrada baseada em anotações (@NotNull, @Size, @Pattern, validadores customizados). Atende ao RNF06 (mitigação OWASP — injeção e dados malformados). |
+| Spring Security + JJWT + BCrypt | Spring Security cobre autenticação e autorização declarativas. JJWT para emissão/validação de tokens. BCryptPasswordEncoder para hash de senhas (RNF04, RNF07). |
+| Maven | Gestão de dependências e build padrão do ecossistema Java; compatível com pipelines GitHub Actions. |
 
 ### Persistência e Cache
 
 | Tecnologia | Justificativa |
 |---|---|
-| **PostgreSQL 16 + PostGIS** | Banco relacional robusto com suporte geoespacial nativo - essencial para consultas por raio e proximidade. Atende à exigência de banco persistente (não em disco local) das diretrizes Web Apps. |
-| **Redis** | Cache de consultas frequentes do mapa, controle de rate limit (RN02), pub/sub para WebSocket. |
+| PostgreSQL 16 + PostGIS | Banco relacional robusto com suporte geoespacial nativo — essencial para consultas por raio e proximidade. Atende à exigência de banco persistente (não em disco local) das diretrizes Web Apps. |
+| Redis | Cache de consultas frequentes do mapa, controle de rate limit (RN02), pub/sub para WebSocket. |
 
 ### Armazenamento de Arquivos
 
 | Tecnologia | Justificativa |
 |---|---|
-| **AWS S3** *(ou MinIO em fase inicial)* | Object storage escalável para fotografias (RNF12), com URLs assinadas para acesso seguro. |
+| AWS S3 (ou MinIO em fase inicial) | Object storage escalável para fotografias (RNF12), com URLs assinadas para acesso seguro. |
 
 ### Infraestrutura e DevOps
 
 | Tecnologia | Justificativa |
 |---|---|
-| **Docker + Docker Compose** | Containerização (RNF11), reprodutibilidade entre dev e produção. |
-| **GitHub Actions** | Pipeline CI/CD obrigatória pelas diretrizes Web Apps; rodando testes, lint e deploy. |
-| **AWS EC2 / GCP Compute Engine** *(decisão final pendente)* | Hospedagem em ambiente acessível publicamente, com gestão real de infraestrutura (não plataformas no-code/Vercel-only). |
-| **Nginx** | Reverse proxy, terminação TLS, cache de assets estáticos. |
-| **Prometheus + Grafana** | Observabilidade técnica e de negócio (RNF16); requisito das diretrizes Web Apps. |
-| **SonarCloud** | Análise estática de código e segurança (requisito Web Apps). |
+| Docker + Docker Compose | Containerização (RNF11), reprodutibilidade entre dev e produção. |
+| GitHub Actions | Pipeline CI/CD obrigatória pelas diretrizes Web Apps; rodando testes, lint e deploy. |
+| AWS EC2 / GCP Compute Engine (decisão final pendente) | Hospedagem em ambiente acessível publicamente, com gestão real de infraestrutura (não plataformas no-code/Vercel-only). |
+| Nginx | Reverse proxy, terminação TLS, cache de assets estáticos. |
+| Prometheus + Grafana | Observabilidade técnica e de negócio (RNF16); requisito das diretrizes Web Apps. |
+| SonarCloud | Análise estática de código e segurança (requisito Web Apps). |
 
 ### Qualidade
 
 | Tecnologia | Justificativa |
 |---|---|
-| **Vitest + React Testing Library** | Testes unitários no frontend (cobertura mínima 25%). |
-| **JUnit 5 + Spring Boot Test + Testcontainers** | Testes unitários e de integração no backend (cobertura mínima 75%). Testcontainers permite levantar PostgreSQL + PostGIS reais em containers durante os testes. |
-| **Playwright** | Testes end-to-end opcionais para o fluxo crítico de relato. |
-| **ESLint + Prettier (frontend) / Checkstyle + SpotBugs (backend)** | Padronização de código e prevenção de erros comuns em cada ecossistema. |
+| Vitest + React Testing Library | Testes unitários no frontend (cobertura mínima 25%). |
+| JUnit 5 + Spring Boot Test + Testcontainers | Testes unitários e de integração no backend (cobertura mínima 75%). Testcontainers permite levantar PostgreSQL + PostGIS reais em containers durante os testes. |
+| Playwright | Testes end-to-end opcionais para o fluxo crítico de relato. |
+| ESLint + Prettier (frontend) / Checkstyle + SpotBugs (backend) | Padronização de código e prevenção de erros comuns em cada ecossistema. |
+
+---
+
+# 6. Segurança e Privacidade
+
+A segurança não foi tratada como uma etapa final, mas como um requisito transversal incorporado desde a engenharia de requisitos (RNF04 a RNF08) e refletido na arquitetura (Seção 5). Por se tratar de uma plataforma colaborativa que coleta localização, fotografias e dados de contato de cidadãos, o Alagou adota uma postura de "segurança e privacidade desde a concepção" (security & privacy by design), princípio também exigido pela LGPD. Esta seção consolida as principais ameaças consideradas e as contramedidas adotadas.
+
+---
+
+## 6.1 Proteção contra o OWASP Top 10
+
+O atendimento ao RNF06 é detalhado a seguir, mapeando as categorias mais relevantes do OWASP Top 10 (edição 2021) ao contexto específico do Alagou e às respectivas mitigações.
+
+| Categoria OWASP | Risco no Alagou | Mitigação adotada |
+|---|---|---|
+| A01 — Broken Access Control | Cidadão acessar o painel da Defesa Civil ou exportar dados agregados. | Autorização por papéis (RBAC) via Spring Security; perfis cidadao / defesa_civil / admin (RN08); verificação no servidor em cada endpoint, nunca apenas no frontend. |
+| A02 — Cryptographic Failures | Vazamento de senhas ou interceptação de dados em trânsito. | TLS 1.3 em todas as comunicações (RNF05); senhas com hash bcrypt custo ≥ 10 (RNF07); URLs assinadas e temporárias para acesso às fotos no S3. |
+| A03 — Injection (SQL/NoSQL) | Injeção via campos de relato ou parâmetros de busca geográfica. | Acesso a dados exclusivamente via Spring Data JPA / consultas parametrizadas (Hibernate); Bean Validation nos DTOs de entrada (RNF06). |
+| A04 — Insecure Design | Spam de relatos falsos para poluir o mapa. | Rate limiting de 5 relatos/hora por usuário (RN02); foto obrigatória capturada no momento (RN03); validação coletiva com TTL (RN04, RN05). |
+| A05 — Security Misconfiguration | Cabeçalhos inseguros, CORS permissivo, stack traces expostos. | Cabeçalhos de segurança (HSTS, X-Content-Type-Options, CSP) via Nginx; CORS restrito à origem oficial; perfis de configuração separados para dev e produção. |
+| A06 — Vulnerable Components | Dependências desatualizadas com CVEs conhecidos. | Análise estática contínua via SonarCloud e verificação de dependências no pipeline CI/CD (GitHub Actions). |
+| A07 — Identification & Auth Failures | Sequestro de sessão; força bruta de login. | JWT com expiração curta + refresh token (RNF04); política de senha mínima; bloqueio progressivo após tentativas falhas. |
+| A08 — Software & Data Integrity | Deploy de artefato adulterado. | Pipeline CI/CD com testes automatizados e build reprodutível em container (RNF11); imagens versionadas. |
+| A09 — Logging & Monitoring Failures | Incidentes não detectados. | Logs estruturados de operações sensíveis para auditoria (RNF10); métricas e alertas via Prometheus/Grafana (RNF16). |
+| A10 — Server-Side Request Forgery | Worker de integrações induzido a acessar destino interno. | Lista de domínios permitidos (allowlist) para as APIs externas consumidas pelo Worker; timeouts e validação de respostas. |
+
+---
+
+## 6.2 Autenticação e Autorização
+
+O controle de identidade segue um modelo baseado em tokens, descrito a seguir:
+
+- **Autenticação:** login por e-mail e senha emite um par de tokens JWT (access token de curta duração e refresh token de longa duração). O access token acompanha cada requisição protegida no cabeçalho Authorization (RNF04).
+- **Autorização:** cada endpoint declara o papel mínimo exigido. O acesso ao painel administrativo e à exportação é restrito ao perfil defesa_civil (RN08), validado no backend a cada requisição.
+- **Armazenamento de credenciais:** senhas nunca são gravadas em texto puro — apenas o hash bcrypt (custo ≥ 10) é persistido na coluna senha_hash (RNF07).
+- **Recuperação de conta:** realizada por token de uso único enviado ao e-mail cadastrado, com prazo de expiração.
+
+---
+
+## 6.3 Proteção de Dados e do Conteúdo Colaborativo
+
+- **Dados em trânsito:** criptografados com TLS 1.3 (RNF05), incluindo upload de fotografias e canais WebSocket.
+- **Dados em repouso:** fotos armazenadas em object storage com acesso por URL assinada e expirável; o banco de dados é gerenciado e não exposto publicamente.
+- **Integridade do conteúdo:** a foto obrigatória capturada no momento (RN03) e a validação coletiva (RN04, RN05) reduzem relatos falsos; conteúdos inadequados podem ser denunciados e moderados por administradores (RN07).
+- **Anti-abuso:** o limite de 5 relatos por hora (RN02) e a deduplicação de relatos próximos (FA05) dificultam o uso malicioso da plataforma.
+
+---
+
+## 6.4 Privacidade e LGPD
+
+O Alagou está em conformidade com a Lei Geral de Proteção de Dados — LGPD (Lei nº 13.709/2018), conforme exigido pelo RNF08. Esta subseção descreve quais dados são coletados, como são tratados e como o titular pode exercer seus direitos.
+
+### Quais dados serão coletados
+
+| Dado | Finalidade | Base legal (LGPD) |
+|---|---|---|
+| E-mail e nome de exibição | Autenticação e identificação da conta | Execução de contrato / consentimento (art. 7º, I e V) |
+| Senha (apenas hash) | Segurança do acesso | Execução de contrato |
+| Geolocalização (no ato do relato) | Posicionar o alagamento no mapa | Consentimento explícito (permissão do navegador) |
+| Fotografia do local | Comprovar e validar o relato | Consentimento explícito |
+| Logs técnicos (data/hora, IP) | Auditoria e segurança | Legítimo interesse / obrigação legal (art. 7º, IX) |
+
+### Como os dados serão armazenados
+
+- Dados cadastrais e relatos residem no PostgreSQL gerenciado, com acesso restrito por rede e credenciais; senhas somente como hash bcrypt.
+- Fotografias ficam em object storage (S3-compatível) acessível apenas por URLs assinadas e temporárias.
+- **Minimização e anonimização:** dados pessoais (e-mail, nome) não são expostos publicamente; cada relato é associado apenas a um identificador anônimo (RN09). O histórico público é apresentado de forma agregada (RN10).
+- **Descarte:** dados de relato capturados durante um fluxo cancelado são descartados imediatamente (FA09); relatos arquivados são mantidos de forma agregada para fins de planejamento urbano (RF15), e dados pessoais podem ser removidos mediante solicitação.
+
+### Como o usuário poderá solicitar a remoção de dados
+
+- O titular pode solicitar acesso, correção ou exclusão de seus dados pessoais diretamente nas configurações da conta ("Excluir minha conta") ou por canal de contato dedicado (encarregado/DPO do projeto).
+- A exclusão da conta remove os dados de identificação; as contribuições já validadas permanecem no histórico apenas em forma anonimizada e agregada, preservando o valor coletivo da informação para a gestão pública sem expor o autor.
+- Solicitações são registradas em log de auditoria (RNF10) e atendidas dentro dos prazos previstos pela LGPD.
+
+**Encarregado pelo tratamento de dados (DPO):** será designado um responsável pela equipe do projeto como ponto de contato para titulares e autoridade nacional, conforme art. 41 da LGPD.
+
+---
+
+# 7. Planejamento do Projeto
+
+O desenvolvimento do Alagou está organizado em marcos incrementais, alinhados ao calendário do PAC Extensionista VII. A estratégia prioriza, logo após o setup, a entrega do fluxo central "relatar → validar → consultar" (o coração do MVP), deixando integrações externas e refinamentos para marcos posteriores. Os prazos são expressos em semanas relativas ao início do desenvolvimento (Semana 1).
+
+| Marco | Descrição | Principais entregáveis | Prazo |
+|---|---|---|---|
+| M0 | Aprovação do RFC e preparação | RFC aprovado pelo comitê; backlog inicial; repositório e board configurados. | Semana 1 |
+| M1 | Setup do ambiente e prova de conceito | Esqueleto frontend (React+Vite) e backend (Spring Boot); Docker Compose; PostgreSQL+PostGIS; pipeline CI/CD inicial (GitHub Actions); mapa público renderizando tiles. | Semanas 2–3 |
+| M2 | Autenticação e mapa público | Cadastro/login com JWT e bcrypt (RF01, RF02, RNF04); visualização do mapa público sem login (RF03). | Semanas 4–5 |
+| M3 | Núcleo do MVP — fluxo de relato | Captura obrigatória de foto + GPS (RF04, RF05); seleção de nível (RF06); círculo georreferenciado no mapa (RF07, RN06); upload para object storage (RNF12). | Semanas 6–8 |
+| M4 | Validação coletiva e notificações | Confirmação/contestação (RF08); "Pista Limpa" (RF09); TTL dinâmico (RF10, RN04, RN05); notificações web push em 2 km (RF12). | Semanas 9–10 |
+| M5 | Integrações oficiais e painel admin | Worker de integração (sensores, marés, Defesa Civil — RF11); painel administrativo com mapa de calor (RF13); exportação CSV/PDF (RF14); histórico (RF15, RF16). | Semanas 11–13 |
+| M6 | Qualidade, segurança e observabilidade | Cobertura de testes (back ≥ 75%, front ≥ 25%); hardening OWASP (RNF06); Prometheus/Grafana (RNF16); acessibilidade WCAG 2.1 AA (RNF15). | Semanas 14–15 |
+| M7 | Deploy, documentação e apresentação | Deploy em ambiente público (EC2/GCP + Nginx); documentação final; vídeo/demonstração; entrega para a banca. | Semanas 16–17 |
+
+**Metodologia:** desenvolvimento iterativo e incremental, com ciclos curtos (sprints quinzenais) acompanhados por board Kanban no repositório. Cada marco encerra com uma demonstração funcional e revisão de pendências, permitindo replanejar o escopo restante caso necessário.
+
+**Riscos e mitigações principais:** (i) indisponibilidade ou ausência de API pública dos sensores oficiais — mitigado pela operação degradada apenas com dados colaborativos (FA08) e pela formalização do contato com a Defesa Civil; (ii) baixa adesão inicial de usuários — mitigada pela divulgação nos mesmos grupos comunitários onde a demanda foi identificada; (iii) prazo apertado — mitigado pela priorização do núcleo do MVP nos marcos M2–M4.
+
+---
+
+# 8. Referências
+
+As referências abaixo embasam as decisões técnicas, metodológicas e normativas adotadas neste documento.
+
+### Normas e fundamentos
+
+- BRASIL. **Lei nº 13.709, de 14 de agosto de 2018** — Lei Geral de Proteção de Dados Pessoais (LGPD).
+- **OWASP Top 10 (2021)** — Open Worldwide Application Security Project. Disponível em: https://owasp.org/Top10/.
+- **WCAG 2.1** — Web Content Accessibility Guidelines, W3C. Disponível em: https://www.w3.org/TR/WCAG21/.
+- BROWN, Simon. **The C4 model for visualising software architecture.** Disponível em: https://c4model.com.
+
+### Documentação técnica das ferramentas
+
+- **Spring Boot** — https://spring.io/projects/spring-boot.
+- **Spring Security** — https://spring.io/projects/spring-security.
+- **PostgreSQL** — https://www.postgresql.org/docs/.
+- **PostGIS** — https://postgis.net/documentation/.
+- **React** — https://react.dev.
+- **Vite** — https://vitejs.dev.
+- **Mapbox GL JS** — https://docs.mapbox.com/mapbox-gl-js/; Leaflet — https://leafletjs.com; OpenStreetMap — https://www.openstreetmap.org.
+- **MDN — Web Push API / Service Workers** — https://developer.mozilla.org/docs/Web/API/Push_API.
+- **Docker** — https://docs.docker.com; **Prometheus** — https://prometheus.io/docs/; **Grafana** — https://grafana.com/docs/.
+
+### Fontes de contexto local e demanda
+
+- Coordenadoria Municipal de Defesa Civil de Joinville — reunião exploratória (15/04/2026) e boletins públicos de eventos de alagamento (2024–2025).
+- Portal NDMais — câmeras públicas de monitoramento urbano de Joinville: https://ndmais.com.br.
+- Pesquisa primária do projeto: questionário online (18 respondentes) e entrevistas semiestruturadas (5 motoristas de aplicativo), conduzidos entre março e abril de 2026 (ver Apêndices B e C).
+
+### Repositório do projeto
+
+- **GitHub:** https://github.com/CaueFer/alagou
+
+---
+
+# 9. Apêndices
+
+Os apêndices reúnem materiais complementares que sustentam as evidências e decisões apresentadas ao longo do RFC.
+
+## Apêndice A — Links do projeto
+
+- **Repositório de código:** https://github.com/CaueFer/alagou
+- **Protótipo navegável (Figma):** link a ser disponibilizado pela equipe na próxima etapa.
+- **Board de planejamento (Kanban):** hospedado no repositório (GitHub Projects).
+
+## Apêndice B — Instrumento da pesquisa (questionário online)
+
+Resumo das questões aplicadas aos 18 respondentes (resultados consolidados na Seção 1.2):
+
+- Você já entrou em uma rua alagada sem saber que estava alagada?
+- Já sofreu algum prejuízo material por causa de alagamento em via?
+- Em dias de chuva forte, você se sente seguro para sair com seu veículo?
+- Você usaria um app/site que mostre em tempo real onde há alagamentos?
+- Você contribuiria com relatos se o processo fosse simples (< 1 min)?
+- O que aumentaria sua confiança em um relato? (múltipla escolha)
+- Você tentaria descobrir o estado de uma rua antes de sair de casa em dia chuvoso?
+- Quais bairros você considera mais críticos? (questão aberta)
+
+## Apêndice C — Roteiro das entrevistas semiestruturadas
+
+Roteiro-base aplicado aos 5 motoristas de aplicativo (E1–E5):
+
+- Conte uma situação em que você foi surpreendido por uma via alagada.
+- Houve prejuízo material? Como você descobriu que a rua estava alagada?
+- O que faria você confiar (ou não) em um relato de alagamento feito por outra pessoa?
+- Como você prefere que a severidade do alagamento seja informada?
+- Você contribuiria com relatos? O que tornaria esse processo viável no seu dia a dia?
+
+## Apêndice D — Diagramas complementares
+
+- Diagrama de Contexto, Containers e Componentes (C4 — Seção 5.1).
+- Esquema relacional simplificado / DER (Seção 5.2).
+- Fluxograma do caminho principal e fluxo de navegação entre telas (Seções 3.1 e 4.1).
+
+Versões de alta fidelidade dos diagramas e dos wireframes serão anexadas ao repositório à medida que forem produzidas no Figma/Excalidraw.
+
+## Apêndice E — Glossário
+
+| Termo | Definição |
+|---|---|
+| TTL (Time To Live) | Tempo de vida de um relato no mapa antes de ser arquivado; renova-se com confirmações. |
+| PWA | Progressive Web App — aplicação web instalável com capacidades offline parciais. |
+| PostGIS | Extensão geoespacial do PostgreSQL para consultas por proximidade e área. |
+| JWT | JSON Web Token — token assinado usado para autenticação stateless. |
+| Pista Limpa | Relato indicando que uma via anteriormente alagada voltou a ser transitável. |
+| C4 Model | Notação de arquitetura em quatro níveis (Contexto, Containers, Componentes, Código). |
+
+---
+
+# 10. Parecer do Comitê de Avaliação
+
+(A ser preenchido pelos professores)
+
+**Avaliador 1:** __________________________  
+**Status:** [ ] Aprovado  [ ] Ajustar
+
+Observações:
+
+---
+
+**Avaliador 2:** __________________________  
+**Status:** [ ] Aprovado  [ ] Ajustar
+
+Observações:
+
+---
+
+**Avaliador 3:** __________________________  
+**Status:** [ ] Aprovado  [ ] Ajustar
+
+Observações:
