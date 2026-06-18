@@ -789,58 +789,6 @@ O modelo de dados é predominantemente relacional, com tipos geoespaciais suport
 | notificacoes_push | Histórico de envios para usuários |
 | auditoria | Log de operações sensíveis (LGPD / RNF10) |
 
-### Esquema relacional simplificado
-
-```sql
--- Usuários
-CREATE TABLE usuarios (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email         VARCHAR(180) UNIQUE NOT NULL,
-  nome_exibicao VARCHAR(60) NOT NULL,
-  senha_hash    VARCHAR(255) NOT NULL,
-  perfil        VARCHAR(20) NOT NULL DEFAULT 'cidadao', -- cidadao | defesa_civil | admin
-  criado_em     TIMESTAMP NOT NULL DEFAULT NOW()
-);
-
--- Relatos
-CREATE TABLE relatos (
-  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  usuario_id  UUID REFERENCES usuarios(id),
-  localizacao GEOGRAPHY(POINT, 4326) NOT NULL,  -- PostGIS
-  nivel       VARCHAR(10) NOT NULL,             -- moderado | grave | critico
-  raio_metros INTEGER NOT NULL,                 -- 30 | 60 | 100
-  foto_url    VARCHAR(500) NOT NULL,            -- caminho no S3
-  criado_em   TIMESTAMP NOT NULL DEFAULT NOW(),
-  expira_em   TIMESTAMP NOT NULL,               -- TTL dinâmico
-  status      VARCHAR(20) NOT NULL DEFAULT 'ativo' -- ativo | arquivado
-);
-CREATE INDEX idx_relatos_localizacao ON relatos USING GIST (localizacao);
-CREATE INDEX idx_relatos_status      ON relatos (status, expira_em);
-
--- Confirmações
-CREATE TABLE confirmacoes (
-  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  relato_id  UUID REFERENCES relatos(id),
-  usuario_id UUID REFERENCES usuarios(id),
-  tipo       VARCHAR(15) NOT NULL,  -- confirmacao | pista_limpa
-  criado_em  TIMESTAMP NOT NULL DEFAULT NOW(),
-  UNIQUE (relato_id, usuario_id, tipo)
-);
-
--- Fontes Oficiais
-CREATE TABLE fontes_oficiais (
-  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tipo        VARCHAR(40) NOT NULL,  -- sensor_rio | mare | defesa_civil
-  origem      VARCHAR(80) NOT NULL,  -- Rio Cachoeira, Porto SFS etc
-  valor       JSONB NOT NULL,
-  coletado_em TIMESTAMP NOT NULL DEFAULT NOW()
-);
-```
-
-*Figura 5.3 - Esquema relacional simplificado (DDL PostgreSQL/PostGIS).*
-
----
-
 ## 5.3 Principais Componentes
 
 Os módulos centrais do sistema são:
@@ -1055,75 +1003,10 @@ As referências abaixo embasam as decisões técnicas, metodológicas e normativ
 
 Os apêndices reúnem materiais complementares que sustentam as evidências e decisões apresentadas ao longo do RFC.
 
-## Apêndice A - Links do projeto
+## Links do projeto
 
 - **Repositório de código:** https://github.com/CaueFer/alagou
 - **Protótipo navegável (Figma):** link a ser disponibilizado pela equipe na próxima etapa.
 - **Board de planejamento (Kanban):** hospedado no repositório (GitHub Projects).
 
-## Apêndice B - Instrumento da pesquisa (questionário online)
-
-Resumo das questões aplicadas aos 18 respondentes (resultados consolidados na Seção 1.2):
-
-- Você já entrou em uma rua alagada sem saber que estava alagada?
-- Já sofreu algum prejuízo material por causa de alagamento em via?
-- Em dias de chuva forte, você se sente seguro para sair com seu veículo?
-- Você usaria um app/site que mostre em tempo real onde há alagamentos?
-- Você contribuiria com relatos se o processo fosse simples (< 1 min)?
-- O que aumentaria sua confiança em um relato? (múltipla escolha)
-- Você tentaria descobrir o estado de uma rua antes de sair de casa em dia chuvoso?
-- Quais bairros você considera mais críticos? (questão aberta)
-
-## Apêndice C - Roteiro das entrevistas semiestruturadas
-
-Roteiro-base aplicado aos 5 motoristas de aplicativo (E1–E5):
-
-- Conte uma situação em que você foi surpreendido por uma via alagada.
-- Houve prejuízo material? Como você descobriu que a rua estava alagada?
-- O que faria você confiar (ou não) em um relato de alagamento feito por outra pessoa?
-- Como você prefere que a severidade do alagamento seja informada?
-- Você contribuiria com relatos? O que tornaria esse processo viável no seu dia a dia?
-
-## Apêndice D - Diagramas complementares
-
-- Diagrama de Contexto, Containers e Componentes (C4 - Seção 5.1).
-- Esquema relacional simplificado / DER (Seção 5.2).
-- Fluxograma do caminho principal e fluxo de navegação entre telas (Seções 3.1 e 4.1).
-
-Versões de alta fidelidade dos diagramas e dos wireframes serão anexadas ao repositório à medida que forem produzidas no Figma/Excalidraw.
-
-## Apêndice E - Glossário
-
-| Termo | Definição |
-|---|---|
-| TTL (Time To Live) | Tempo de vida de um relato no mapa antes de ser arquivado; renova-se com confirmações. |
-| PWA | Progressive Web App - aplicação web instalável com capacidades offline parciais. |
-| PostGIS | Extensão geoespacial do PostgreSQL para consultas por proximidade e área. |
-| JWT | JSON Web Token - token assinado usado para autenticação stateless. |
-| Pista Limpa | Relato indicando que uma via anteriormente alagada voltou a ser transitável. |
-| C4 Model | Notação de arquitetura em quatro níveis (Contexto, Containers, Componentes, Código). |
-
 ---
-
-# 10. Parecer do Comitê de Avaliação
-
-(A ser preenchido pelos professores)
-
-**Avaliador 1:** __________________________  
-**Status:** [ ] Aprovado  [ ] Ajustar
-
-Observações:
-
----
-
-**Avaliador 2:** __________________________  
-**Status:** [ ] Aprovado  [ ] Ajustar
-
-Observações:
-
----
-
-**Avaliador 3:** __________________________  
-**Status:** [ ] Aprovado  [ ] Ajustar
-
-Observações:
