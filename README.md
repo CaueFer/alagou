@@ -139,7 +139,6 @@ Identidades preservadas; idades e perfis profissionais reais conforme declarado.
 ### Evidência de Interesse
 
 - **Engajamento orgânico em redes sociais:** levantamento manual realizado durante 7 dias chuvosos entre fevereiro e abril/2026 identificou em média 34 postagens diárias sobre alagamentos nos grupos analisados, com média de 18 comentários e 27 reações cada - confirmando interesse ativo, porém fragmentado e sem persistência.
-- **Contato com a Coordenadoria Municipal de Defesa Civil:** reunião exploratória conduzida em 15/04/2026. A coordenadoria demonstrou interesse no recebimento dos dados agregados gerados pela plataforma e indicou que não existe atualmente sistema unificado de relatos cidadãos integrado às suas operações. A formalização por carta de intenção está prevista para a próxima etapa do projeto.
 - **Feedback espontâneo durante o questionário:** entre os 18 respondentes, 8 deixaram comentários abertos, dos quais 6 (75%) eram sugestões construtivas - destacando-se três pedidos repetidos: (i) integração com Waze/Google Maps para abrir rota alternativa, (ii) possibilidade de marcar a área como segura novamente, e (iii) histórico para conferir se um trecho costuma alagar. Os dois primeiros já estão contemplados no escopo (UC06 "Pista Limpa" e link externo para apps de navegação); o terceiro corresponde ao RF15.
 
 ---
@@ -212,7 +211,6 @@ O Alagou se posiciona em uma lacuna ainda não preenchida: ser uma plataforma **
 |---|---|---|---|
 | Motoristas e motociclistas comuns | Moradores de Joinville que se deslocam diariamente de carro/moto | Antes e durante deslocamentos em dias chuvosos | Baixo a médio - usa apps de mapas |
 | Motoristas de aplicativo | Profissionais de Uber, 99, iFood | Trabalho contínuo na cidade; alta frequência de uso | Médio - familiarizado com múltiplos apps |
-| Agentes da Defesa Civil / Trânsito | Servidores públicos da Prefeitura de Joinville | Tomada de decisão em sala de operação durante eventos críticos | Médio - usa dashboards e sistemas de informação |
 | Cidadãos colaboradores | Voluntários, líderes comunitários, moradores engajados | Pontual: reportam quando passam por uma via alagada | Baixo - interface deve ser simples |
 
 **Características gerais do público**
@@ -236,7 +234,6 @@ Desenvolver uma **plataforma web colaborativa e geoespacial** que centralize inf
 - Implementar o fluxo de relato cidadão com captura obrigatória de foto no momento do registro e indicação do nível da água.
 - Desenvolver o sistema de validação coletiva baseado em TTL dinâmico (relatos expiram em 45 minutos se não confirmados e podem ser encerrados via relato "Pista Limpa" após 3 validações).
 - Integrar fontes oficiais externas (sensores de rios, tábua de marés do Porto de São Francisco do Sul, alertas SMS da Defesa Civil).
-- Construir um painel administrativo voltado à Defesa Civil para visualização agregada e exportação de dados históricos.
 
 ---
 
@@ -306,8 +303,7 @@ Os principais fluxos do sistema são:
 - **UC06** - Reportar via desbloqueada ("Pista Limpa")
 - **UC07** - Receber alertas de áreas próximas (notificação web push)
 - **UC08** - Consultar histórico de relatos (próprios e da cidade)
-- **UC09** - Acessar painel administrativo (perfil Defesa Civil)
-- **UC10** - Exportar dados agregados (relatórios CSV/PDF, perfil administrativo)
+- **UC09** - Exportar dados agregados (relatórios CSV/PDF, perfil administrativo)
 
 ---
 
@@ -327,10 +323,9 @@ Os principais fluxos do sistema são:
 | RF10 | O sistema deve aplicar TTL (Time To Live) automático de 45 minutos a cada relato, prorrogável a cada confirmação positiva. |
 | RF11 | O sistema deve integrar dados de fontes oficiais externas: sensores de nível dos rios Cachoeira, Águas Vermelhas e Cubatão; tábua de marés do Porto de São Francisco do Sul; alertas oficiais da Defesa Civil de Joinville. |
 | RF12 | O sistema deve enviar notificações web push ao usuário autenticado quando um novo alagamento for confirmado em raio de 2 km de sua localização. |
-| RF13 | O sistema deve disponibilizar um painel administrativo para perfis "Defesa Civil" com visualização consolidada e mapa de calor. |
-| RF14 | O sistema deve permitir exportação de relatórios (CSV e PDF) com dados agregados (perfil administrativo). |
-| RF15 | O sistema deve manter histórico permanente de todos os eventos para análise temporal e planejamento urbano. |
-| RF16 | O sistema deve permitir ao usuário consultar seus próprios relatos anteriores e acompanhar seu impacto (quantas confirmações recebeu). |
+| RF13 | O sistema deve permitir exportação de relatórios (CSV e PDF) com dados agregados (perfil administrativo). |
+| RF14 | O sistema deve manter histórico permanente de todos os eventos para análise temporal e planejamento urbano. |
+| RF15 | O sistema deve permitir ao usuário consultar seus próprios relatos anteriores e acompanhar seu impacto (quantas confirmações recebeu). |
 
 ---
 
@@ -393,9 +388,8 @@ Os principais fluxos do sistema são:
 - **RN05 -** Após 3 relatos de "Pista Limpa" distintos sobre a mesma área, o relato é automaticamente arquivado.
 - **RN06 -** O raio do círculo de alagamento no mapa é definido pelo nível: Moderado = 30m, Grave = 60m, Crítico = 100m.
 - **RN07 -** Relatos com fotografias inadequadas (imagens manifestamente fora do contexto) podem ser denunciadas e moderadas por administradores.
-- **RN08 -** Apenas usuários com perfil "Defesa Civil" têm acesso ao painel administrativo e à exportação de dados.
-- **RN09 -** Dados pessoais (e-mail, nome) não são expostos publicamente; apenas um identificador anônimo é associado aos relatos.
-- **RN10 -** Histórico de relatos é público em forma agregada (estatísticas), mas relatos individuais somente são visíveis ao seu autor após o arquivamento.
+- **RN08 -** Dados pessoais (e-mail, nome) não são expostos publicamente; apenas um identificador anônimo é associado aos relatos.
+- **RN09 -** Histórico de relatos é público em forma agregada (estatísticas), mas relatos individuais somente são visíveis ao seu autor após o arquivamento.
 
 ---
 
@@ -587,11 +581,6 @@ As telas mínimas previstas para o MVP são:
 - **Descrição:** Lista cronológica dos relatos do usuário com status (ativo, arquivado), número de confirmações recebidas.
 - **Ações principais do usuário:** Visualizar contribuições próprias.
 
-### 4.2.8 - Painel Administrativo (Defesa Civil)
-
-- **Descrição:** Dashboard com mapa de calor da cidade, gráfico de relatos por hora, lista filtrada de eventos ativos, botão de exportação CSV/PDF.
-- **Ações principais do usuário:** Monitorar, filtrar, exportar.
-
 ---
 
 ## 4.3 Fluxo de Interação do Usuário
@@ -668,7 +657,6 @@ Visão macro do sistema Alagou no ecossistema urbano de Joinville.
 **Atores:**
 
 - **Cidadão Colaborador:** acessa via navegador (mobile ou desktop) para reportar ou consultar alagamentos.
-- **Agente da Defesa Civil:** acessa via navegador desktop para consultar painel administrativo e exportar dados.
 - **Visitante Anônimo:** consulta o mapa público sem autenticação.
 
 **Sistemas Externos:**
@@ -689,7 +677,7 @@ Cidadão ──relato──► Alagou ──exibição──► Outros cidadãos
           Sensores / Marés / Defesa Civil
                       │
                       ▼
-              Painel para Defesa Civil
+              Painel
 ```
 
 *Figura 5.1 - Diagrama de Contexto (C4 Nível 1).*
@@ -989,7 +977,7 @@ As referências abaixo embasam as decisões técnicas, metodológicas e normativ
 
 ### Fontes de contexto local e demanda
 
-- Coordenadoria Municipal de Defesa Civil de Joinville - reunião exploratória (15/04/2026) e boletins públicos de eventos de alagamento (2024–2025).
+- Coordenadoria Municipal de Defesa Civil de Joinville - boletins públicos de eventos de alagamento (2024–2025).
 - Portal NDMais - câmeras públicas de monitoramento urbano de Joinville: https://ndmais.com.br.
 - Pesquisa primária do projeto: questionário online (18 respondentes) e entrevistas semiestruturadas (5 motoristas de aplicativo), conduzidos entre março e abril de 2026 (ver Apêndices B e C).
 
