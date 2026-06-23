@@ -1,6 +1,4 @@
-# RFC: Request for Comments - Projeto Alagou
-
-**Engenharia de Software – Católica SC**
+# RFC: Request for Comments - Projeto Alagou **Engenharia de Software - Católica SC**
 
 ---
 
@@ -19,7 +17,7 @@
   24/05/2026
 
 - **Versão:**
-  1.0
+  1.6
 
 ---
 
@@ -463,7 +461,7 @@ Esta seção apresenta **a visualização inicial do produto antes da implementa
 - Interações do usuário (toques, formulários, mapa)
 - Clareza da experiência ponta-a-ponta
 
-**Ferramenta de prototipação adotada:** Figma (alternativa: Excalidraw para fluxogramas e wireframes de baixa fidelidade).
+**Ferramenta de prototipação adotada:** Google Stitch
 
 ---
 
@@ -475,6 +473,14 @@ O fluxo de navegação macro do sistema é representado a seguir:
 
 *Figura 4.1 - Mapa de navegação macro entre telas.*
 
+<img width="277" height="545" alt="image" src="https://github.com/user-attachments/assets/69387347-0347-4205-946b-1fc98ad7619b" />
+<img width="273" height="546" alt="image" src="https://github.com/user-attachments/assets/542a754c-b5c8-4cf1-8219-dd4d267b8db5" />
+<img width="261" height="548" alt="image" src="https://github.com/user-attachments/assets/e20746c8-8160-4df3-880a-3b514bcd2c9b" />
+<img width="258" height="534" alt="image" src="https://github.com/user-attachments/assets/f3ea5be3-2ec2-4350-8fea-b3a8450df6f2" />
+<img width="259" height="533" alt="image" src="https://github.com/user-attachments/assets/64a71046-5fa5-4164-b27b-2e6d70169142" />
+<img width="284" height="553" alt="image" src="https://github.com/user-attachments/assets/308a2f47-372a-46c9-988c-d89d73ff5f6f" />
+
+*Figura 4.1 - Mockup das telas.*
 ---
 
 ## 4.2 Wireframes ou Mockups das Telas
