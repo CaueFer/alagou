@@ -417,46 +417,7 @@ Esta seção demonstra **como o sistema funciona** do ponto de vista da interaç
 
 O fluxo principal contempla a jornada completa de um cidadão colaborador, desde o acesso ao sistema até a confirmação de um relato:
 
-```
-[1] Usuário acessa alagou.com.br
-      │
-      ▼
-[2] Visualiza mapa público com áreas alagadas ativas
-      │
-      ▼
-[3] Decide reportar → Sistema exige autenticação
-      │
-      ▼
-[4] Login ou Cadastro
-      │
-      ▼
-[5] Sistema solicita permissão de GEOLOCALIZAÇÃO
-      │
-      ▼
-[6] Sistema solicita permissão de CÂMERA
-      │
-      ▼
-[7] Usuário captura FOTO obrigatória do alagamento
-      │
-      ▼
-[8] Usuário seleciona NÍVEL DA ÁGUA:
-      (a) Moderado   (b) Grave   (c) Crítico
-      │
-      ▼
-[9] Sistema valida coordenadas + foto + nível
-      │
-      ▼
-[10] Relato publicado e exibido como CÍRCULO no mapa
-      │
-      ▼
-[11] Notificação push enviada a usuários em 2 km
-      │
-      ▼
-[12] Outros usuários CONFIRMAM ou marcam PISTA LIMPA
-      │
-      ▼
-[13] TTL gerenciado automaticamente até arquivamento
-```
+<img width="737" height="863" alt="image" src="https://github.com/user-attachments/assets/26c94052-55db-4aa7-93db-f37411c31496" />
 
 *Figura 3.1 - Fluxograma do caminho principal de relato.*
 
@@ -510,30 +471,7 @@ Esta seção apresenta **a visualização inicial do produto antes da implementa
 
 O fluxo de navegação macro do sistema é representado a seguir:
 
-```
-┌─────────────────┐
-│   Tela Inicial  │
-│  (Mapa Público) │──────►  (Sem login: apenas visualização)
-└────────┬────────┘
-         │  "Reportar"
-         ▼
-┌─────────────────┐        ┌─────────────────┐
-│   Tela Login    │◄──────►│  Tela Cadastro  │
-└────────┬────────┘        └─────────────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Dashboard Logado│
-│   (Mapa + Menu) │
-└────────┬────────┘
-         │
-   ┌─────┴─────┬───────────┬──────────────┐
-   ▼           ▼           ▼              ▼
-┌──────┐  ┌─────────┐  ┌────────┐  ┌──────────────┐
-│Relato│  │Histórico│  │Detalhes│  │ Painel Admin │
-│ Novo │  │ Pessoal │  │ Relato │  │ (Defesa Civ.)│
-└──────┘  └─────────┘  └────────┘  └──────────────┘
-```
+<img width="866" height="557" alt="image" src="https://github.com/user-attachments/assets/41176116-b460-4d3b-a9fe-4c3ea531811e" />
 
 *Figura 4.1 - Mapa de navegação macro entre telas.*
 
@@ -669,16 +607,7 @@ Visão macro do sistema Alagou no ecossistema urbano de Joinville.
 
 **Fluxo de Valor:**
 
-```
-Cidadão ──relato──► Alagou ──exibição──► Outros cidadãos
-                      ▲
-                      │ dados oficiais
-                      │
-          Sensores / Marés / Defesa Civil
-                      │
-                      ▼
-              Painel
-```
+<img width="983" height="414" alt="image" src="https://github.com/user-attachments/assets/4504ffe6-1ea1-43cf-8d6e-78ce8a4fbe95" />
 
 *Figura 5.1 - Diagrama de Contexto (C4 Nível 1).*
 
@@ -712,45 +641,7 @@ Zoom dentro do container API Backend, mostrando sua organização interna em cam
 
 **Estrutura interna:**
 
-```
-┌─────────────────────────────────────────────────┐
-│                  API Backend                    │
-│                                                 │
-│  ┌───────────────────────────────────────────┐  │
-│  │   Camada de Apresentação (Controllers)    │  │
-│  │   - AuthController                        │  │
-│  │   - RelatosController                     │  │
-│  │   - MapaController                        │  │
-│  │   - AdminController                       │  │
-│  └────────────────────┬──────────────────────┘  │
-│                       │                         │
-│  ┌────────────────────▼──────────────────────┐  │
-│  │   Camada de Serviços (Lógica de Negócio)  │  │
-│  │   - AuthService                           │  │
-│  │   - RelatoService (cria, valida foto,     │  │
-│  │       calcula raio do círculo, TTL)       │  │
-│  │   - GeoService (consultas espaciais)      │  │
-│  │   - ValidacaoService (regra das 3         │  │
-│  │       confirmações Pista Limpa)           │  │
-│  │   - NotificacaoService                    │  │
-│  └────────────────────┬──────────────────────┘  │
-│                       │                         │
-│  ┌────────────────────▼──────────────────────┐  │
-│  │   Camada de Persistência (Repositories)   │  │
-│  │   - UserRepository                        │  │
-│  │   - RelatoRepository                      │  │
-│  │   - ConfirmacaoRepository                 │  │
-│  └────────────────────┬──────────────────────┘  │
-│                       │                         │
-│  ┌────────────────────▼──────────────────────┐  │
-│  │   Clientes Externos                       │  │
-│  │   - S3Client (upload de fotos)            │  │
-│  │   - RedisClient                           │  │
-│  │   - SensoresClient (worker)               │  │
-│  └───────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────┘
-```
-
+<img width="849" height="641" alt="image" src="https://github.com/user-attachments/assets/1c24265e-405d-4a71-a614-438ec6d78d90" />
 *Figura 5.2 - Componentes internos da API Backend (C4 Nível 3).*
 
 **Lógica de negócio destacada:**
@@ -962,39 +853,5 @@ As referências abaixo embasam as decisões técnicas, metodológicas e normativ
 - **OWASP Top 10 (2021)** - Open Worldwide Application Security Project. Disponível em: https://owasp.org/Top10/.
 - **WCAG 2.1** - Web Content Accessibility Guidelines, W3C. Disponível em: https://www.w3.org/TR/WCAG21/.
 - BROWN, Simon. **The C4 model for visualising software architecture.** Disponível em: https://c4model.com.
-
-### Documentação técnica das ferramentas
-
-- **Spring Boot** - https://spring.io/projects/spring-boot.
-- **Spring Security** - https://spring.io/projects/spring-security.
-- **PostgreSQL** - https://www.postgresql.org/docs/.
-- **PostGIS** - https://postgis.net/documentation/.
-- **React** - https://react.dev.
-- **Vite** - https://vitejs.dev.
-- **Mapbox GL JS** - https://docs.mapbox.com/mapbox-gl-js/; Leaflet - https://leafletjs.com; OpenStreetMap - https://www.openstreetmap.org.
-- **MDN - Web Push API / Service Workers** - https://developer.mozilla.org/docs/Web/API/Push_API.
-- **Docker** - https://docs.docker.com; **Prometheus** - https://prometheus.io/docs/; **Grafana** - https://grafana.com/docs/.
-
-### Fontes de contexto local e demanda
-
-- Coordenadoria Municipal de Defesa Civil de Joinville - boletins públicos de eventos de alagamento (2024–2025).
-- Portal NDMais - câmeras públicas de monitoramento urbano de Joinville: https://ndmais.com.br.
-- Pesquisa primária do projeto: questionário online (18 respondentes) e entrevistas semiestruturadas (5 motoristas de aplicativo), conduzidos entre março e abril de 2026 (ver Apêndices B e C).
-
-### Repositório do projeto
-
-- **GitHub:** https://github.com/CaueFer/alagou
-
----
-
-# 9. Apêndices
-
-Os apêndices reúnem materiais complementares que sustentam as evidências e decisões apresentadas ao longo do RFC.
-
-## Links do projeto
-
-- **Repositório de código:** https://github.com/CaueFer/alagou
-- **Protótipo navegável (Figma):** link a ser disponibilizado pela equipe na próxima etapa.
-- **Board de planejamento (Kanban):** hospedado no repositório (GitHub Projects).
 
 ---
