@@ -14,6 +14,10 @@
   --color-destructive-foreground: #ffffff;
 }
 
+:root {
+  --bottom-nav-clearance: calc(4.75rem + env(safe-area-inset-bottom));
+}
+
 html,
 body,
 #root {
