@@ -39,7 +39,8 @@ export function MapView({ alerts, loading, focusLocation, onSelectAlert, onCreat
         size="icon"
         onClick={onCreateReport}
         aria-label="Reportar alagamento"
-        className="absolute right-4 bottom-6 z-[500] h-14 w-14 rounded-full shadow-lg"
+        className="absolute right-4 z-[500] h-14 w-14 rounded-full shadow-lg"
+        style={{ bottom: "var(--bottom-nav-clearance)" }}
       >
         <Plus className="h-6 w-6" />
       </Button>

@@ -40,7 +40,7 @@ export function MapScreen() {
   }
 
   return (
-    <div className="h-dvh w-dvw">
+    <div className="h-full w-full">
       <MapView
         alerts={alerts}
         loading={status === "loading"}
