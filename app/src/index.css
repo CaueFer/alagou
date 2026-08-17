@@ -1,0 +1,268 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design tokens mirrored from design.md (Urban Resilience Framework).
+ * Keep this file and design.md in sync — design.md is the source of truth.
+ *
+ * Dark/"Night Mode" is documented in design.md as a future direction, not
+ * implemented for MVP — the app is light-only for now, so no .dark block.
+ */
+:root {
+  --surface: #f8f9ff;
+  --surface-dim: #cbdbf5;
+  --surface-bright: #f8f9ff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #eff4ff;
+  --surface-container: #e5eeff;
+  --surface-container-high: #dce9ff;
+  --surface-container-highest: #d3e4fe;
+  --on-surface: #0b1c30;
+  --on-surface-variant: #45464d;
+  --inverse-surface: #213145;
+  --inverse-on-surface: #eaf1ff;
+  --outline: #76777d;
+  --outline-variant: #c6c6cd;
+  --surface-tint: #565e74;
+  --primary: #000000;
+  --on-primary: #ffffff;
+  --primary-container: #131b2e;
+  --on-primary-container: #7c839b;
+  --inverse-primary: #bec6e0;
+  --secondary: #5c5f61;
+  --on-secondary: #ffffff;
+  --secondary-container: #e0e3e5;
+  --on-secondary-container: #626567;
+  --tertiary: #000000;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #0d1c2f;
+  --on-tertiary-container: #76859b;
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  --error-container: #ffdad6;
+  --on-error-container: #93000a;
+  --background: #f8f9ff;
+  --on-background: #0b1c30;
+  --foreground: var(--on-background);
+  --surface-variant: #d3e4fe;
+
+  --severity-moderate: #eab308;
+  --on-severity-moderate: #3d2e00;
+  --severity-moderate-container: #fef3c7;
+  --on-severity-moderate-container: #713f12;
+  --severity-severe: #f97316;
+  --on-severity-severe: #ffffff;
+  --severity-severe-container: #ffedd5;
+  --on-severity-severe-container: #7c2d12;
+  --severity-critical: #ba1a1a;
+  --on-severity-critical: #ffffff;
+  --severity-critical-container: #ffdad6;
+  --on-severity-critical-container: #93000a;
+  --status-safe: #16a34a;
+  --on-status-safe: #ffffff;
+  --status-safe-container: #dcfce7;
+  --on-status-safe-container: #14532d;
+
+  --alert-crowdsource: #2563eb;
+  --on-alert-crowdsource: #ffffff;
+  --alert-climatic: #0d9488;
+  --on-alert-climatic: #ffffff;
+  --alert-civil-defense: #ba1a1a;
+  --on-alert-civil-defense: #ffffff;
+
+  --live-indicator: #dc2626;
+  --offline-banner: #45464d;
+  --on-offline-banner: #ffffff;
+
+  /* shadcn/ui semantic tokens, mapped onto the Alagou palette above so
+     every shadcn component picks up brand colors automatically. */
+  --card: var(--surface-container-lowest);
+  --card-foreground: var(--on-surface);
+  --popover: var(--surface-container-lowest);
+  --popover-foreground: var(--on-surface);
+  --primary-foreground: var(--on-primary);
+  --secondary-foreground: var(--on-secondary-container);
+  --muted: var(--surface-container-low);
+  --muted-foreground: var(--on-surface-variant);
+  --accent: var(--surface-container-high);
+  --accent-foreground: var(--on-surface);
+  --destructive: var(--error);
+  --border: var(--outline-variant);
+  --input: var(--outline-variant);
+  --ring: var(--primary);
+
+  --radius: 0.25rem;
+}
+
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-surface: var(--surface);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-inverse-surface: var(--inverse-surface);
+  --color-inverse-on-surface: var(--inverse-on-surface);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-surface-tint: var(--surface-tint);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-inverse-primary: var(--inverse-primary);
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-tertiary: var(--tertiary);
+  --color-on-tertiary: var(--on-tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+  --color-error: var(--error);
+  --color-on-error: var(--on-error);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
+  --color-background: var(--background);
+  --color-on-background: var(--on-background);
+  --color-foreground: var(--foreground);
+  --color-surface-variant: var(--surface-variant);
+
+  --color-severity-moderate: var(--severity-moderate);
+  --color-on-severity-moderate: var(--on-severity-moderate);
+  --color-severity-moderate-container: var(--severity-moderate-container);
+  --color-on-severity-moderate-container: var(--on-severity-moderate-container);
+  --color-severity-severe: var(--severity-severe);
+  --color-on-severity-severe: var(--on-severity-severe);
+  --color-severity-severe-container: var(--severity-severe-container);
+  --color-on-severity-severe-container: var(--on-severity-severe-container);
+  --color-severity-critical: var(--severity-critical);
+  --color-on-severity-critical: var(--on-severity-critical);
+  --color-severity-critical-container: var(--severity-critical-container);
+  --color-on-severity-critical-container: var(--on-severity-critical-container);
+  --color-status-safe: var(--status-safe);
+  --color-on-status-safe: var(--on-status-safe);
+  --color-status-safe-container: var(--status-safe-container);
+  --color-on-status-safe-container: var(--on-status-safe-container);
+
+  --color-alert-crowdsource: var(--alert-crowdsource);
+  --color-on-alert-crowdsource: var(--on-alert-crowdsource);
+  --color-alert-climatic: var(--alert-climatic);
+  --color-on-alert-climatic: var(--on-alert-climatic);
+  --color-alert-civil-defense: var(--alert-civil-defense);
+  --color-on-alert-civil-defense: var(--on-alert-civil-defense);
+
+  --color-live-indicator: var(--live-indicator);
+  --color-offline-banner: var(--offline-banner);
+  --color-on-offline-banner: var(--on-offline-banner);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: 0.125rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+
+  --spacing-touch-target-min: 48px;
+  --spacing-bottom-nav-height: 64px;
+  --spacing-fab-size: 56px;
+  --spacing-map-marker-size: 32px;
+  --spacing-list-row-min-height: 64px;
+  --spacing-gutter: 16px;
+  --spacing-margin-mobile: 16px;
+  --spacing-margin-desktop: 48px;
+
+  --text-display: 36px;
+  --text-display--line-height: 44px;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 700;
+
+  --text-headline-lg: 28px;
+  --text-headline-lg--line-height: 36px;
+  --text-headline-lg--letter-spacing: -0.01em;
+  --text-headline-lg--font-weight: 600;
+
+  --text-headline-lg-mobile: 24px;
+  --text-headline-lg-mobile--line-height: 32px;
+  --text-headline-lg-mobile--font-weight: 600;
+
+  --text-title-md: 18px;
+  --text-title-md--line-height: 24px;
+  --text-title-md--font-weight: 600;
+
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+
+  --text-label-caps: 12px;
+  --text-label-caps--line-height: 16px;
+  --text-label-caps--letter-spacing: 0.05em;
+  --text-label-caps--font-weight: 700;
+
+  --text-numeric-data: 20px;
+  --text-numeric-data--line-height: 24px;
+  --text-numeric-data--font-weight: 700;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  body {
+    @apply bg-background text-on-background;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .tnum {
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .maplibregl-popup-content {
+    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+  }
+  .maplibregl-popup-tip {
+    @apply hidden!;
+  }
+  .maplibregl-ctrl-attrib {
+    @apply bg-background! text-muted-foreground! border-border! rounded-md! border! shadow-sm!;
+  }
+  .maplibregl-ctrl-attrib a {
+    @apply text-muted-foreground!;
+  }
+  .maplibregl-ctrl-attrib a:hover {
+    @apply text-foreground!;
+  }
+  .maplibregl-ctrl-attrib-button {
+    @apply bg-transparent! dark:invert;
+  }
+}
