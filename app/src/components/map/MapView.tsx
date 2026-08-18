@@ -18,10 +18,11 @@ interface MapViewProps {
   focusLocation: AlertLocation | null;
   userLocation: AlertLocation | null;
   onSelectAlert: (id: string) => void;
+  onSelectCamera: (camera: Camera) => void;
   onCreateReport: () => void;
 }
 
-export function MapView({ alerts, cameras, loading, focusLocation, userLocation, onSelectAlert, onCreateReport }: MapViewProps) {
+export function MapView({ alerts, cameras, loading, focusLocation, userLocation, onSelectAlert, onSelectCamera, onCreateReport }: MapViewProps) {
   return (
     <div className="relative h-full w-full">
       <BaseMap className="h-full w-full" center={userLocation ?? undefined}>
@@ -33,7 +34,7 @@ export function MapView({ alerts, cameras, loading, focusLocation, userLocation,
           <AlertMarker key={alert.id} alert={alert} onSelect={onSelectAlert} />
         ))}
         {cameras.map((camera) => (
-          <CameraMarker key={camera.id} camera={camera} />
+          <CameraMarker key={camera.id} camera={camera} onSelect={onSelectCamera} />
         ))}
       </BaseMap>
 

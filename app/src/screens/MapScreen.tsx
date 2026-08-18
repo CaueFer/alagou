@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { MapView } from "@/components/map/MapView";
 import { AlertDetailSheet } from "@/components/alert-detail/AlertDetailSheet";
 import { NewReportFlow } from "@/components/new-report/NewReportFlow";
+import { CameraPlayer } from "@/components/cameras/CameraPlayer";
 import { useAlerts } from "@/hooks/useAlerts";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -19,6 +20,7 @@ export function MapScreen() {
   const [isCreatingReport, setIsCreatingReport] = useState(false);
   const [focusLocation, setFocusLocation] = useState<AlertLocation | null>(null);
   const [cameras, setCameras] = useState<Camera[]>([]);
+  const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
 
   const fetchCameras = useCallback(async () => {
     try {
@@ -65,7 +67,14 @@ export function MapScreen() {
         focusLocation={focusLocation}
         userLocation={position}
         onSelectAlert={setSelectedAlertId}
+        onSelectCamera={setSelectedCamera}
         onCreateReport={() => setIsCreatingReport(true)}
+      />
+
+      <CameraPlayer
+        camera={selectedCamera}
+        open={selectedCamera !== null}
+        onClose={() => setSelectedCamera(null)}
       />
 
       <AlertDetailSheet
