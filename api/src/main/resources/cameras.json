@@ -2,56 +2,78 @@
   {
     "id": "centro-avenida-jk",
     "name": "Centro: Avenida JK",
-    "streamUrl": "https://connect-92.servicestream.io:8050/bcc84c859ab7.m3u8"
+    "streamUrl": "https://connect-92.servicestream.io:8050/bcc84c859ab7.m3u8",
+    "lat": -26.3040,
+    "lng": -48.8465
   },
   {
     "id": "centro-praca-da-bandeira",
     "name": "Centro: Praça da Bandeira",
-    "streamUrl": "https://connect-120.servicestream.io:8050/e7f57bcc97a2.m3u8"
+    "streamUrl": "https://connect-120.servicestream.io:8050/e7f57bcc97a2.m3u8",
+    "lat": -26.3013,
+    "lng": -48.8439
   },
   {
     "id": "centro-terminal-central",
     "name": "Centro: Terminal Central",
-    "streamUrl": "https://connect-579.servicestream.io:8050/af40aca3a9f5.m3u8"
+    "streamUrl": "https://connect-579.servicestream.io:8050/af40aca3a9f5.m3u8",
+    "lat": -26.3012,
+    "lng": -48.8445
   },
   {
     "id": "rio-cachoeira-prefeitura",
     "name": "Rio Cachoeira: Prefeitura",
-    "streamUrl": "https://connect-272.servicestream.io:8050/919bd92b8436.m3u8"
+    "streamUrl": "https://connect-272.servicestream.io:8050/919bd92b8436.m3u8",
+    "lat": -26.3009,
+    "lng": -48.8407
   },
   {
     "id": "rio-cachoeira-terminal-norte",
     "name": "Rio Cachoeira: Terminal Norte",
-    "streamUrl": "https://connect-92.servicestream.io:8050/85148626746f.m3u8"
+    "streamUrl": "https://connect-92.servicestream.io:8050/85148626746f.m3u8",
+    "lat": -26.2731,
+    "lng": -48.8507
   },
   {
     "id": "paranaguamirim-rua-6-de-janeiro",
     "name": "Paranaguamirim: Rua 6 de Janeiro",
-    "streamUrl": "https://connect-451.servicestream.io:8050/6272496274c1.m3u8"
+    "streamUrl": "https://connect-451.servicestream.io:8050/6272496274c1.m3u8",
+    "lat": -26.3513,
+    "lng": -48.7971
   },
   {
     "id": "rio-aguas-vermelhas-rua-minas-gerais",
     "name": "Rio Águas Vermelhas: Rua Minas Gerais",
-    "streamUrl": "https://connect-524.servicestream.io:8050/84b8b97bcdde.m3u8"
+    "streamUrl": "https://connect-524.servicestream.io:8050/84b8b97bcdde.m3u8",
+    "lat": -26.3325,
+    "lng": -48.8755
   },
   {
     "id": "rio-aguas-vermelhas-rua-leopoldo-beninca",
     "name": "Rio Águas Vermelhas: Rua Leopoldo Beninca",
-    "streamUrl": "https://connect-369.servicestream.io:8050/74117f48e66e.m3u8"
+    "streamUrl": "https://connect-369.servicestream.io:8050/74117f48e66e.m3u8",
+    "lat": -26.2921,
+    "lng": -48.8972
   },
   {
     "id": "rio-do-braco-jardim-sofia",
     "name": "Rio do Braço: Jardim Sofia",
-    "streamUrl": "https://connect-524.servicestream.io:8050/9980ca324f48.m3u8"
+    "streamUrl": "https://connect-524.servicestream.io:8050/9980ca324f48.m3u8",
+    "lat": -26.2385,
+    "lng": -48.8410
   },
   {
     "id": "rio-cubatao-ponte-quiriri",
     "name": "Rio Cubatão: Ponte Quiriri",
-    "streamUrl": "https://connect-524.servicestream.io:8050/d350ed83141b.m3u8"
+    "streamUrl": "https://connect-524.servicestream.io:8050/d350ed83141b.m3u8",
+    "lat": -26.1426,
+    "lng": -48.9960
   },
   {
     "id": "rio-cubatao-canal",
     "name": "Rio Cubatão: Canal",
-    "streamUrl": "https://connect-92.servicestream.io:8050/3ab8e7fd6566.m3u8"
+    "streamUrl": "https://connect-92.servicestream.io:8050/3ab8e7fd6566.m3u8",
+    "lat": -26.1960,
+    "lng": -48.8126
   }
 ]

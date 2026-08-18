@@ -2,15 +2,18 @@ import { Plus } from "lucide-react";
 import { BaseMap } from "@/components/map/BaseMap";
 import { AlertMarker } from "@/components/map/AlertMarker";
 import { AlertAreaCircle } from "@/components/map/AlertAreaCircle";
+import { CameraMarker } from "@/components/map/CameraMarker";
 import { RecenterMap } from "@/components/map/RecenterMap";
 import { AlertSummaryBar } from "@/components/map/AlertSummaryBar";
 import { SeverityLegend } from "@/components/map/SeverityLegend";
 import { WeatherButton } from "@/components/map/WeatherButton";
 import { Button } from "@/components/ui/button";
 import type { Alert, AlertLocation } from "@/types/alert";
+import type { Camera } from "@/types/camera";
 
 interface MapViewProps {
   alerts: Alert[];
+  cameras: Camera[];
   loading: boolean;
   focusLocation: AlertLocation | null;
   userLocation: AlertLocation | null;
@@ -18,7 +21,7 @@ interface MapViewProps {
   onCreateReport: () => void;
 }
 
-export function MapView({ alerts, loading, focusLocation, userLocation, onSelectAlert, onCreateReport }: MapViewProps) {
+export function MapView({ alerts, cameras, loading, focusLocation, userLocation, onSelectAlert, onCreateReport }: MapViewProps) {
   return (
     <div className="relative h-full w-full">
       <BaseMap className="h-full w-full" center={userLocation ?? undefined}>
@@ -28,6 +31,9 @@ export function MapView({ alerts, loading, focusLocation, userLocation, onSelect
         ))}
         {alerts.map((alert) => (
           <AlertMarker key={alert.id} alert={alert} onSelect={onSelectAlert} />
+        ))}
+        {cameras.map((camera) => (
+          <CameraMarker key={camera.id} camera={camera} />
         ))}
       </BaseMap>
 
