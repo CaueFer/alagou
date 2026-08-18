@@ -257,28 +257,36 @@ Map-centric, mobile-first, fluid grid.
 
 ### Bottom navigation (5 tabs — global)
 
-Present on every screen per `dev-docs/fluxos/index.md`. Fixed height `bottom-nav-height` (64px) plus safe-area inset, `z-index.bottom-nav`.
+Present on every screen per `dev-docs/fluxos/index.md`. Fixed height `bottom-nav-height` (64px) plus safe-area inset, `z-index.bottom-nav`. Max width `max-w-sm` for a compact, centered appearance.
 
 | Position | Tab | Icon concept | Badge |
 |---|---|---|---|
-| 1 | Mapa | pin/map | none |
-| 2 | Câmeras | camera | none |
-| 3 | Defesa Civil | shield or megaphone | numeric badge (Fluxo 3) |
-| 4 | Alertas | bell or list | none (MVP) |
-| 5 | Perfil | gear or user | none |
+| 1 | Mapa | hand-drawn map | none |
+| 2 | Câmeras | hand-drawn camera | none |
+| 3 | Defesa Civil | hand-drawn shield with check | none (MVP) |
+| 4 | Alertas | hand-drawn bell | none (MVP) |
+| 5 | Perfil | hand-drawn user | none |
 
-Active tab uses `primary` (black) for icon + label; inactive uses `on-surface-variant`. The Defesa Civil badge uses `severity-critical` red with white numeral, `label-caps`-scale digits, positioned top-right of the icon, minimum tap target still 48px including the badge overlap.
+Icons are custom SVG with hand-drawn aesthetic (`strokeWidth="1.8"`, rounded caps/joins) for a friendly, approachable feel. Active tab uses `primary` (black) for icon + label; inactive uses `on-surface-variant`. The Defesa Civil badge uses `severity-critical` red with white numeral, `label-caps`-scale digits, positioned top-right of the icon, minimum tap target still 48px including the badge overlap.
 
 ---
 
 ## Elevation & Depth
 
-Hierarchy via **tonal layers** and crisp low-contrast outlines, not heavy shadows — the background is frequently a busy, multi-colored map, and blurry shadows read as "muddy" against it.
+Hierarchy via **tonal layers**, crisp low-contrast outlines, and **glassmorphism** — the background is frequently a busy, multi-colored map, and blurry shadows read as "muddy" against it.
 
 1. **Level 0 — Floor**: the map surface (`MapView`).
-2. **Level 1 — Inlay**: search bars, map controls (zoom, locate-me), `CameraCard` in its resting state. 1px `outline-variant` border plus `elevation.level-1` (subtle 4px ambient shadow).
+2. **Level 1 — Inlay**: search bars, `CameraCard` in its resting state. 1px `outline-variant` border plus `elevation.level-1` (subtle 4px ambient shadow).
 3. **Level 2 — Active cards**: `AlertDetailSheet`, `AlertFeedCard` on interaction, expanded `CivilDefenseCard`. White (`surface-container-lowest`) background, `elevation.level-2` (12px shadow) to signal focus.
 4. **Level 3 — Alerts/modals**: `NewReportModal`, `CameraPlayer` fullscreen, `CivilDefenseDetail` when presented as overlay. Semi-transparent backdrop at `elevation.level-3-backdrop-color` with `elevation.level-3-backdrop-blur` (12px blur) to dim the map and force focus onto the critical message.
+
+### Glassmorphism (map controls and floating elements)
+
+Map controls and floating elements use glassmorphism for a modern, layered appearance over the map:
+
+* **Pattern**: `backdrop-blur-md bg-white/70 border border-white/40 rounded-2xl shadow-lg`
+* **Used by**: `AlertSummaryBar`, `SeverityLegend`, FAB, zoom controls
+* **Rationale**: Semi-transparent with blur creates depth without heavy shadows, keeping the map visible through controls while maintaining legibility.
 
 ---
 
@@ -314,13 +322,27 @@ Organized by flow. Every entry below is the design spec for a component name alr
 ### Fluxo 1 — Mapa Interativo
 
 **`MapView`**
-Full-screen map centered on Joinville (-26.3044, -48.8456) via MapCN. `z-index.map`. Hosts all `AlertMarker` instances and the `+` FAB.
+Full-screen map centered on Joinville (-26.3044, -48.8456) via MapCN. `z-index.map`. Hosts all `AlertMarker` instances and the `+` FAB. On load, requests geolocation permission; if granted, centers on user's position instead.
+
+**Map tiles**: CartoDB Positron (monochromatic light base) for a clean, modern look that makes severity-colored markers stand out. Attribution includes both OSM and CartoDB.
 
 **`AlertMarker`**
-Pin-shaped marker, colored by `severity-moderate` / `severity-severe` / `severity-critical`. Displays confirmation count as a small numeric badge on the pin (uses `numeric-data` at reduced scale). Tap target extends beyond the visual pin to the full 48px minimum. Lifecycle motion per Motion & Interaction above.
+Pin-shaped marker, colored by `severity-moderate` / `severity-severe` / `severity-critical`. Displays confirmation count as a small numeric badge on the pin (uses `numeric-data` at reduced scale). Includes animated pulse effect — a concentric circle expands and fades behind the pin using the severity color, communicating urgency. Tap target extends beyond the visual pin to the full 48px minimum. Lifecycle motion per Motion & Interaction above.
+
+**`AlertSummaryBar`**
+Floating bar at top-center of map, `elevation.level-3-backdrop-blur` with glassmorphism (`bg-white/70 backdrop-blur-md border border-white/40 rounded-2xl`). Shows count of active alerts ("3 alagamentos ativos") with mini severity dots. Empty state: "Nenhum alagamento ativo". `z-index.map-controls`.
+
+**`SeverityLegend`**
+Collapsible info button at top-left of map, glassmorphism style. Toggles a card showing the three severity levels with color dots and descriptions. `z-index.map-controls`.
+
+**`AlertAreaCircle`**
+Concentric gradient rings around each marker (10 rings with gradual opacity falloff), creating a soft glow effect that communicates the alert's affected area.
 
 **Floating action button ("+")**
-Bottom-right, thumb zone, `fab-size` (56px), `primary` background, `elevation.level-2`. Opens `NewReportModal`. `z-index.floating-fab`.
+Bottom-right, thumb zone, `fab-size` (56px), glassmorphism style (`bg-white/80 backdrop-blur-md border border-white/40`), `elevation.level-2`. Opens `NewReportModal`. `z-index.floating-fab`.
+
+**Zoom controls**
+Bottom-left, glassmorphism styled, positioned above bottom nav clearance. Custom styling with rounded corners and subtle shadow.
 
 **`AlertDetailSheet`**
 Bottom sheet (Level 2 elevation), triggered by tapping a marker. Content: reverse-geocoded location reference (never raw coordinates — see Accessibility & Content rules below), `RiskBadge`-style severity chip, TTL countdown ("Expira em 12 min", `numeric-data`), confirmation count. Two actions: **Confirmar** (`POST /api/alertas/{id}/confirmar`, resets TTL) and **Pista Limpa** (`POST /api/alertas/{id}/pista-limpa`; at 3 reports the marker fades out and the sheet auto-dismisses). Buttons disable with inline progress during the request (see Motion). Dismiss by tap-outside or drag-down.
