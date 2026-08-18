@@ -23,11 +23,14 @@ public class Usuario {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "google_id", nullable = false, unique = true)
+    @Column(name = "google_id", unique = true)
     private String googleId;
 
     @Column(name = "picture_url")
     private String pictureUrl;
+
+    @Column(name = "password_hash")
+    private String passwordHash;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
@@ -41,6 +44,18 @@ public class Usuario {
         this.googleId = googleId;
         this.pictureUrl = pictureUrl;
         this.createdAt = Instant.now();
+    }
+
+    public Usuario(String email, String name, String passwordHash) {
+        this.email = email;
+        this.name = name;
+        this.passwordHash = passwordHash;
+        this.createdAt = Instant.now();
+    }
+
+    public void linkGoogleAccount(String googleId, String pictureUrl) {
+        this.googleId = googleId;
+        this.pictureUrl = pictureUrl;
     }
 
     public Long getId() {
@@ -61,6 +76,10 @@ public class Usuario {
 
     public String getPictureUrl() {
         return pictureUrl;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
     public Instant getCreatedAt() {
