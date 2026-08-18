@@ -1,29 +1,30 @@
-import { useState } from "react"
-import { BottomNav, type NavTab } from "@/components/BottomNav"
-import { MapPage } from "@/pages/MapPage"
-import { CamerasPage } from "@/pages/CamerasPage"
-import { CivilDefensePage } from "@/pages/CivilDefensePage"
-import { AlertsPage } from "@/pages/AlertsPage"
-import { ProfilePage } from "@/pages/ProfilePage"
-
-const pagesByTab: Record<NavTab, React.ComponentType> = {
-  map: MapPage,
-  cameras: CamerasPage,
-  "civil-defense": CivilDefensePage,
-  alerts: AlertsPage,
-  profile: ProfilePage,
-}
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
+import { MobileViewport } from "@/components/layout/MobileViewport";
+import { AppLayout } from "@/layouts/AppLayout";
+import { MapScreen } from "@/screens/MapScreen";
+import { CamerasScreen } from "@/screens/CamerasScreen";
+import { CivilDefenseScreen } from "@/screens/CivilDefenseScreen";
+import { RecentAlertsScreen } from "@/screens/RecentAlertsScreen";
+import { ProfileScreen } from "@/screens/ProfileScreen";
 
 function App() {
-  const [activeTab, setActiveTab] = useState<NavTab>("map")
-  const ActivePage = pagesByTab[activeTab]
-
   return (
-    <>
-      <ActivePage />
-      <BottomNav active={activeTab} onChange={setActiveTab} />
-    </>
-  )
+    <MobileViewport>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route index element={<MapScreen />} />
+            <Route path="cameras" element={<CamerasScreen />} />
+            <Route path="defesa-civil" element={<CivilDefenseScreen />} />
+            <Route path="alertas" element={<RecentAlertsScreen />} />
+            <Route path="perfil" element={<ProfileScreen />} />
+          </Route>
+        </Routes>
+        <Toaster position="top-center" richColors />
+      </BrowserRouter>
+    </MobileViewport>
+  );
 }
 
-export default App
+export default App;

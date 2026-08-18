@@ -1,50 +1,52 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import type { AlertLocation } from "@/types/alert";
 
-export interface GeolocationState {
-  lat: number | null
-  lng: number | null
-  loading: boolean
-  error: string | null
+interface GeolocationState {
+  position: AlertLocation | null;
+  loading: boolean;
+  error: string | null;
 }
 
-export function useGeolocation() {
+export function useGeolocation(enabled: boolean) {
   const [state, setState] = useState<GeolocationState>({
-    lat: null,
-    lng: null,
-    loading: true,
+    position: null,
+    loading: enabled,
     error: null,
-  })
+  });
 
   useEffect(() => {
-    if (!("geolocation" in navigator)) {
-      setState({
-        lat: null,
-        lng: null,
-        loading: false,
-        error: "Geolocalização não suportada neste dispositivo.",
-      })
-      return
+    if (!enabled) {
+      return;
     }
 
+    if (!("geolocation" in navigator)) {
+      setState({
+        position: null,
+        loading: false,
+        error: "Geolocalização não suportada neste dispositivo. Toque no mapa para posicionar manualmente.",
+      });
+      return;
+    }
+
+    setState((prev) => ({ ...prev, loading: true, error: null }));
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setState({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
+          position: { lat: position.coords.latitude, lng: position.coords.longitude },
           loading: false,
           error: null,
-        })
+        });
       },
       () => {
         setState({
-          lat: null,
-          lng: null,
+          position: null,
           loading: false,
-          error: "Não foi possível obter sua localização.",
-        })
-      }
-    )
-  }, [])
+          error: "Não foi possível obter sua localização. Toque no mapa para posicionar manualmente.",
+        });
+      },
+      { enableHighAccuracy: true, timeout: 10_000 },
+    );
+  }, [enabled]);
 
-  return state
+  return state;
 }
