@@ -1,17 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-sans: Inter, system-ui, "Segoe UI", Roboto, sans-serif;
 
-  --color-background: #ffffff;
-  --color-foreground: #16171d;
-  --color-muted: #f4f4f5;
-  --color-muted-foreground: #71717a;
-  --color-border: #e4e4e7;
-  --color-primary: #2563eb;
+  --color-background: #f8f9ff;
+  --color-foreground: #0b1c30;
+  --color-muted: #eff4ff;
+  --color-muted-foreground: #45464d;
+  --color-border: #c6c6cd;
+  --color-primary: #000000;
   --color-primary-foreground: #ffffff;
-  --color-destructive: #dc2626;
+  --color-destructive: #ba1a1a;
   --color-destructive-foreground: #ffffff;
+  --color-surface-container: #e5eeff;
+  --color-outline-variant: #c6c6cd;
   --color-live-indicator: #dc2626;
   --color-offline-banner: #45464d;
   --color-offline-banner-foreground: #ffffff;
