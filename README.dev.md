@@ -51,5 +51,4 @@ Dica: use Docker para subir o banco de dados sem precisar instalar PostgreSQL/Po
 ## Documentação Adicional
 
 * [RFC do Projeto](README.RFC.md) — visão de produto, requisitos, arquitetura e planejamento
-* [api/CLAUDE.md](api/CLAUDE.md) — domínio, regras de negócio e endpoints do backend
 * [dev-docs/](dev-docs/) — especificação detalhada por módulo
