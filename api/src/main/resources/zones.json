@@ -1,0 +1,81 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "central",
+        "name": "Zona Central"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-48.8550, -26.2950],
+            [-48.8350, -26.2950],
+            [-48.8350, -26.3100],
+            [-48.8550, -26.3100],
+            [-48.8550, -26.2950]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "south",
+        "name": "Zona Sul"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-48.8600, -26.3100],
+            [-48.8300, -26.3100],
+            [-48.8300, -26.3400],
+            [-48.8600, -26.3400],
+            [-48.8600, -26.3100]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "east",
+        "name": "Zona Leste"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-48.8350, -26.2950],
+            [-48.8100, -26.2950],
+            [-48.8100, -26.3200],
+            [-48.8350, -26.3200],
+            [-48.8350, -26.2950]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "west",
+        "name": "Zona Oeste"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-48.8800, -26.3000],
+            [-48.8550, -26.3000],
+            [-48.8550, -26.3300],
+            [-48.8800, -26.3300],
+            [-48.8800, -26.3000]
+          ]
+        ]
+      }
+    }
+  ]
+}
