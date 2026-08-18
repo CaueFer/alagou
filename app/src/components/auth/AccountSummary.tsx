@@ -11,12 +11,19 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-border p-4">
       <div className="flex items-center gap-3">
-        <UserCircle className="h-10 w-10 text-primary" strokeWidth={1.5} />
+        {user.pictureUrl ? (
+          <img src={user.pictureUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
+        ) : (
+          <UserCircle className="h-10 w-10 text-primary" strokeWidth={1.5} />
+        )}
         <div className="flex flex-col">
-          <span className="text-sm font-medium">{user.email}</span>
-          <span className="text-xs text-muted-foreground">
-            Conta criada em {new Date(user.createdAt).toLocaleDateString("pt-BR")}
-          </span>
+          <span className="text-sm font-medium">{user.name ?? user.email}</span>
+          {user.name ? <span className="text-xs text-muted-foreground">{user.email}</span> : null}
+          {user.createdAt ? (
+            <span className="text-xs text-muted-foreground">
+              Conta criada em {new Date(user.createdAt).toLocaleDateString("pt-BR")}
+            </span>
+          ) : null}
         </div>
       </div>
       <Button variant="outline" onClick={onLogout}>

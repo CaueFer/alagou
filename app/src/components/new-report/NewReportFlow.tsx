@@ -90,6 +90,7 @@ export function NewReportFlow({ open, onOpenChange, onSubmit, onCreated }: NewRe
         {step === "location" && (
           <LocationStep
             location={form.location}
+            severity={form.severity}
             onChangeLocation={(location) => setForm((prev) => ({ ...prev, location }))}
           />
         )}

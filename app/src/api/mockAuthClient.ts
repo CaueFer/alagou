@@ -1,5 +1,6 @@
 import type { AuthCredentials, AuthSession, User } from "@/types/user";
 import type { AuthClient } from "@/api/authClient";
+import { API_BASE_URL } from "@/lib/constants";
 
 const SESSION_STORAGE_KEY = "alagou.auth.session";
 const SIMULATED_LATENCY_MS = 400;
@@ -8,6 +9,19 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface StoredUser extends User {
   password: string;
+}
+
+interface GoogleAuthResponse {
+  token: string;
+  userId: number;
+  email: string;
+  name: string;
+  pictureUrl: string;
+}
+
+interface ErrorResponse {
+  error: string;
+  detail: string;
 }
 
 function delay(ms: number) {
@@ -93,6 +107,32 @@ export const mockAuthClient: AuthClient = {
       throw new Error("E-mail ou senha incorretos.");
     }
     const session: AuthSession = { user: toUser(stored), token: generateToken() };
+    writeSession(session);
+    return session;
+  },
+
+  async loginWithGoogle(idToken) {
+    const response = await fetch(`${API_BASE_URL}/api/auth/google`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken }),
+    });
+
+    if (!response.ok) {
+      const body = (await response.json().catch(() => null)) as ErrorResponse | null;
+      throw new Error(body?.detail ?? "Não foi possível entrar com o Google.");
+    }
+
+    const data = (await response.json()) as GoogleAuthResponse;
+    const session: AuthSession = {
+      user: {
+        id: String(data.userId),
+        email: data.email,
+        name: data.name,
+        pictureUrl: data.pictureUrl,
+      },
+      token: data.token,
+    };
     writeSession(session);
     return session;
   },

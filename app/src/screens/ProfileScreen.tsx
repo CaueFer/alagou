@@ -3,7 +3,7 @@ import { AuthForm } from "@/components/auth/AuthForm";
 import { useAuth } from "@/hooks/useAuth";
 
 export function ProfileScreen() {
-  const { user, isAuthenticated, status, error, login, register, logout } = useAuth();
+  const { user, isAuthenticated, status, error, login, register, loginWithGoogle, logout } = useAuth();
 
   return (
     <div
@@ -21,7 +21,13 @@ export function ProfileScreen() {
         {isAuthenticated && user ? (
           <AccountSummary user={user} onLogout={logout} />
         ) : (
-          <AuthForm onLogin={login} onRegister={register} pending={status === "pending"} error={error} />
+          <AuthForm
+            onLogin={login}
+            onRegister={register}
+            onGoogleCredential={loginWithGoogle}
+            pending={status === "pending"}
+            error={error}
+          />
         )}
       </div>
 

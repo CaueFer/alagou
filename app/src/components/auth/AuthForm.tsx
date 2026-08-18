@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 import { cn } from "@/lib/utils";
 import type { AuthCredentials } from "@/types/user";
 
@@ -10,11 +11,12 @@ type Mode = "login" | "register";
 interface AuthFormProps {
   onLogin: (credentials: AuthCredentials) => Promise<void>;
   onRegister: (credentials: AuthCredentials) => Promise<void>;
+  onGoogleCredential: (idToken: string) => Promise<void>;
   pending: boolean;
   error: string | null;
 }
 
-export function AuthForm({ onLogin, onRegister, pending, error }: AuthFormProps) {
+export function AuthForm({ onLogin, onRegister, onGoogleCredential, pending, error }: AuthFormProps) {
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +26,10 @@ export function AuthForm({ onLogin, onRegister, pending, error }: AuthFormProps)
     const credentials: AuthCredentials = { email, password };
     const submit = mode === "login" ? onLogin : onRegister;
     await submit(credentials).catch(() => {});
+  }
+
+  function handleGoogleCredential(idToken: string) {
+    onGoogleCredential(idToken).catch(() => {});
   }
 
   return (
@@ -90,6 +96,14 @@ export function AuthForm({ onLogin, onRegister, pending, error }: AuthFormProps)
           {mode === "login" ? "Entrar" : "Criar conta"}
         </Button>
       </form>
+
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-border" />
+        <span className="text-xs text-muted-foreground">ou</span>
+        <div className="h-px flex-1 bg-border" />
+      </div>
+
+      <GoogleSignInButton onCredential={handleGoogleCredential} disabled={pending} />
 
       <p className="text-xs text-muted-foreground">
         Login é opcional: você pode ver o mapa e criar relatos sem uma conta. Entrar permite acompanhar seus relatos.
