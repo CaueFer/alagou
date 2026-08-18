@@ -15,6 +15,9 @@ export function createAlertIcon(severity: Severity, confirmationCount: number): 
     className: "",
     html: `
       <div class="relative" style="width:${PIN_SIZE}px;height:${PIN_SIZE}px">
+        <svg class="absolute inset-0" width="${PIN_SIZE}" height="${PIN_SIZE}" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="18" r="8" fill="${color}" opacity="0.6" style="animation: alert-pulse 2s ease-out infinite; transform-origin: center;"/>
+        </svg>
         <svg width="${PIN_SIZE}" height="${PIN_SIZE}" viewBox="0 0 40 40" fill="none">
           <path d="M20 2C11.16 2 4 9.16 4 18c0 11 16 20 16 20s16-9 16-20c0-8.84-7.16-16-16-16z" fill="${color}" stroke="white" stroke-width="2"/>
           <circle cx="20" cy="18" r="6" fill="white"/>
