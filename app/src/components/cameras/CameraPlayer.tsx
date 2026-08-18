@@ -22,9 +22,10 @@ interface CameraPlayerProps {
   camera: Camera | null;
   open: boolean;
   onClose: () => void;
+  onError?: () => void;
 }
 
-export function CameraPlayer({ camera, open, onClose }: CameraPlayerProps) {
+export function CameraPlayer({ camera, open, onClose, onError }: CameraPlayerProps) {
   const { videoRef, status, retry } = useHlsPlayer(camera?.streamUrl ?? "", open && camera !== null);
 
   useEffect(() => {
@@ -46,6 +47,12 @@ export function CameraPlayer({ camera, open, onClose }: CameraPlayerProps) {
     }
     return () => unlockOrientation();
   }, [open]);
+
+  useEffect(() => {
+    if (status === "error" && onError) {
+      onError();
+    }
+  }, [status, onError]);
 
   if (!open || !camera) {
     return null;

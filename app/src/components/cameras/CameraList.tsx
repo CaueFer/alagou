@@ -7,10 +7,11 @@ interface CameraListProps {
   cameras: Camera[];
   locked: boolean;
   loading: boolean;
+  unavailableIds: Set<string>;
   onSelect: (camera: Camera) => void;
 }
 
-export function CameraList({ cameras, locked, loading, onSelect }: CameraListProps) {
+export function CameraList({ cameras, locked, loading, unavailableIds, onSelect }: CameraListProps) {
   if (loading) {
     return (
       <div className="flex flex-col gap-3 p-4">
@@ -24,7 +25,13 @@ export function CameraList({ cameras, locked, loading, onSelect }: CameraListPro
   return (
     <div className="flex flex-col gap-3 p-4">
       {cameras.map((camera) => (
-        <CameraCard key={camera.id} camera={camera} locked={locked} onSelect={onSelect} />
+        <CameraCard
+          key={camera.id}
+          camera={camera}
+          locked={locked}
+          unavailable={unavailableIds.has(camera.id)}
+          onSelect={onSelect}
+        />
       ))}
     </div>
   );
