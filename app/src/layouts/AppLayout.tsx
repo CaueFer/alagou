@@ -3,7 +3,7 @@ import { BottomNav } from "@/components/navigation/BottomNav";
 
 export function AppLayout() {
   return (
-    <div className="relative h-dvh w-dvw overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden">
       <Outlet />
       <BottomNav />
     </div>
