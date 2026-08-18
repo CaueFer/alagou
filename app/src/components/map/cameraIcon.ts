@@ -6,7 +6,7 @@ export function createCameraIcon(): L.DivIcon {
   return L.divIcon({
     className: "",
     html: `
-      <div style="width:${ICON_SIZE}px;height:${ICON_SIZE}px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.25))">
+      <div style="width:${ICON_SIZE}px;height:${ICON_SIZE}px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.25));cursor:pointer">
         <svg width="${ICON_SIZE}" height="${ICON_SIZE}" viewBox="0 0 32 32" fill="none">
           <rect x="4" y="10" width="18" height="14" rx="3" fill="#1e293b" stroke="white" stroke-width="1.5"/>
           <path d="M22 14l6-3v12l-6-3z" fill="#1e293b" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>

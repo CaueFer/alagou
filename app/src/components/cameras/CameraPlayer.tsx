@@ -59,7 +59,7 @@ export function CameraPlayer({ camera, open, onClose, onError }: CameraPlayerPro
   }
 
   return (
-    <div className="fixed inset-0 z-[700] flex flex-col bg-black">
+    <div className="fixed inset-0 z-[1100] flex flex-col bg-black">
       <video ref={videoRef} className="h-full w-full object-contain" playsInline controls={status === "live"} />
 
       {status === "connecting" && (
