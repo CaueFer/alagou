@@ -22,6 +22,10 @@ public class Alert {
     @Column(nullable = false)
     private String username;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Severity severity;
+
     @Column(nullable = false, columnDefinition = "geometry(Point,4326)")
     private Point location;
 
@@ -41,9 +45,10 @@ public class Alert {
 
     protected Alert() {}
 
-    public Alert(AlertType type, String username, Point location, List<String> photos, Instant expirationDate, Instant creationDate) {
+    public Alert(AlertType type, String username, Severity severity, Point location, List<String> photos, Instant expirationDate, Instant creationDate) {
         this.type = type;
         this.username = username;
+        this.severity = severity;
         this.location = location;
         this.photos = photos != null ? photos : new ArrayList<>();
         this.expirationDate = expirationDate;
@@ -53,6 +58,7 @@ public class Alert {
     public Long getId() { return id; }
     public AlertType getType() { return type; }
     public String getUsername() { return username; }
+    public Severity getSeverity() { return severity; }
     public Point getLocation() { return location; }
     public List<String> getPhotos() { return photos; }
     public Instant getExpirationDate() { return expirationDate; }

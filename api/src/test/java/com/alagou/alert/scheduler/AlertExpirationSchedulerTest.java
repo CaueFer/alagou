@@ -33,7 +33,7 @@ class AlertExpirationSchedulerTest {
 
     @Test
     void deactivatesAlertsPastExpiration() {
-        Alert overdueAlert = new Alert(null, "citizen1", null, null, Instant.now().minusSeconds(60), Instant.now().minusSeconds(3600));
+        Alert overdueAlert = new Alert(null, "citizen1", null, null, null, Instant.now().minusSeconds(60), Instant.now().minusSeconds(3600));
         when(repository.findByActiveTrueAndExpirationDateBefore(any(Instant.class)))
                 .thenReturn(List.of(overdueAlert));
 
