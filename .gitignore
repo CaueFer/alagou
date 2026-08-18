@@ -5,3 +5,5 @@ CLAUDE.md
 api/target/
 todo.md
 .gitignore
+app/node_modules/
+app/dist/
