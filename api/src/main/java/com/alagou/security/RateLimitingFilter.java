@@ -26,9 +26,11 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     private static final int TOO_MANY_REQUESTS = 429;
 
     private static final List<RateLimitRule> RULES = List.of(
-            new RateLimitRule("POST", "/api/alerts", 5),
-            new RateLimitRule("POST", "/api/alerts/*/confirmations", 20),
-            new RateLimitRule("POST", "/api/alerts/*/clear-reports", 10)
+            new RateLimitRule("POST", "/api/alerts", 5, Duration.ofHours(1)),
+            new RateLimitRule("POST", "/api/alerts/*/confirmations", 20, Duration.ofHours(1)),
+            new RateLimitRule("POST", "/api/alerts/*/clear-reports", 10, Duration.ofHours(1)),
+            new RateLimitRule("POST", "/api/auth/register", 5, Duration.ofHours(1)),
+            new RateLimitRule("POST", "/api/auth/login", 10, Duration.ofMinutes(15))
     );
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
@@ -51,7 +53,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             return;
         }
 
-        Bucket bucket = buckets.computeIfAbsent(rule.bucketKey(resolveIdentity(request)), key -> newBucket(rule.limitPerHour()));
+        Bucket bucket = buckets.computeIfAbsent(rule.bucketKey(resolveIdentity(request)), key -> newBucket(rule.limit(), rule.window()));
         if (bucket.tryConsume(1)) {
             filterChain.doFilter(request, response);
         } else {
@@ -75,9 +77,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         return request.getRemoteAddr();
     }
 
-    private Bucket newBucket(int limitPerHour) {
-        Bandwidth limit = Bandwidth.classic(limitPerHour, Refill.intervally(limitPerHour, Duration.ofHours(1)));
-        return Bucket.builder().addLimit(limit).build();
+    private Bucket newBucket(int limit, Duration window) {
+        Bandwidth bandwidth = Bandwidth.classic(limit, Refill.intervally(limit, window));
+        return Bucket.builder().addLimit(bandwidth).build();
     }
 
     private void respondTooManyRequests(HttpServletResponse response) throws IOException {
@@ -88,7 +90,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                 new ErrorResponse("Too many requests", "Limite de requisições excedido. Tente novamente mais tarde.")));
     }
 
-    private record RateLimitRule(String method, String pathPattern, int limitPerHour) {
+    private record RateLimitRule(String method, String pathPattern, int limit, Duration window) {
         String bucketKey(String identity) {
             return method + ":" + pathPattern + ":" + identity;
         }
