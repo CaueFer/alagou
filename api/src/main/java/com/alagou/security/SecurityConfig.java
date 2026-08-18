@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(restAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/cameras").permitAll()
                         .requestMatchers("/uploads/photos/**").permitAll()
                         .anyRequest().authenticated()
                 )
