@@ -2,8 +2,11 @@ package com.alagou.alert.service;
 
 import com.alagou.alert.Alert;
 import com.alagou.alert.AlertType;
+import com.alagou.alert.Severity;
 import com.alagou.alert.dao.AlertRepository;
 import com.alagou.alert.dto.AlertResponse;
+import com.alagou.clearreport.dao.ClearReportRepository;
+import com.alagou.confirmation.dao.ConfirmationRepository;
 import com.alagou.exception.BusinessRuleException;
 import com.alagou.exception.ResourceNotFoundException;
 import org.locationtech.jts.geom.Coordinate;
@@ -26,13 +29,22 @@ public class AlertService {
 
     private final AlertRepository repository;
     private final PhotoStorageService photoStorage;
+    private final ConfirmationRepository confirmationRepository;
+    private final ClearReportRepository clearReportRepository;
 
-    public AlertService(AlertRepository repository, PhotoStorageService photoStorage) {
+    public AlertService(
+            AlertRepository repository,
+            PhotoStorageService photoStorage,
+            ConfirmationRepository confirmationRepository,
+            ClearReportRepository clearReportRepository
+    ) {
         this.repository = repository;
         this.photoStorage = photoStorage;
+        this.confirmationRepository = confirmationRepository;
+        this.clearReportRepository = clearReportRepository;
     }
 
-    public AlertResponse create(AlertType type, String username, double lat, double lng, List<MultipartFile> photos) {
+    public AlertResponse create(AlertType type, String username, Severity severity, double lat, double lng, List<MultipartFile> photos) {
         if (repository.existsActiveByUsernameWithinRadius(username, lat, lng, DUPLICATE_RADIUS_METERS)) {
             throw new BusinessRuleException("User already has an active alert within " + (int) DUPLICATE_RADIUS_METERS + " meters of this location");
         }
@@ -40,7 +52,7 @@ public class AlertService {
         Instant now = Instant.now();
         List<String> stored = photoStorage.store(photos);
         Point location = GEOMETRY_FACTORY.createPoint(new Coordinate(lng, lat));
-        Alert alert = new Alert(type, username, location, stored, now.plus(3, ChronoUnit.HOURS), now);
+        Alert alert = new Alert(type, username, severity, location, stored, now.plus(3, ChronoUnit.HOURS), now);
         return toResponse(repository.save(alert));
     }
 
@@ -72,6 +84,9 @@ public class AlertService {
                 .toList();
         double lat = alert.getLocation().getY();
         double lng = alert.getLocation().getX();
-        return new AlertResponse(alert.getId(), alert.getType(), alert.getUsername(), lat, lng, urls, alert.getExpirationDate(), alert.getCreationDate());
+        long confirmationCount = confirmationRepository.countByAlertId(alert.getId());
+        long clearReportCount = clearReportRepository.countByAlertId(alert.getId());
+        return new AlertResponse(alert.getId(), alert.getType(), alert.getUsername(), alert.getSeverity(), lat, lng, urls,
+                confirmationCount, clearReportCount, alert.getExpirationDate(), alert.getCreationDate());
     }
 }
