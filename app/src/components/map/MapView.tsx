@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import { BaseMap } from "@/components/map/BaseMap";
 import { AlertMarker } from "@/components/map/AlertMarker";
+import { AlertAreaCircle } from "@/components/map/AlertAreaCircle";
 import { RecenterMap } from "@/components/map/RecenterMap";
 import { Button } from "@/components/ui/button";
 import type { Alert, AlertLocation } from "@/types/alert";
@@ -18,6 +19,9 @@ export function MapView({ alerts, loading, focusLocation, onSelectAlert, onCreat
     <div className="relative h-full w-full">
       <BaseMap className="h-full w-full">
         {focusLocation && <RecenterMap location={focusLocation} zoom={16} />}
+        {alerts.map((alert) => (
+          <AlertAreaCircle key={`area-${alert.id}`} alert={alert} />
+        ))}
         {alerts.map((alert) => (
           <AlertMarker key={alert.id} alert={alert} onSelect={onSelectAlert} />
         ))}

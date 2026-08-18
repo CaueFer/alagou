@@ -4,6 +4,7 @@ interface SeverityInfo {
   label: string;
   description: string;
   markerColor: string;
+  areaRadiusMeters: number;
 }
 
 const SEVERITY_INFO: Record<Severity, SeverityInfo> = {
@@ -11,16 +12,19 @@ const SEVERITY_INFO: Record<Severity, SeverityInfo> = {
     label: "Moderado",
     description: "Trânsito lento, cuidado ao passar",
     markerColor: "#eab308",
+    areaRadiusMeters: 160,
   },
   SEVERE: {
     label: "Grave",
     description: "Via parcialmente bloqueada",
     markerColor: "#f97316",
+    areaRadiusMeters: 240,
   },
   CRITICAL: {
     label: "Crítico",
     description: "Via totalmente bloqueada ou risco de vida",
     markerColor: "#dc2626",
+    areaRadiusMeters: 320,
   },
 };
 
