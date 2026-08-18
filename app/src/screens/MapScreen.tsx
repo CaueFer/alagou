@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { MapView } from "@/components/map/MapView";
 import { AlertDetailSheet } from "@/components/alert-detail/AlertDetailSheet";
@@ -6,8 +6,9 @@ import { NewReportFlow } from "@/components/new-report/NewReportFlow";
 import { useAlerts } from "@/hooks/useAlerts";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { alertClient } from "@/api";
+import { alertClient, cameraClient } from "@/api";
 import type { AlertLocation } from "@/types/alert";
+import type { Camera } from "@/types/camera";
 
 export function MapScreen() {
   const { alerts, status, updateAlert, removeAlert, addAlert } = useAlerts();
@@ -17,6 +18,20 @@ export function MapScreen() {
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [isCreatingReport, setIsCreatingReport] = useState(false);
   const [focusLocation, setFocusLocation] = useState<AlertLocation | null>(null);
+  const [cameras, setCameras] = useState<Camera[]>([]);
+
+  const fetchCameras = useCallback(async () => {
+    try {
+      const data = await cameraClient.list();
+      setCameras(data);
+    } catch {
+      toast.error("Falha ao carregar cameras.");
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCameras();
+  }, [fetchCameras]);
 
   useEffect(() => {
     if (status === "error") {
@@ -45,6 +60,7 @@ export function MapScreen() {
     <div className="h-full w-full">
       <MapView
         alerts={alerts}
+        cameras={cameras}
         loading={status === "loading"}
         focusLocation={focusLocation}
         userLocation={position}
