@@ -43,4 +43,27 @@ class WorldTidesClientTest {
         assertThat(extremes.get(0).type()).isEqualTo(TideType.HIGH);
         assertThat(extremes.get(1).type()).isEqualTo(TideType.LOW);
     }
+
+    @Test
+    void secondCallWithinCacheWindowDoesNotTriggerNewRequest() {
+        RestClient.Builder builder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+        WorldTidesClient client = new WorldTidesClient(builder, BASE_URL, "test-key", -26.2439, -48.6386);
+
+        String body = """
+                {"status":200,"extremes":[
+                  {"dt":1755518400,"date":"2026-08-18T12:00:00+000","height":1.42,"type":"High"}
+                ]}
+                """;
+
+        server.expect(method(HttpMethod.GET))
+                .andExpect(requestTo(BASE_URL + "?extremes=&days=7&lat=-26.2439&lon=-48.6386&key=test-key"))
+                .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
+
+        List<TideExtreme> first = client.fetchExtremes(7);
+        List<TideExtreme> second = client.fetchExtremes(7);
+
+        assertThat(second).isEqualTo(first);
+        server.verify();
+    }
 }

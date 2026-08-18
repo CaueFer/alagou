@@ -1,6 +1,7 @@
 package com.alagou.alert.controller;
 
 import com.alagou.alert.AlertType;
+import com.alagou.alert.Severity;
 import com.alagou.alert.dto.AlertResponse;
 import com.alagou.alert.service.AlertService;
 import com.alagou.clearreport.dto.ClearReportResponse;
@@ -44,10 +45,11 @@ public class AlertController {
     public ResponseEntity<AlertResponse> create(
             @RequestParam AlertType type,
             @RequestParam String username,
+            @RequestParam Severity severity,
             @RequestParam double lat,
             @RequestParam double lng,
             @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
-        return ResponseEntity.status(201).body(service.create(type, username, lat, lng, photos));
+        return ResponseEntity.status(201).body(service.create(type, username, severity, lat, lng, photos));
     }
 
     @PostMapping("/{id}/confirmations")

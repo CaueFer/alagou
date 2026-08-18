@@ -1,7 +1,10 @@
 package com.alagou.alert.service;
 
 import com.alagou.alert.AlertType;
+import com.alagou.alert.Severity;
 import com.alagou.alert.dao.AlertRepository;
+import com.alagou.clearreport.dao.ClearReportRepository;
+import com.alagou.confirmation.dao.ConfirmationRepository;
 import com.alagou.exception.BusinessRuleException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,11 +29,17 @@ class AlertServiceTest {
     @Mock
     private PhotoStorageService photoStorage;
 
+    @Mock
+    private ConfirmationRepository confirmationRepository;
+
+    @Mock
+    private ClearReportRepository clearReportRepository;
+
     private AlertService service;
 
     @BeforeEach
     void setUp() {
-        service = new AlertService(repository, photoStorage);
+        service = new AlertService(repository, photoStorage, confirmationRepository, clearReportRepository);
     }
 
     @Test
@@ -38,7 +47,7 @@ class AlertServiceTest {
         when(repository.existsActiveByUsernameWithinRadius(anyString(), anyDouble(), anyDouble(), anyDouble()))
                 .thenReturn(true);
 
-        assertThatThrownBy(() -> service.create(AlertType.USER, "citizen1", -26.3, -48.8, List.of()))
+        assertThatThrownBy(() -> service.create(AlertType.USER, "citizen1", Severity.MODERATE, -26.3, -48.8, List.of()))
                 .isInstanceOf(BusinessRuleException.class);
 
         verifyNoInteractions(photoStorage);
