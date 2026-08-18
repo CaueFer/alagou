@@ -4,6 +4,7 @@ import com.alagou.alert.Alert;
 import com.alagou.alert.AlertType;
 import com.alagou.alert.dao.AlertRepository;
 import com.alagou.alert.dto.AlertResponse;
+import com.alagou.exception.BusinessRuleException;
 import com.alagou.exception.ResourceNotFoundException;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -21,6 +22,7 @@ import java.util.List;
 public class AlertService {
 
     private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(), 4326);
+    private static final double DUPLICATE_RADIUS_METERS = 100;
 
     private final AlertRepository repository;
     private final PhotoStorageService photoStorage;
@@ -31,6 +33,10 @@ public class AlertService {
     }
 
     public AlertResponse create(AlertType type, String username, double lat, double lng, List<MultipartFile> photos) {
+        if (repository.existsActiveByUsernameWithinRadius(username, lat, lng, DUPLICATE_RADIUS_METERS)) {
+            throw new BusinessRuleException("User already has an active alert within " + (int) DUPLICATE_RADIUS_METERS + " meters of this location");
+        }
+
         Instant now = Instant.now();
         List<String> stored = photoStorage.store(photos);
         Point location = GEOMETRY_FACTORY.createPoint(new Coordinate(lng, lat));
@@ -49,7 +55,7 @@ public class AlertService {
         } else if (expired) {
             results = repository.findByExpirationDateBefore(Instant.now(), sort);
         } else {
-            results = repository.findByExpirationDateGreaterThanEqual(Instant.now(), sort);
+            results = repository.findByActiveTrueAndExpirationDateGreaterThanEqual(Instant.now(), sort);
         }
         return results.stream().map(this::toResponse).toList();
     }

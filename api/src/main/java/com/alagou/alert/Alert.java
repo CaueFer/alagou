@@ -36,6 +36,9 @@ public class Alert {
     @Column(nullable = false)
     private Instant creationDate;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     protected Alert() {}
 
     public Alert(AlertType type, String username, Point location, List<String> photos, Instant expirationDate, Instant creationDate) {
@@ -54,4 +57,13 @@ public class Alert {
     public List<String> getPhotos() { return photos; }
     public Instant getExpirationDate() { return expirationDate; }
     public Instant getCreationDate() { return creationDate; }
+    public boolean isActive() { return active; }
+
+    public void renewExpiration(Instant expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public void deactivate() {
+        this.active = false;
+    }
 }

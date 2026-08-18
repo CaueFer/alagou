@@ -1,5 +1,6 @@
 package com.alagou.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,15 +21,18 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final ObjectMapper objectMapper;
     private final List<String> allowedOrigins;
 
     public SecurityConfig(
             JwtTokenProvider jwtTokenProvider,
             RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+            ObjectMapper objectMapper,
             @Value("${app.security.cors.allowed-origins}") List<String> allowedOrigins
     ) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+        this.objectMapper = objectMapper;
         this.allowedOrigins = allowedOrigins;
     }
 
@@ -44,7 +48,8 @@ public class SecurityConfig {
                         .requestMatchers("/uploads/photos/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new RateLimitingFilter(objectMapper), JwtAuthenticationFilter.class);
 
         return http.build();
     }
