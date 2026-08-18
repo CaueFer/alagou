@@ -1,7 +1,9 @@
 export interface User {
   id: string;
   email: string;
-  createdAt: string;
+  name?: string;
+  pictureUrl?: string;
+  createdAt?: string;
 }
 
 export interface AuthCredentials {

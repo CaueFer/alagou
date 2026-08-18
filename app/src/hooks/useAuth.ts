@@ -37,6 +37,20 @@ export function useAuth() {
     }
   }, []);
 
+  const loginWithGoogle = useCallback(async (idToken: string) => {
+    setStatus("pending");
+    setError(null);
+    try {
+      const session = await authClient.loginWithGoogle(idToken);
+      setUser(session.user);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Não foi possível entrar com o Google.");
+      throw err;
+    } finally {
+      setStatus("idle");
+    }
+  }, []);
+
   const logout = useCallback(async () => {
     await authClient.logout();
     setUser(null);
@@ -49,6 +63,7 @@ export function useAuth() {
     error,
     login,
     register,
+    loginWithGoogle,
     logout,
   } as const;
 }
