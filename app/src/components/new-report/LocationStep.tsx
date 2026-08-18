@@ -3,19 +3,23 @@ import L from "leaflet";
 import { Marker } from "react-leaflet";
 import { BaseMap } from "@/components/map/BaseMap";
 import { RecenterMap } from "@/components/map/RecenterMap";
+import { AreaGradientCircle } from "@/components/map/AreaGradientCircle";
 import { createDraggablePinIcon } from "@/components/map/alertIcon";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { JOINVILLE_CENTER } from "@/lib/constants";
-import type { AlertLocation } from "@/types/alert";
+import { getSeverityInfo } from "@/lib/severity";
+import type { AlertLocation, Severity } from "@/types/alert";
 
 interface LocationStepProps {
   location: AlertLocation | null;
+  severity: Severity | null;
   onChangeLocation: (location: AlertLocation) => void;
 }
 
 const pinIcon = createDraggablePinIcon();
+const DEFAULT_PREVIEW_SEVERITY: Severity = "MODERATE";
 
-export function LocationStep({ location, onChangeLocation }: LocationStepProps) {
+export function LocationStep({ location, severity, onChangeLocation }: LocationStepProps) {
   const { position, loading, error } = useGeolocation(location === null);
 
   useEffect(() => {
@@ -25,6 +29,7 @@ export function LocationStep({ location, onChangeLocation }: LocationStepProps) 
   }, [position, location, onChangeLocation]);
 
   const pin = location ?? position;
+  const previewSeverity = getSeverityInfo(severity ?? DEFAULT_PREVIEW_SEVERITY);
 
   return (
     <div className="flex h-full flex-col">
@@ -33,7 +38,7 @@ export function LocationStep({ location, onChangeLocation }: LocationStepProps) 
         {!loading && error && error}
         {!loading && !error && "Arraste o marcador para ajustar o ponto exato do alagamento."}
       </p>
-      <div className="h-72 w-full overflow-hidden">
+      <div className="h-72 w-full overflow-hidden" data-vaul-no-drag>
         <BaseMap
           center={pin ?? JOINVILLE_CENTER}
           zoom={17}
@@ -41,6 +46,13 @@ export function LocationStep({ location, onChangeLocation }: LocationStepProps) 
           onMapClick={onChangeLocation}
         >
           {pin && <RecenterMap location={pin} />}
+          {pin && (
+            <AreaGradientCircle
+              center={pin}
+              color={previewSeverity.markerColor}
+              radiusMeters={previewSeverity.areaRadiusMeters}
+            />
+          )}
           {pin && (
             <Marker
               position={[pin.lat, pin.lng]}
