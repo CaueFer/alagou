@@ -12,6 +12,9 @@
   --color-primary-foreground: #ffffff;
   --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
+  --color-live-indicator: #dc2626;
+  --color-offline-banner: #45464d;
+  --color-offline-banner-foreground: #ffffff;
 }
 
 :root {

@@ -1,0 +1,65 @@
+import type { Camera } from "@/types/camera";
+
+/**
+ * Conjunto fechado de 11 câmeras (rastreado em 2026-08-18), sem paginação ou
+ * câmeras adicionais no portal de origem. Mantido como configuração estática
+ * até existir um endpoint dedicado na API — ver dev-docs/modulos/03-cameras-tempo-real.md.
+ */
+export const CAMERAS: Camera[] = [
+  {
+    id: "centro-avenida-jk",
+    name: "Centro: Avenida JK",
+    streamUrl: "https://connect-92.servicestream.io:8050/bcc84c859ab7.m3u8",
+  },
+  {
+    id: "centro-praca-da-bandeira",
+    name: "Centro: Praça da Bandeira",
+    streamUrl: "https://connect-120.servicestream.io:8050/e7f57bcc97a2.m3u8",
+  },
+  {
+    id: "centro-terminal-central",
+    name: "Centro: Terminal Central",
+    streamUrl: "https://connect-579.servicestream.io:8050/af40aca3a9f5.m3u8",
+  },
+  {
+    id: "rio-cachoeira-prefeitura",
+    name: "Rio Cachoeira: Prefeitura",
+    streamUrl: "https://connect-272.servicestream.io:8050/919bd92b8436.m3u8",
+  },
+  {
+    id: "rio-cachoeira-terminal-norte",
+    name: "Rio Cachoeira: Terminal Norte",
+    streamUrl: "https://connect-92.servicestream.io:8050/85148626746f.m3u8",
+  },
+  {
+    id: "paranaguamirim-rua-6-de-janeiro",
+    name: "Paranaguamirim: Rua 6 de Janeiro",
+    streamUrl: "https://connect-451.servicestream.io:8050/6272496274c1.m3u8",
+  },
+  {
+    id: "rio-aguas-vermelhas-rua-minas-gerais",
+    name: "Rio Águas Vermelhas: Rua Minas Gerais",
+    streamUrl: "https://connect-524.servicestream.io:8050/84b8b97bcdde.m3u8",
+  },
+  {
+    id: "rio-aguas-vermelhas-rua-leopoldo-beninca",
+    name: "Rio Águas Vermelhas: Rua Leopoldo Beninca",
+    streamUrl: "https://connect-369.servicestream.io:8050/74117f48e66e.m3u8",
+  },
+  {
+    id: "rio-do-braco-jardim-sofia",
+    name: "Rio do Braço: Jardim Sofia",
+    streamUrl: "https://connect-524.servicestream.io:8050/9980ca324f48.m3u8",
+  },
+  {
+    id: "rio-cubatao-ponte-quiriri",
+    name: "Rio Cubatão: Ponte Quiriri",
+    streamUrl: "https://connect-524.servicestream.io:8050/d350ed83141b.m3u8",
+  },
+  {
+    id: "rio-cubatao-canal",
+    name: "Rio Cubatão: Canal",
+    // URL recebida truncada na fonte (dev-docs/fluxos/02-cameras-tempo-real.md) — confirmar antes de produção.
+    streamUrl: "https://connect-92.servicestream.io:8050/3ab8e7fd6566.m3u8",
+  },
+];
