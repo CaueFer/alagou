@@ -1,0 +1,47 @@
+package com.alagou.confirmation.service;
+
+import com.alagou.alert.Alert;
+import com.alagou.alert.dao.AlertRepository;
+import com.alagou.confirmation.Confirmation;
+import com.alagou.confirmation.dao.ConfirmationRepository;
+import com.alagou.confirmation.dto.ConfirmationResponse;
+import com.alagou.exception.BusinessRuleException;
+import com.alagou.exception.ResourceNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+@Service
+public class ConfirmationService {
+
+    private static final long RENEWAL_MINUTES = 45;
+
+    private final ConfirmationRepository repository;
+    private final AlertRepository alertRepository;
+
+    public ConfirmationService(ConfirmationRepository repository, AlertRepository alertRepository) {
+        this.repository = repository;
+        this.alertRepository = alertRepository;
+    }
+
+    public ConfirmationResponse create(Long alertId, String username) {
+        Alert alert = alertRepository.findById(alertId)
+                .orElseThrow(() -> new ResourceNotFoundException("Alert not found: " + alertId));
+
+        if (alert.getUsername().equals(username)) {
+            throw new BusinessRuleException("A user cannot confirm their own alert");
+        }
+        if (repository.existsByAlertIdAndUsername(alertId, username)) {
+            throw new BusinessRuleException("User has already confirmed this alert");
+        }
+
+        Confirmation confirmation = repository.save(new Confirmation(alertId, username, Instant.now()));
+
+        alert.renewExpiration(Instant.now().plus(RENEWAL_MINUTES, ChronoUnit.MINUTES));
+        alertRepository.save(alert);
+
+        return new ConfirmationResponse(confirmation.getId(), confirmation.getAlertId(), confirmation.getUsername(),
+                confirmation.getCreatedAt(), alert.getExpirationDate());
+    }
+}

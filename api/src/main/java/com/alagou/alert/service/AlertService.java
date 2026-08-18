@@ -49,7 +49,7 @@ public class AlertService {
         } else if (expired) {
             results = repository.findByExpirationDateBefore(Instant.now(), sort);
         } else {
-            results = repository.findByExpirationDateGreaterThanEqual(Instant.now(), sort);
+            results = repository.findByActiveTrueAndExpirationDateGreaterThanEqual(Instant.now(), sort);
         }
         return results.stream().map(this::toResponse).toList();
     }

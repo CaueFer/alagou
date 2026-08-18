@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface AlertRepository extends JpaRepository<Alert, Long> {
     List<Alert> findByExpirationDateBefore(Instant now, Sort sort);
-    List<Alert> findByExpirationDateGreaterThanEqual(Instant now, Sort sort);
+    List<Alert> findByActiveTrueAndExpirationDateGreaterThanEqual(Instant now, Sort sort);
+    List<Alert> findByActiveTrueAndExpirationDateBefore(Instant now);
 }
