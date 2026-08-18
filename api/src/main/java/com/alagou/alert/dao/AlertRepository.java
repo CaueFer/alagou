@@ -3,6 +3,8 @@ package com.alagou.alert.dao;
 import com.alagou.alert.Alert;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
 import java.util.List;
@@ -11,4 +13,18 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
     List<Alert> findByExpirationDateBefore(Instant now, Sort sort);
     List<Alert> findByActiveTrueAndExpirationDateGreaterThanEqual(Instant now, Sort sort);
     List<Alert> findByActiveTrueAndExpirationDateBefore(Instant now);
+
+    @Query(value = """
+            SELECT EXISTS (
+                SELECT 1 FROM alert a
+                WHERE a.active = true
+                AND a.username = :username
+                AND ST_DWithin(a.location::geography, ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)::geography, :radiusMeters)
+            )
+            """, nativeQuery = true)
+    boolean existsActiveByUsernameWithinRadius(
+            @Param("username") String username,
+            @Param("lat") double lat,
+            @Param("lng") double lng,
+            @Param("radiusMeters") double radiusMeters);
 }
