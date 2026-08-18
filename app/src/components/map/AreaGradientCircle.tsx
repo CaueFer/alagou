@@ -3,11 +3,16 @@ import { Circle } from "react-leaflet";
 import type { AlertLocation } from "@/types/alert";
 
 const RING_FRACTIONS_AND_OPACITY: Array<[fraction: number, opacity: number]> = [
-  [1, 0.05],
-  [0.75, 0.08],
-  [0.52, 0.13],
-  [0.3, 0.2],
-  [0.13, 0.3],
+  [1, 0.03],
+  [0.9, 0.05],
+  [0.8, 0.07],
+  [0.7, 0.09],
+  [0.6, 0.12],
+  [0.5, 0.15],
+  [0.4, 0.18],
+  [0.3, 0.22],
+  [0.2, 0.26],
+  [0.1, 0.3],
 ];
 
 interface AreaGradientCircleProps {

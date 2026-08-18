@@ -5,12 +5,14 @@ import { AlertDetailSheet } from "@/components/alert-detail/AlertDetailSheet";
 import { NewReportFlow } from "@/components/new-report/NewReportFlow";
 import { useAlerts } from "@/hooks/useAlerts";
 import { useConfirmation } from "@/hooks/useConfirmation";
+import { useGeolocation } from "@/hooks/useGeolocation";
 import { alertClient } from "@/api";
 import type { AlertLocation } from "@/types/alert";
 
 export function MapScreen() {
   const { alerts, status, updateAlert, removeAlert, addAlert } = useAlerts();
   const { confirm, reportClear, pendingAction } = useConfirmation();
+  const { position } = useGeolocation(true);
 
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [isCreatingReport, setIsCreatingReport] = useState(false);
@@ -45,6 +47,7 @@ export function MapScreen() {
         alerts={alerts}
         loading={status === "loading"}
         focusLocation={focusLocation}
+        userLocation={position}
         onSelectAlert={setSelectedAlertId}
         onCreateReport={() => setIsCreatingReport(true)}
       />

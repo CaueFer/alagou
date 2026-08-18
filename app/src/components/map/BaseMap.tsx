@@ -32,6 +32,7 @@ function CompactAttribution() {
     const control = L.control
       .attribution({ prefix: false, position: "bottomright" })
       .addAttribution('© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OSM</a>')
+      .addAttribution('© <a href="https://carto.com/attributions" target="_blank" rel="noopener">CartoDB</a>')
       .addTo(map);
     return () => {
       control.remove();
@@ -56,10 +57,25 @@ export function BaseMap({
       attributionControl={false}
       className={className}
     >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+      <ZoomControlTopRight />
       <CompactAttribution />
       {onMapClick && <MapClickHandler onMapClick={onMapClick} />}
       {children}
     </MapContainer>
   );
+}
+
+function ZoomControlTopRight() {
+  const map = useMap();
+
+  useEffect(() => {
+    const control = L.control.zoom({ position: "topright" });
+    control.addTo(map);
+    return () => {
+      control.remove();
+    };
+  }, [map]);
+
+  return null;
 }
