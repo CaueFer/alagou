@@ -38,7 +38,11 @@ export function LocationStep({ location, severity, onChangeLocation }: LocationS
         {!loading && error && error}
         {!loading && !error && "Arraste o marcador para ajustar o ponto exato do alagamento."}
       </p>
-      <div className="h-72 w-full overflow-hidden" data-vaul-no-drag>
+      <div
+        className="h-72 w-full overflow-hidden"
+        data-vaul-no-drag
+        onPointerDown={(event) => event.stopPropagation()}
+      >
         <BaseMap
           center={pin ?? JOINVILLE_CENTER}
           zoom={17}
