@@ -8,7 +8,6 @@ async function lockLandscape() {
   try {
     await screen.orientation?.lock?.("landscape");
   } catch {
-    // Orientation lock unsupported or rejected by the browser — ignore silently.
   }
 }
 
@@ -16,7 +15,6 @@ function unlockOrientation() {
   try {
     screen.orientation?.unlock?.();
   } catch {
-    // Nothing to unlock — ignore.
   }
 }
 
