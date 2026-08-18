@@ -5,17 +5,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
 @Component
 public class WorldTidesClient {
 
+    private static final Duration CACHE_TTL = Duration.ofHours(4);
+
     private final RestClient restClient;
     private final String baseUrl;
     private final String apiKey;
     private final double lat;
     private final double lon;
+
+    private List<TideExtreme> cachedExtremes;
+    private Instant cachedAt;
 
     public WorldTidesClient(
             RestClient.Builder builder,
@@ -32,6 +38,10 @@ public class WorldTidesClient {
     }
 
     public List<TideExtreme> fetchExtremes(int days) {
+        if (cachedExtremes != null && Instant.now().isBefore(cachedAt.plus(CACHE_TTL))) {
+            return cachedExtremes;
+        }
+
         var uri = UriComponentsBuilder.fromUriString(baseUrl)
                 .queryParam("extremes", "")
                 .queryParam("days", days)
@@ -47,10 +57,11 @@ public class WorldTidesClient {
                 .retrieve()
                 .body(WorldTidesResponse.class);
 
-        if (response == null || response.extremes() == null) {
-            return List.of();
-        }
-        return response.extremes().stream().map(this::toExtreme).toList();
+        cachedExtremes = response == null || response.extremes() == null
+                ? List.of()
+                : response.extremes().stream().map(this::toExtreme).toList();
+        cachedAt = Instant.now();
+        return cachedExtremes;
     }
 
     private TideExtreme toExtreme(WorldTidesResponse.RawExtreme raw) {
