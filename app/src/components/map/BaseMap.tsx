@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import type { ReactNode } from "react";
-import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { DEFAULT_MAP_ZOOM, JOINVILLE_CENTER } from "@/lib/constants";
 import type { AlertLocation } from "@/types/alert";
@@ -23,6 +25,22 @@ function MapClickHandler({ onMapClick }: { onMapClick: (location: AlertLocation)
   return null;
 }
 
+function CompactAttribution() {
+  const map = useMap();
+
+  useEffect(() => {
+    const control = L.control
+      .attribution({ prefix: false, position: "bottomright" })
+      .addAttribution('© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OSM</a>')
+      .addTo(map);
+    return () => {
+      control.remove();
+    };
+  }, [map]);
+
+  return null;
+}
+
 export function BaseMap({
   center = JOINVILLE_CENTER,
   zoom = DEFAULT_MAP_ZOOM,
@@ -31,11 +49,15 @@ export function BaseMap({
   className,
 }: BaseMapProps) {
   return (
-    <MapContainer center={LatLngTuple(center)} zoom={zoom} zoomControl={false} className={className}>
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+    <MapContainer
+      center={LatLngTuple(center)}
+      zoom={zoom}
+      zoomControl={false}
+      attributionControl={false}
+      className={className}
+    >
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <CompactAttribution />
       {onMapClick && <MapClickHandler onMapClick={onMapClick} />}
       {children}
     </MapContainer>
