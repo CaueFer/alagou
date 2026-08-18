@@ -29,7 +29,7 @@ export function SeveritySelector({ value, onChange }: SeveritySelectorProps) {
               "flex min-h-touch-target-min flex-col gap-1 rounded p-2 text-left",
               containerBg,
               containerText,
-              selected ? "ring-2 ring-primary" : "opacity-70"
+              selected ? "ring-2 ring-blue-500" : "opacity-70"
             )}
           >
             <span className="text-label-caps uppercase">{label}</span>
