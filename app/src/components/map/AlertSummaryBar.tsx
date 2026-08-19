@@ -1,3 +1,4 @@
+import { FloatingBadge } from "@/components/ui/floating-badge";
 import { getSeverityInfo } from "@/lib/severity";
 import { SEVERITY_ORDER } from "@/lib/severity";
 import type { Alert } from "@/types/alert";
@@ -8,11 +9,7 @@ interface AlertSummaryBarProps {
 
 export function AlertSummaryBar({ alerts }: AlertSummaryBarProps) {
   if (alerts.length === 0) {
-    return (
-      <div className="pointer-events-none absolute top-4 left-1/2 z-[500] -translate-x-1/2 rounded-2xl border border-white/40 bg-white/70 px-4 py-2 text-sm font-medium text-muted-foreground shadow-lg backdrop-blur-md">
-        Nenhum alagamento ativo
-      </div>
-    );
+    return <FloatingBadge>Nenhum alagamento ativo</FloatingBadge>;
   }
 
   const severityCounts = SEVERITY_ORDER.map((severity) => ({
@@ -21,7 +18,7 @@ export function AlertSummaryBar({ alerts }: AlertSummaryBarProps) {
   })).filter((s) => s.count > 0);
 
   return (
-    <div className="pointer-events-none absolute top-4 left-1/2 z-[500] flex -translate-x-1/2 items-center gap-2 rounded-2xl border border-white/40 bg-white/70 px-4 py-2 shadow-lg backdrop-blur-md">
+    <FloatingBadge className="flex items-center gap-2">
       <span className="text-sm font-medium text-foreground">
         {alerts.length} {alerts.length === 1 ? "alagamento" : "alagamentos"} ativo{alerts.length === 1 ? "" : "s"}
       </span>
@@ -36,6 +33,6 @@ export function AlertSummaryBar({ alerts }: AlertSummaryBarProps) {
           );
         })}
       </div>
-    </div>
+    </FloatingBadge>
   );
 }

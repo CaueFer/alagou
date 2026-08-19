@@ -4,6 +4,7 @@ import { civilDefenseClient } from "@/api";
 import { CivilDefenseDetail } from "@/components/civil-defense/CivilDefenseDetail";
 import { CivilDefenseList } from "@/components/civil-defense/CivilDefenseList";
 import { Button } from "@/components/ui/button";
+import { FloatingBadge } from "@/components/ui/floating-badge";
 import type { CivilDefenseNotice } from "@/types/civilDefense";
 
 type CivilDefenseStatus = "loading" | "ready" | "error";
@@ -30,12 +31,7 @@ export function CivilDefenseScreen() {
 
   return (
     <div className="relative h-full w-full overflow-y-auto" style={{ paddingBottom: "var(--bottom-nav-clearance)" }}>
-      <div className="pointer-events-none sticky top-4 z-10 flex justify-center px-4">
-        <div className="rounded-2xl border border-white/40 bg-white/70 px-4 py-2 text-center shadow-lg backdrop-blur-md">
-          <h1 className="text-sm font-semibold text-foreground">Defesa Civil</h1>
-          <p className="text-xs text-muted-foreground">Avisos oficiais da Defesa Civil de Joinville</p>
-        </div>
-      </div>
+      <FloatingBadge position="sticky">Defesa Civil</FloatingBadge>
 
       <div className="pt-16">
         {status === "error" && (

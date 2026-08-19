@@ -4,6 +4,7 @@ import { cameraClient } from "@/api";
 import { CameraList } from "@/components/cameras/CameraList";
 import { CameraPlayer } from "@/components/cameras/CameraPlayer";
 import { Button } from "@/components/ui/button";
+import { FloatingBadge } from "@/components/ui/floating-badge";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import type { Camera } from "@/types/camera";
 
@@ -43,14 +44,9 @@ export function CamerasScreen() {
         </div>
       )}
 
-      <div className="pointer-events-none sticky top-4 z-10 flex justify-center px-4">
-        <div className="rounded-2xl border border-white/40 bg-white/70 px-5 py-3 text-center shadow-lg backdrop-blur-md">
-          <h1 className="text-base font-semibold text-foreground">Câmeras em Tempo Real</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Pontos estratégicos monitorados em Joinville</p>
-        </div>
-      </div>
+      <FloatingBadge position="sticky">Câmeras em Tempo Real</FloatingBadge>
 
-      <div className="px-4 pt-20">
+      <div className="px-4 pt-16">
         {status === "error" && (
           <div className="flex flex-col items-center gap-3 py-8 text-center">
             <p className="text-sm text-muted-foreground">Não foi possível carregar as câmeras</p>
