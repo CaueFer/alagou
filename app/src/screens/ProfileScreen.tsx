@@ -1,5 +1,6 @@
 import { AccountSummary } from "@/components/auth/AccountSummary";
 import { AuthForm } from "@/components/auth/AuthForm";
+import { FloatingBadge } from "@/components/ui/floating-badge";
 import { useAuth } from "@/hooks/useAuth";
 
 export function ProfileScreen() {
@@ -10,14 +11,9 @@ export function ProfileScreen() {
       className="flex h-full w-full flex-col overflow-y-auto"
       style={{ paddingBottom: "var(--bottom-nav-clearance)" }}
     >
-      <header className="px-4 pb-4 pt-6">
-        <h1 className="text-lg font-semibold">Perfil e Configurações</h1>
-        <p className="text-sm text-muted-foreground">
-          Entre com sua conta para acompanhar seus relatos de alagamento.
-        </p>
-      </header>
+      <FloatingBadge position="sticky">Perfil e Configurações</FloatingBadge>
 
-      <div className="px-4">
+      <div className="px-4 pt-4">
         {isAuthenticated && user ? (
           <AccountSummary user={user} onLogout={logout} />
         ) : (
