@@ -1,0 +1,83 @@
+package com.alagou.civildefense.service;
+
+import com.alagou.civildefense.CivilDefenseNotice;
+import com.alagou.civildefense.CivilDefenseRiskLevel;
+import com.alagou.civildefense.dao.CivilDefenseNoticeRepository;
+import com.alagou.civildefense.dto.CivilDefenseNoticeResponse;
+import com.alagou.officialdata.civildefense.CivilDefenseNewsClient;
+import com.alagou.officialdata.civildefense.CivilDefenseNewsItem;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.List;
+
+@Service
+public class CivilDefenseNoticeService {
+
+    private static final String SEARCH_KEYWORD = "alagamento";
+    private static final int SEARCH_LIMIT = 20;
+
+    private static final List<String> EMERGENCY_KEYWORDS = List.of(
+            "emergencia", "evacuacao", "estado de emergencia", "critico");
+    private static final List<String> ALERT_KEYWORDS = List.of(
+            "alerta", "perigo", "interdicao", "bloqueio");
+
+    private final CivilDefenseNoticeRepository repository;
+    private final CivilDefenseNewsClient client;
+
+    public CivilDefenseNoticeService(CivilDefenseNoticeRepository repository, CivilDefenseNewsClient client) {
+        this.repository = repository;
+        this.client = client;
+    }
+
+    public List<CivilDefenseNoticeResponse> listNotices() {
+        return repository.findAllByOrderByPublishedAtDesc().stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public void ingestNotices() {
+        List<CivilDefenseNewsItem> items = client.searchRecent(SEARCH_KEYWORD, SEARCH_LIMIT);
+        for (CivilDefenseNewsItem item : items) {
+            if (repository.existsByExternalId(item.id())) {
+                continue;
+            }
+
+            CivilDefenseNotice notice = new CivilDefenseNotice(
+                    item.id(),
+                    item.title(),
+                    item.excerpt(),
+                    item.content(),
+                    item.link(),
+                    classifyRiskLevel(item.title()),
+                    item.publishedAt(),
+                    Instant.now()
+            );
+            repository.save(notice);
+        }
+    }
+
+    private CivilDefenseRiskLevel classifyRiskLevel(String title) {
+        String normalized = title.toLowerCase();
+
+        if (EMERGENCY_KEYWORDS.stream().anyMatch(normalized::contains)) {
+            return CivilDefenseRiskLevel.EMERGENCY;
+        }
+        if (ALERT_KEYWORDS.stream().anyMatch(normalized::contains)) {
+            return CivilDefenseRiskLevel.ALERT;
+        }
+        return CivilDefenseRiskLevel.ATTENTION;
+    }
+
+    private CivilDefenseNoticeResponse toResponse(CivilDefenseNotice notice) {
+        return new CivilDefenseNoticeResponse(
+                notice.getId(),
+                notice.getTitle(),
+                notice.getExcerpt(),
+                notice.getContent(),
+                notice.getLink(),
+                notice.getRiskLevel(),
+                notice.getPublishedAt()
+        );
+    }
+}

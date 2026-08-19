@@ -1,0 +1,104 @@
+package com.alagou.civildefense.service;
+
+import com.alagou.civildefense.CivilDefenseNotice;
+import com.alagou.civildefense.CivilDefenseRiskLevel;
+import com.alagou.civildefense.dao.CivilDefenseNoticeRepository;
+import com.alagou.civildefense.dto.CivilDefenseNoticeResponse;
+import com.alagou.officialdata.civildefense.CivilDefenseNewsClient;
+import com.alagou.officialdata.civildefense.CivilDefenseNewsItem;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.Instant;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class CivilDefenseNoticeServiceTest {
+
+    @Mock
+    private CivilDefenseNoticeRepository repository;
+
+    @Mock
+    private CivilDefenseNewsClient client;
+
+    private CivilDefenseNoticeService service;
+
+    @BeforeEach
+    void setUp() {
+        service = new CivilDefenseNoticeService(repository, client);
+    }
+
+    @Test
+    void skipsIngestionWhenNoticeAlreadyExists() {
+        CivilDefenseNewsItem item = new CivilDefenseNewsItem(1L, Instant.now(), "link", "Aviso de alagamento", "resumo", "conteudo");
+        when(client.searchRecent("alagamento", 20)).thenReturn(List.of(item));
+        when(repository.existsByExternalId(1L)).thenReturn(true);
+
+        service.ingestNotices();
+
+        verify(repository, never()).save(any(CivilDefenseNotice.class));
+    }
+
+    @Test
+    void classifiesEmergencyRiskLevelFromTitleKeywords() {
+        CivilDefenseNewsItem item = new CivilDefenseNewsItem(2L, Instant.now(), "link", "Estado de Emergencia decretado", "resumo", "conteudo");
+        when(client.searchRecent("alagamento", 20)).thenReturn(List.of(item));
+        when(repository.existsByExternalId(2L)).thenReturn(false);
+
+        service.ingestNotices();
+
+        ArgumentCaptor<CivilDefenseNotice> captor = ArgumentCaptor.forClass(CivilDefenseNotice.class);
+        verify(repository).save(captor.capture());
+        assertThat(captor.getValue().getRiskLevel()).isEqualTo(CivilDefenseRiskLevel.EMERGENCY);
+    }
+
+    @Test
+    void classifiesAlertRiskLevelFromTitleKeywords() {
+        CivilDefenseNewsItem item = new CivilDefenseNewsItem(3L, Instant.now(), "link", "Alerta de risco em Joinville", "resumo", "conteudo");
+        when(client.searchRecent("alagamento", 20)).thenReturn(List.of(item));
+        when(repository.existsByExternalId(3L)).thenReturn(false);
+
+        service.ingestNotices();
+
+        ArgumentCaptor<CivilDefenseNotice> captor = ArgumentCaptor.forClass(CivilDefenseNotice.class);
+        verify(repository).save(captor.capture());
+        assertThat(captor.getValue().getRiskLevel()).isEqualTo(CivilDefenseRiskLevel.ALERT);
+    }
+
+    @Test
+    void classifiesAttentionRiskLevelWhenNoKeywordMatches() {
+        CivilDefenseNewsItem item = new CivilDefenseNewsItem(4L, Instant.now(), "link", "Chuvas previstas para o fim de semana", "resumo", "conteudo");
+        when(client.searchRecent("alagamento", 20)).thenReturn(List.of(item));
+        when(repository.existsByExternalId(4L)).thenReturn(false);
+
+        service.ingestNotices();
+
+        ArgumentCaptor<CivilDefenseNotice> captor = ArgumentCaptor.forClass(CivilDefenseNotice.class);
+        verify(repository).save(captor.capture());
+        assertThat(captor.getValue().getRiskLevel()).isEqualTo(CivilDefenseRiskLevel.ATTENTION);
+    }
+
+    @Test
+    void listsNoticesOrderedByPublishedAtDescending() {
+        CivilDefenseNotice recent = new CivilDefenseNotice(1L, "Aviso recente", "resumo", "conteudo", "link",
+                CivilDefenseRiskLevel.ATTENTION, Instant.now(), Instant.now());
+        when(repository.findAllByOrderByPublishedAtDesc()).thenReturn(List.of(recent));
+
+        List<CivilDefenseNoticeResponse> result = service.listNotices();
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).title()).isEqualTo("Aviso recente");
+        verify(repository, times(1)).findAllByOrderByPublishedAtDesc();
+    }
+}

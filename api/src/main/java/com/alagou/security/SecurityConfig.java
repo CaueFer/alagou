@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/alerts/**").permitAll()
                         .requestMatchers("/api/cameras").permitAll()
                         .requestMatchers("/api/zones").permitAll()
+                        .requestMatchers("/api/civil-defense/**").permitAll()
                         .requestMatchers("/uploads/photos/**").permitAll()
                         .anyRequest().authenticated()
                 )
