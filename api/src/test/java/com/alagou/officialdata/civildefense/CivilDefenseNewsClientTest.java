@@ -41,4 +41,24 @@ class CivilDefenseNewsClientTest {
         assertThat(item.excerpt()).isEqualTo("Resumo do aviso");
         assertThat(item.content()).isEqualTo("<p>Texto completo do aviso</p>");
     }
+
+    @Test
+    void parsesItemsWithNullExcerpt() {
+        RestClient.Builder builder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+        CivilDefenseNewsClient client = new CivilDefenseNewsClient(builder, BASE_URL);
+
+        String body = """
+                [{"id":205363,"date_gmt":"2026-08-13T11:24:36","link":"https://www.joinville.sc.gov.br/noticias/defesa-civil-alerta/","title":{"rendered":"Defesa Civil de Joinville alerta para risco de alagamentos"},"excerpt":null,"content":{"rendered":"<p>Texto completo do aviso</p>"}}]
+                """;
+
+        server.expect(method(org.springframework.http.HttpMethod.GET))
+                .andExpect(requestToUriTemplate(BASE_URL + "?search={kw}&orderby=date&order=desc&per_page={n}&_fields=id,date_gmt,link,title,excerpt,content", "alagamento", 10))
+                .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
+
+        List<CivilDefenseNewsItem> items = client.searchRecent("alagamento", 10);
+
+        assertThat(items).hasSize(1);
+        assertThat(items.get(0).excerpt()).isNull();
+    }
 }
