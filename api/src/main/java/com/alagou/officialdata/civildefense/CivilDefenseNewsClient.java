@@ -53,9 +53,13 @@ public class CivilDefenseNewsClient {
                 raw.id(),
                 publishedAt,
                 raw.link(),
-                raw.title().rendered(),
-                raw.excerpt().rendered(),
-                raw.content().rendered()
+                rendered(raw.title()),
+                rendered(raw.excerpt()),
+                rendered(raw.content())
         );
+    }
+
+    private String rendered(WordpressNoticiaResponse.Rendered field) {
+        return field == null ? null : field.rendered();
     }
 }
