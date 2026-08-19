@@ -23,7 +23,7 @@ export function CameraList({ cameras, locked, loading, unavailableIds, onSelect 
   }
 
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-3">
       {cameras.map((camera) => (
         <CameraCard
           key={camera.id}
