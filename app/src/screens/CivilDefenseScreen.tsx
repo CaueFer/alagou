@@ -30,7 +30,10 @@ export function CivilDefenseScreen() {
   }, [fetchNotices]);
 
   return (
-    <div className="relative h-full w-full overflow-y-auto" style={{ paddingBottom: "var(--bottom-nav-clearance)" }}>
+    <div
+      className="relative h-full w-full overflow-y-auto bg-gradient-to-b from-primary-container/15 via-surface-container to-background"
+      style={{ paddingBottom: "var(--bottom-nav-clearance)" }}
+    >
       <FloatingBadge position="sticky">Defesa Civil</FloatingBadge>
 
       <div className="pt-16">

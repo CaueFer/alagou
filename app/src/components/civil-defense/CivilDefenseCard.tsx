@@ -12,7 +12,7 @@ export function CivilDefenseCard({ notice, onClick }: CivilDefenseCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className="flex min-h-16 w-full items-start gap-3 rounded-lg bg-surface-container-lowest p-3 text-left shadow-[0_1px_3px_0_rgba(11,28,48,0.08)]"
+      className="flex min-h-16 w-full items-start gap-3 rounded-lg border border-outline-variant/50 bg-surface-container-lowest p-3 text-left shadow-[0_1px_3px_0_rgba(11,28,48,0.08)] transition-all hover:border-outline-variant hover:shadow-[0_4px_12px_0_rgba(11,28,48,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <div className="shrink-0 pt-0.5">
         <RiskBadge level={notice.riskLevel} />
