@@ -38,6 +38,19 @@
   --color-on-status-safe: #ffffff;
   --color-status-safe-container: #dcfce7;
   --color-on-status-safe-container: #14532d;
+
+  --color-alert-user: #2563eb;
+  --color-on-alert-user: #ffffff;
+  --color-alert-user-container: #dbeafe;
+  --color-on-alert-user-container: #1e3a8a;
+  --color-alert-climatic: #0d9488;
+  --color-on-alert-climatic: #ffffff;
+  --color-alert-climatic-container: #ccfbf1;
+  --color-on-alert-climatic-container: #134e4a;
+  --color-alert-civil-defense: #ba1a1a;
+  --color-on-alert-civil-defense: #ffffff;
+  --color-alert-civil-defense-container: #ffdad6;
+  --color-on-alert-civil-defense-container: #93000a;
 }
 
 :root {

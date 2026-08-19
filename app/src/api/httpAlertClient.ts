@@ -5,7 +5,7 @@ import { getDeviceUsername } from "@/lib/deviceIdentity";
 
 const ANONYMOUS_USERNAME = "Anônimo";
 
-interface AlertApiResponse {
+export interface AlertApiResponse {
   id: number;
   type: string;
   username: string;
@@ -32,7 +32,7 @@ interface ErrorResponse {
   detail: string;
 }
 
-function toAlert(data: AlertApiResponse): Alert {
+export function toAlert(data: AlertApiResponse): Alert {
   return {
     id: String(data.id),
     location: { lat: data.lat, lng: data.lng },
