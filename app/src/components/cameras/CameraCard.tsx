@@ -19,6 +19,7 @@ export function CameraCard({ camera, locked, unavailable, onSelect }: CameraCard
         "flex w-full items-center gap-4 rounded-lg bg-surface-container-lowest p-4 text-left transition-all",
         "shadow-[0_1px_3px_0_rgba(11,28,48,0.08)] border border-outline-variant/50",
         "hover:shadow-[0_4px_12px_0_rgba(11,28,48,0.14)] hover:border-outline-variant",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         "disabled:pointer-events-none",
         locked && "opacity-50",
         unavailable && "opacity-60",
@@ -33,9 +34,9 @@ export function CameraCard({ camera, locked, unavailable, onSelect }: CameraCard
               <Play className="h-5 w-5 fill-primary text-primary ml-0.5" strokeWidth={2} />
             </div>
             {!locked && (
-              <span className="absolute -right-1 -top-1 flex items-center gap-1 rounded-full bg-live-indicator px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.05em] text-white shadow-sm">
+              <span className="absolute -top-2 left-1/2 flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full bg-live-indicator px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.05em] text-white shadow-sm">
                 <span className="h-1 w-1 rounded-full bg-white animate-pulse" />
-                LIVE
+                AO VIVO
               </span>
             )}
           </>

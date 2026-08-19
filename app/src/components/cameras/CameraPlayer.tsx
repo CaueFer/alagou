@@ -88,7 +88,7 @@ export function CameraPlayer({ camera, open, onClose, onError }: CameraPlayerPro
         >
           <X className="h-5 w-5" />
         </Button>
-        <span className="max-w-[60%] truncate rounded-full bg-black/50 px-3 py-1 text-sm text-white">
+        <span className="max-w-[60%] truncate rounded-full border border-white/20 bg-black/50 px-3 py-1 text-sm text-white backdrop-blur-md">
           {camera.name}
         </span>
         <Button
