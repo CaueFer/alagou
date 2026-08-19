@@ -44,13 +44,13 @@ export function CamerasScreen() {
       )}
 
       <div className="pointer-events-none sticky top-4 z-10 flex justify-center px-4">
-        <div className="rounded-2xl border border-white/40 bg-white/70 px-4 py-2 text-center shadow-lg backdrop-blur-md">
-          <h1 className="text-sm font-semibold text-foreground">Câmeras em Tempo Real</h1>
-          <p className="text-xs text-muted-foreground">Pontos estratégicos monitorados em Joinville</p>
+        <div className="rounded-2xl border border-white/40 bg-white/70 px-5 py-3 text-center shadow-lg backdrop-blur-md">
+          <h1 className="text-base font-semibold text-foreground">Câmeras em Tempo Real</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">Pontos estratégicos monitorados em Joinville</p>
         </div>
       </div>
 
-      <div className="px-4 pt-16">
+      <div className="px-4 pt-20">
         {status === "error" && (
           <div className="flex flex-col items-center gap-3 py-8 text-center">
             <p className="text-sm text-muted-foreground">Não foi possível carregar as câmeras</p>

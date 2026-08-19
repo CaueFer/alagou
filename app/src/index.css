@@ -13,8 +13,11 @@
   --color-destructive: #ba1a1a;
   --color-destructive-foreground: #ffffff;
   --color-surface-container: #e5eeff;
+  --color-surface-container-lowest: #ffffff;
   --color-outline-variant: #c6c6cd;
   --color-live-indicator: #dc2626;
+  --color-primary-container: #131b2e;
+  --color-on-primary-container: #7c839b;
   --color-offline-banner: #45464d;
   --color-offline-banner-foreground: #ffffff;
 }
