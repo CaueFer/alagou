@@ -18,7 +18,7 @@ export function WeatherButton({ location }: WeatherButtonProps) {
       aria-label={status === "ready" && weather ? `Condições climáticas: ${weather.condition}` : "Condições climáticas"}
     >
       <span className="relative flex items-center justify-center">
-        <Icon className="absolute -left-1.5 -top-1.5 h-6 w-6 text-foreground/45" />
+        <Icon className="absolute -left-3 -top-3 h-6 w-6 text-foreground/55" />
         <span className="relative text-lg font-bold leading-none text-foreground">
           {status === "ready" && weather ? `${Math.round(weather.temperature)}°` : "--°"}
         </span>
