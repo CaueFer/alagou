@@ -24,12 +24,12 @@ export function SeverityLegend() {
             {SEVERITY_ORDER.map((severity) => {
               const { label, description, markerColor } = getSeverityInfo(severity);
               return (
-                <div key={severity} className="flex items-center gap-3">
-                  <div className="h-3 w-3 flex-shrink-0 rounded-full" style={{ backgroundColor: markerColor }} />
-                  <div className="flex-1">
+                <div key={severity} className="flex flex-col gap-0.5">
+                  <div className="flex items-center gap-3">
+                    <div className="h-3 w-3 flex-shrink-0 rounded-full" style={{ backgroundColor: markerColor }} />
                     <p className="text-sm font-medium text-foreground">{label}</p>
-                    <p className="text-xs text-muted-foreground">{description}</p>
                   </div>
+                  <p className="pl-6 text-xs text-muted-foreground">{description}</p>
                 </div>
               );
             })}
