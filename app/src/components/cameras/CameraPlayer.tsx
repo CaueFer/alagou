@@ -60,7 +60,7 @@ export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onE
 
   if (!camera) {
     return (
-      <div className="flex h-full w-full items-center justify-center rounded-2xl">
+      <div className="flex h-full w-full items-center justify-center">
         {loading ? (
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-border border-t-primary" />
         ) : (
@@ -72,12 +72,9 @@ export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onE
 
   return (
     <div
-      className={cn(
-        "relative h-full w-full overflow-hidden",
-        fullscreen ? "fixed inset-0 z-[1100] bg-black" : "rounded-2xl shadow-lg",
-      )}
+      className={cn("relative h-full w-full overflow-hidden", fullscreen && "fixed inset-0 z-[1100] bg-black")}
     >
-      <video ref={videoRef} className="h-full w-full object-contain" playsInline controls={status === "live"} />
+      <video ref={videoRef} className="h-full w-full object-contain" playsInline />
 
       {status === "connecting" && (
         <div className="absolute inset-0 flex items-center justify-center">
@@ -93,10 +90,17 @@ export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onE
       )}
 
       <div
-        className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 p-3"
-        style={fullscreen ? { paddingTop: "calc(env(safe-area-inset-top) + 1rem)" } : undefined}
+        className={cn(
+          "absolute inset-x-0 flex items-center gap-2 p-3",
+          fullscreen ? "top-0 justify-between" : "justify-center",
+        )}
+        style={
+          fullscreen
+            ? { paddingTop: "calc(env(safe-area-inset-top) + 1rem)" }
+            : { bottom: "var(--bottom-nav-clearance)" }
+        }
       >
-        {onClose && (
+        {fullscreen && onClose && (
           <Button
             variant="ghost"
             size="icon"

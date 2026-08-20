@@ -46,12 +46,15 @@ export function CamerasScreen() {
   }
 
   return (
-    <div
-      className="relative flex h-full w-full flex-col overflow-hidden bg-gradient-to-tl from-primary-container/15 via-surface-container to-background"
-      style={{ paddingBottom: "var(--bottom-nav-clearance)" }}
-    >
+    <div className="relative h-full w-full overflow-hidden bg-gradient-to-tl from-primary-container/15 via-surface-container to-background">
+      <CameraPlayer
+        camera={selectedCamera}
+        loading={status === "loading"}
+        onError={() => selectedCamera && markUnavailable(selectedCamera.id)}
+      />
+
       {!isOnline && (
-        <div className="z-10 bg-offline-banner px-4 py-2 text-center text-sm font-medium text-offline-banner-foreground">
+        <div className="absolute inset-x-0 top-0 z-10 bg-offline-banner px-4 py-2 text-center text-sm font-medium text-offline-banner-foreground">
           Você está offline — câmeras indisponíveis
         </div>
       )}
@@ -67,23 +70,15 @@ export function CamerasScreen() {
         <ListVideo className="h-5 w-5 text-foreground" />
       </button>
 
-      <div className="min-h-0 flex-1 px-4 pb-4 pt-16">
-        {status === "error" ? (
-          <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-            <p className="text-sm text-muted-foreground">Não foi possível carregar as câmeras</p>
-            <Button variant="outline" onClick={fetchCameras}>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Tentar novamente
-            </Button>
-          </div>
-        ) : (
-          <CameraPlayer
-            camera={selectedCamera}
-            loading={status === "loading"}
-            onError={() => selectedCamera && markUnavailable(selectedCamera.id)}
-          />
-        )}
-      </div>
+      {status === "error" && (
+        <div className="absolute inset-0 z-[600] flex flex-col items-center justify-center gap-3 bg-background/90 px-8 text-center backdrop-blur-sm">
+          <p className="text-sm text-muted-foreground">Não foi possível carregar as câmeras</p>
+          <Button variant="outline" onClick={fetchCameras}>
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Tentar novamente
+          </Button>
+        </div>
+      )}
 
       <CameraListDrawer
         open={isDrawerOpen}
