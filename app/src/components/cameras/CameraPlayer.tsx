@@ -111,13 +111,22 @@ export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onE
             <X className="h-5 w-5" />
           </Button>
         )}
-        <span className="max-w-[60%] truncate rounded-full border border-white/20 bg-black/50 px-3 py-1 text-sm text-white backdrop-blur-md">
+        <span
+          className={cn(
+            "max-w-[60%] truncate rounded-full border px-3 py-1 text-sm backdrop-blur-md",
+            fullscreen ? "border-white/20 bg-black/50 text-white" : "border-white/40 bg-white/70 text-foreground shadow-lg",
+          )}
+        >
           {camera.name}
         </span>
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-white/10 hover:text-white"
+          className={cn(
+            fullscreen
+              ? "text-white hover:bg-white/10 hover:text-white"
+              : "border border-white/40 bg-white/70 text-foreground shadow-lg backdrop-blur-md hover:bg-white/90",
+          )}
           onClick={lockLandscape}
           aria-label="Girar para paisagem"
         >
