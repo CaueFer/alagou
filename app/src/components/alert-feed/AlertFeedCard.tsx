@@ -17,9 +17,8 @@ export function AlertFeedCard({ alert, onClick }: AlertFeedCardProps) {
       type="button"
       onClick={onClick}
       className={cn(
-        "flex min-h-16 w-full items-start gap-3 rounded-lg border-l-4 bg-surface-container-lowest p-3 text-left",
+        "flex min-h-16 w-full items-center gap-3 rounded-lg bg-surface-container-lowest p-3 text-left",
         "shadow-[0_1px_3px_0_rgba(11,28,48,0.08)]",
-        info.borderClass,
       )}
     >
       <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full", info.containerBgClass)}>

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CivilDefenseNoticeService {
@@ -39,7 +40,9 @@ public class CivilDefenseNoticeService {
     public void ingestNotices() {
         List<CivilDefenseNewsItem> items = client.searchRecent(SEARCH_KEYWORD, SEARCH_LIMIT);
         for (CivilDefenseNewsItem item : items) {
-            if (repository.existsByExternalId(item.id())) {
+            Optional<CivilDefenseNotice> existing = repository.findByExternalId(item.id());
+            if (existing.isPresent()) {
+                backfillThumbnail(existing.get(), item.thumbnailUrl());
                 continue;
             }
 
@@ -49,10 +52,18 @@ public class CivilDefenseNoticeService {
                     item.excerpt(),
                     item.content(),
                     item.link(),
+                    item.thumbnailUrl(),
                     classifyRiskLevel(item.title()),
                     item.publishedAt(),
                     Instant.now()
             );
+            repository.save(notice);
+        }
+    }
+
+    private void backfillThumbnail(CivilDefenseNotice notice, String thumbnailUrl) {
+        if (notice.getThumbnailUrl() == null && thumbnailUrl != null) {
+            notice.setThumbnailUrl(thumbnailUrl);
             repository.save(notice);
         }
     }
@@ -76,6 +87,7 @@ public class CivilDefenseNoticeService {
                 notice.getExcerpt(),
                 notice.getContent(),
                 notice.getLink(),
+                notice.getThumbnailUrl(),
                 notice.getRiskLevel(),
                 notice.getPublishedAt()
         );

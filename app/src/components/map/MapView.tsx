@@ -25,8 +25,12 @@ interface MapViewProps {
 export function MapView({ alerts, cameras, loading, focusLocation, userLocation, onSelectAlert, onSelectCamera, onCreateReport }: MapViewProps) {
   return (
     <div className="relative h-full w-full">
-      <BaseMap className="h-full w-full" center={userLocation ?? undefined}>
-        {focusLocation && <RecenterMap location={focusLocation} zoom={16} />}
+      <BaseMap className="h-full w-full">
+        {focusLocation ? (
+          <RecenterMap location={focusLocation} zoom={16} />
+        ) : (
+          userLocation && <RecenterMap location={userLocation} />
+        )}
         {alerts.map((alert) => (
           <AlertAreaCircle key={`area-${alert.id}`} alert={alert} />
         ))}
@@ -40,7 +44,7 @@ export function MapView({ alerts, cameras, loading, focusLocation, userLocation,
 
       <AlertSummaryBar alerts={alerts} />
       <SeverityLegend />
-      <WeatherButton />
+      <WeatherButton location={userLocation} />
 
       {loading && (
         <div className="pointer-events-none absolute inset-0 z-[500] flex items-center justify-center">

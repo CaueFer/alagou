@@ -8,4 +8,5 @@ export interface CivilDefenseNotice {
   link: string;
   riskLevel: RiskLevel;
   publishedAt: string;
+  thumbnailUrl: string | null;
 }

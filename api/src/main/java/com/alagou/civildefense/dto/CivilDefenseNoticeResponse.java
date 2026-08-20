@@ -10,6 +10,7 @@ public record CivilDefenseNoticeResponse(
         String excerpt,
         String content,
         String link,
+        String thumbnailUrl,
         CivilDefenseRiskLevel riskLevel,
         Instant publishedAt
 ) {}

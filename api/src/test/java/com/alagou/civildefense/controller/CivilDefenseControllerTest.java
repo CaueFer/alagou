@@ -36,6 +36,7 @@ class CivilDefenseControllerTest {
                 "resumo",
                 "conteudo",
                 "https://www.joinville.sc.gov.br/noticias/defesa-civil-alerta/",
+                "https://www.joinville.sc.gov.br/wp-content/uploads/2026/08/defesa-civil.jpeg",
                 CivilDefenseRiskLevel.ALERT,
                 Instant.now()
         );

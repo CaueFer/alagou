@@ -8,5 +8,6 @@ public record CivilDefenseNewsItem(
         String link,
         String title,
         String excerpt,
-        String content
+        String content,
+        String thumbnailUrl
 ) {}

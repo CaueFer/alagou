@@ -31,7 +31,8 @@ public class CivilDefenseNewsClient {
                 .queryParam("orderby", "date")
                 .queryParam("order", "desc")
                 .queryParam("per_page", perPage)
-                .queryParam("_fields", "id,date_gmt,link,title,excerpt,content")
+                .queryParam("_embed", "wp:featuredmedia")
+                .queryParam("_fields", "id,date_gmt,link,title,excerpt,content,_links,_embedded")
                 .build()
                 .encode()
                 .toUri();
@@ -55,11 +56,19 @@ public class CivilDefenseNewsClient {
                 raw.link(),
                 rendered(raw.title()),
                 rendered(raw.excerpt()),
-                rendered(raw.content())
+                rendered(raw.content()),
+                thumbnailUrl(raw.embedded())
         );
     }
 
     private String rendered(WordpressNoticiaResponse.Rendered field) {
         return field == null ? null : field.rendered();
+    }
+
+    private String thumbnailUrl(WordpressNoticiaResponse.Embedded embedded) {
+        if (embedded == null || embedded.featuredMedia() == null || embedded.featuredMedia().isEmpty()) {
+            return null;
+        }
+        return embedded.featuredMedia().get(0).sourceUrl();
     }
 }
