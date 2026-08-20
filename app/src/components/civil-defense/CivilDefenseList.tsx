@@ -7,10 +7,9 @@ const SKELETON_ROWS = 4;
 interface CivilDefenseListProps {
   notices: CivilDefenseNotice[];
   loading: boolean;
-  onSelect: (notice: CivilDefenseNotice) => void;
 }
 
-export function CivilDefenseList({ notices, loading, onSelect }: CivilDefenseListProps) {
+export function CivilDefenseList({ notices, loading }: CivilDefenseListProps) {
   if (loading) {
     return (
       <div className="flex flex-col gap-3 p-4">
@@ -36,7 +35,7 @@ export function CivilDefenseList({ notices, loading, onSelect }: CivilDefenseLis
   return (
     <div className="flex flex-col gap-3 p-4">
       {notices.map((notice) => (
-        <CivilDefenseCard key={notice.id} notice={notice} onClick={() => onSelect(notice)} />
+        <CivilDefenseCard key={notice.id} notice={notice} />
       ))}
     </div>
   );

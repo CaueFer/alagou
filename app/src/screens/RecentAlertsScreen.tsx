@@ -3,25 +3,26 @@ import { RefreshCw } from "lucide-react";
 import { AlertDetailSheet } from "@/components/alert-detail/AlertDetailSheet";
 import { AlertFeed } from "@/components/alert-feed/AlertFeed";
 import { AlertTypeFilter } from "@/components/alert-feed/AlertTypeFilter";
-import { AlertTypeLegend } from "@/components/alert-feed/AlertTypeLegend";
 import { ClimaticDetailModal } from "@/components/alert-feed/ClimaticDetailModal";
-import { CivilDefenseDetail } from "@/components/civil-defense/CivilDefenseDetail";
 import { Button } from "@/components/ui/button";
 import { FloatingBadge } from "@/components/ui/floating-badge";
 import { useConfirmation } from "@/hooks/useConfirmation";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useRecentAlerts } from "@/hooks/useRecentAlerts";
 import { ALERT_TYPE_ORDER } from "@/lib/alertType";
+import { cn } from "@/lib/utils";
 import type { Alert } from "@/types/alert";
-import type { CivilDefenseNotice } from "@/types/civilDefense";
 import type { ClimaticZoneSnapshot, RecentAlert, RecentAlertType } from "@/types/recentAlert";
 
 export function RecentAlertsScreen() {
   const { alerts, status, refetch } = useRecentAlerts();
   const { confirm, reportClear, pendingAction } = useConfirmation();
+  const { containerRef, pullDistance, refreshing, isDragging, threshold, handlers } = usePullToRefresh<HTMLDivElement>({
+    onRefresh: refetch,
+  });
 
   const [selectedTypes, setSelectedTypes] = useState<Set<RecentAlertType>>(new Set(ALERT_TYPE_ORDER));
   const [selectedUserAlert, setSelectedUserAlert] = useState<Alert | null>(null);
-  const [selectedNotice, setSelectedNotice] = useState<CivilDefenseNotice | null>(null);
   const [selectedZone, setSelectedZone] = useState<ClimaticZoneSnapshot | null>(null);
 
   function handleToggleType(type: RecentAlertType) {
@@ -40,7 +41,7 @@ export function RecentAlertsScreen() {
     if (item.type === "USER" && item.userAlert) {
       setSelectedUserAlert(item.userAlert);
     } else if (item.type === "CIVIL_DEFENSE" && item.civilDefenseNotice) {
-      setSelectedNotice(item.civilDefenseNotice);
+      window.open(item.civilDefenseNotice.link, "_blank", "noopener,noreferrer");
     } else if (item.type === "CLIMATIC" && item.climaticZone) {
       setSelectedZone(item.climaticZone);
     }
@@ -62,9 +63,28 @@ export function RecentAlertsScreen() {
   }
 
   return (
-    <div className="relative h-full w-full overflow-y-auto" style={{ paddingBottom: "var(--bottom-nav-clearance)" }}>
+    <div
+      ref={containerRef}
+      className="relative h-full w-full overflow-y-auto"
+      style={{ paddingBottom: "var(--bottom-nav-clearance)" }}
+      onTouchStart={handlers.onTouchStart}
+      onTouchMove={handlers.onTouchMove}
+      onTouchEnd={handlers.onTouchEnd}
+    >
+      <div
+        className="flex items-center justify-center overflow-hidden"
+        style={{ height: pullDistance, transition: isDragging ? "none" : "height 200ms ease" }}
+      >
+        <RefreshCw
+          className={cn("h-5 w-5 text-muted-foreground", refreshing && "animate-spin")}
+          style={{
+            opacity: Math.min(pullDistance / threshold, 1),
+            transform: refreshing ? undefined : `rotate(${(pullDistance / threshold) * 360}deg)`,
+          }}
+        />
+      </div>
+
       <FloatingBadge position="sticky">Alertas Recentes</FloatingBadge>
-      <AlertTypeLegend />
 
       <div className="px-4">
         <AlertTypeFilter selected={selectedTypes} onToggle={handleToggleType} />
@@ -96,12 +116,6 @@ export function RecentAlertsScreen() {
         onConfirm={handleConfirm}
         onReportClear={handleReportClear}
         pendingAction={pendingAction}
-      />
-
-      <CivilDefenseDetail
-        notice={selectedNotice}
-        open={selectedNotice !== null}
-        onClose={() => setSelectedNotice(null)}
       />
 
       <ClimaticDetailModal zone={selectedZone} open={selectedZone !== null} onClose={() => setSelectedZone(null)} />

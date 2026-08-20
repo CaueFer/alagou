@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { civilDefenseClient } from "@/api";
-import { CivilDefenseDetail } from "@/components/civil-defense/CivilDefenseDetail";
 import { CivilDefenseList } from "@/components/civil-defense/CivilDefenseList";
 import { Button } from "@/components/ui/button";
 import { FloatingBadge } from "@/components/ui/floating-badge";
@@ -12,7 +11,6 @@ type CivilDefenseStatus = "loading" | "ready" | "error";
 export function CivilDefenseScreen() {
   const [notices, setNotices] = useState<CivilDefenseNotice[]>([]);
   const [status, setStatus] = useState<CivilDefenseStatus>("loading");
-  const [selectedNotice, setSelectedNotice] = useState<CivilDefenseNotice | null>(null);
 
   const fetchNotices = useCallback(async () => {
     try {
@@ -36,7 +34,7 @@ export function CivilDefenseScreen() {
     >
       <FloatingBadge position="sticky">Defesa Civil</FloatingBadge>
 
-      <div className="pt-16">
+      <div>
         {status === "error" && (
           <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
             <p className="text-sm text-muted-foreground">Não foi possível carregar os avisos</p>
@@ -48,15 +46,9 @@ export function CivilDefenseScreen() {
         )}
 
         {(status !== "error" || notices.length > 0) && (
-          <CivilDefenseList notices={notices} loading={status === "loading"} onSelect={setSelectedNotice} />
+          <CivilDefenseList notices={notices} loading={status === "loading"} />
         )}
       </div>
-
-      <CivilDefenseDetail
-        notice={selectedNotice}
-        open={selectedNotice !== null}
-        onClose={() => setSelectedNotice(null)}
-      />
     </div>
   );
 }
