@@ -69,6 +69,7 @@ public class CivilDefenseNotice {
     public String getContent() { return content; }
     public String getLink() { return link; }
     public String getThumbnailUrl() { return thumbnailUrl; }
+    public void setThumbnailUrl(String thumbnailUrl) { this.thumbnailUrl = thumbnailUrl; }
     public CivilDefenseRiskLevel getRiskLevel() { return riskLevel; }
     public Instant getPublishedAt() { return publishedAt; }
     public Instant getCreatedAt() { return createdAt; }
