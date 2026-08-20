@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/zones").permitAll()
                         .requestMatchers("/api/civil-defense/**").permitAll()
                         .requestMatchers("/api/recent-alerts").permitAll()
+                        .requestMatchers("/api/weather").permitAll()
                         .requestMatchers("/uploads/photos/**").permitAll()
                         .anyRequest().authenticated()
                 )

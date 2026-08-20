@@ -132,7 +132,7 @@ class RecentAlertsServiceTest {
 
     private CivilDefenseNoticeResponse notice(Long id, CivilDefenseRiskLevel riskLevel, Instant publishedAt) {
         return new CivilDefenseNoticeResponse(id, "Estado de emergência decretado", "resumo", "conteúdo",
-                "link", riskLevel, publishedAt);
+                "link", "thumb.jpg", riskLevel, publishedAt);
     }
 
     private ZoneData zoneData(Instant lastUpdate) {

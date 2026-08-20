@@ -24,11 +24,11 @@ class CivilDefenseNewsClientTest {
         CivilDefenseNewsClient client = new CivilDefenseNewsClient(builder, BASE_URL);
 
         String body = """
-                [{"id":205363,"date_gmt":"2026-08-13T11:24:36","link":"https://www.joinville.sc.gov.br/noticias/defesa-civil-alerta/","title":{"rendered":"Defesa Civil de Joinville alerta para risco de alagamentos"},"excerpt":{"rendered":"Resumo do aviso"},"content":{"rendered":"<p>Texto completo do aviso</p>"}}]
+                [{"id":205363,"date_gmt":"2026-08-13T11:24:36","link":"https://www.joinville.sc.gov.br/noticias/defesa-civil-alerta/","title":{"rendered":"Defesa Civil de Joinville alerta para risco de alagamentos"},"excerpt":{"rendered":"Resumo do aviso"},"content":{"rendered":"<p>Texto completo do aviso</p>"},"_embedded":{"wp:featuredmedia":[{"source_url":"https://www.joinville.sc.gov.br/wp-content/uploads/2026/08/defesa-civil.jpeg"}]}}]
                 """;
 
         server.expect(method(org.springframework.http.HttpMethod.GET))
-                .andExpect(requestToUriTemplate(BASE_URL + "?search={kw}&orderby=date&order=desc&per_page={n}&_fields=id,date_gmt,link,title,excerpt,content", "alagamento", 10))
+                .andExpect(requestToUriTemplate(BASE_URL + "?search={kw}&orderby=date&order=desc&per_page={n}&_embed=wp:featuredmedia&_fields=id,date_gmt,link,title,excerpt,content,_links,_embedded", "alagamento", 10))
                 .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
 
         List<CivilDefenseNewsItem> items = client.searchRecent("alagamento", 10);
@@ -40,6 +40,7 @@ class CivilDefenseNewsClientTest {
         assertThat(item.title()).isEqualTo("Defesa Civil de Joinville alerta para risco de alagamentos");
         assertThat(item.excerpt()).isEqualTo("Resumo do aviso");
         assertThat(item.content()).isEqualTo("<p>Texto completo do aviso</p>");
+        assertThat(item.thumbnailUrl()).isEqualTo("https://www.joinville.sc.gov.br/wp-content/uploads/2026/08/defesa-civil.jpeg");
     }
 
     @Test
@@ -53,12 +54,13 @@ class CivilDefenseNewsClientTest {
                 """;
 
         server.expect(method(org.springframework.http.HttpMethod.GET))
-                .andExpect(requestToUriTemplate(BASE_URL + "?search={kw}&orderby=date&order=desc&per_page={n}&_fields=id,date_gmt,link,title,excerpt,content", "alagamento", 10))
+                .andExpect(requestToUriTemplate(BASE_URL + "?search={kw}&orderby=date&order=desc&per_page={n}&_embed=wp:featuredmedia&_fields=id,date_gmt,link,title,excerpt,content,_links,_embedded", "alagamento", 10))
                 .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
 
         List<CivilDefenseNewsItem> items = client.searchRecent("alagamento", 10);
 
         assertThat(items).hasSize(1);
         assertThat(items.get(0).excerpt()).isNull();
+        assertThat(items.get(0).thumbnailUrl()).isNull();
     }
 }

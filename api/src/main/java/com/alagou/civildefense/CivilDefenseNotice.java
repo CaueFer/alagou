@@ -34,6 +34,9 @@ public class CivilDefenseNotice {
     @Column
     private String link;
 
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "risk_level", nullable = false)
     private CivilDefenseRiskLevel riskLevel;
@@ -47,12 +50,13 @@ public class CivilDefenseNotice {
     protected CivilDefenseNotice() {}
 
     public CivilDefenseNotice(long externalId, String title, String excerpt, String content, String link,
-                               CivilDefenseRiskLevel riskLevel, Instant publishedAt, Instant createdAt) {
+                               String thumbnailUrl, CivilDefenseRiskLevel riskLevel, Instant publishedAt, Instant createdAt) {
         this.externalId = externalId;
         this.title = title;
         this.excerpt = excerpt;
         this.content = content;
         this.link = link;
+        this.thumbnailUrl = thumbnailUrl;
         this.riskLevel = riskLevel;
         this.publishedAt = publishedAt;
         this.createdAt = createdAt;
@@ -64,6 +68,7 @@ public class CivilDefenseNotice {
     public String getExcerpt() { return excerpt; }
     public String getContent() { return content; }
     public String getLink() { return link; }
+    public String getThumbnailUrl() { return thumbnailUrl; }
     public CivilDefenseRiskLevel getRiskLevel() { return riskLevel; }
     public Instant getPublishedAt() { return publishedAt; }
     public Instant getCreatedAt() { return createdAt; }

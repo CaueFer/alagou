@@ -49,6 +49,7 @@ public class CivilDefenseNoticeService {
                     item.excerpt(),
                     item.content(),
                     item.link(),
+                    item.thumbnailUrl(),
                     classifyRiskLevel(item.title()),
                     item.publishedAt(),
                     Instant.now()
@@ -76,6 +77,7 @@ public class CivilDefenseNoticeService {
                 notice.getExcerpt(),
                 notice.getContent(),
                 notice.getLink(),
+                notice.getThumbnailUrl(),
                 notice.getRiskLevel(),
                 notice.getPublishedAt()
         );
