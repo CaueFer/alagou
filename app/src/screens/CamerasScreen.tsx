@@ -56,19 +56,18 @@ export function CamerasScreen() {
         </div>
       )}
 
-      <div className="relative shrink-0 pb-2">
-        <FloatingBadge position="sticky">Câmeras em Tempo Real</FloatingBadge>
-        <button
-          type="button"
-          onClick={() => setIsDrawerOpen(true)}
-          className="absolute right-4 top-4 z-[500] flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-white/70 shadow-lg backdrop-blur-md transition-colors hover:bg-white/90"
-          aria-label="Selecionar câmera"
-        >
-          <ListVideo className="h-5 w-5 text-foreground" />
-        </button>
-      </div>
+      <FloatingBadge>Câmeras em Tempo Real</FloatingBadge>
 
-      <div className="min-h-0 flex-1 px-4 pb-4">
+      <button
+        type="button"
+        onClick={() => setIsDrawerOpen(true)}
+        className="absolute top-4 left-4 z-[500] flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-white/70 shadow-lg backdrop-blur-md transition-colors hover:bg-white/90"
+        aria-label="Selecionar câmera"
+      >
+        <ListVideo className="h-5 w-5 text-foreground" />
+      </button>
+
+      <div className="min-h-0 flex-1 px-4 pb-4 pt-16">
         {status === "error" ? (
           <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
             <p className="text-sm text-muted-foreground">Não foi possível carregar as câmeras</p>

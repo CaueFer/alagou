@@ -60,11 +60,11 @@ export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onE
 
   if (!camera) {
     return (
-      <div className="flex h-full w-full items-center justify-center rounded-2xl bg-black">
+      <div className="flex h-full w-full items-center justify-center rounded-2xl">
         {loading ? (
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-border border-t-primary" />
         ) : (
-          <p className="px-8 text-center text-sm text-white/70">Nenhuma câmera disponível</p>
+          <p className="px-8 text-center text-sm text-muted-foreground">Nenhuma câmera disponível</p>
         )}
       </div>
     );
@@ -73,8 +73,8 @@ export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onE
   return (
     <div
       className={cn(
-        "relative h-full w-full overflow-hidden bg-black",
-        fullscreen ? "fixed inset-0 z-[1100]" : "rounded-2xl shadow-lg",
+        "relative h-full w-full overflow-hidden",
+        fullscreen ? "fixed inset-0 z-[1100] bg-black" : "rounded-2xl shadow-lg",
       )}
     >
       <video ref={videoRef} className="h-full w-full object-contain" playsInline controls={status === "live"} />
