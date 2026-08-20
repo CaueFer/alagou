@@ -16,6 +16,6 @@ public class WeatherService {
 
     public WeatherResponse getCurrentWeather(double lat, double lng) {
         CurrentWeatherReading reading = client.fetchCurrent(lat, lng);
-        return new WeatherResponse(reading.temperature(), reading.condition(), reading.observedAt());
+        return new WeatherResponse(reading.temperature(), reading.condition(), reading.weatherCode(), reading.isDay(), reading.observedAt());
     }
 }
