@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { RotateCw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useHlsPlayer } from "@/hooks/useHlsPlayer";
+import { cn } from "@/lib/utils";
 import type { Camera } from "@/types/camera";
 
 async function lockLandscape() {
@@ -20,33 +21,18 @@ function unlockOrientation() {
 
 interface CameraPlayerProps {
   camera: Camera | null;
-  open: boolean;
-  onClose: () => void;
+  loading: boolean;
+  fullscreen?: boolean;
+  onClose?: () => void;
   onError?: () => void;
 }
 
-export function CameraPlayer({ camera, open, onClose, onError }: CameraPlayerProps) {
-  const { videoRef, status, retry } = useHlsPlayer(camera?.streamUrl ?? "", open && camera !== null);
+export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onError }: CameraPlayerProps) {
+  const { videoRef, status, retry } = useHlsPlayer(camera?.streamUrl ?? "", camera !== null);
 
   useEffect(() => {
-    if (!open) {
-      return;
-    }
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, onClose]);
-
-  useEffect(() => {
-    if (!open) {
-      unlockOrientation();
-    }
     return () => unlockOrientation();
-  }, [open]);
+  }, []);
 
   useEffect(() => {
     if (status === "error" && onError) {
@@ -54,13 +40,41 @@ export function CameraPlayer({ camera, open, onClose, onError }: CameraPlayerPro
     }
   }, [status, onError]);
 
-  if (!open || !camera) {
+  useEffect(() => {
+    if (!fullscreen || !camera || !onClose) {
+      return;
+    }
+    const handleClose = onClose;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [fullscreen, camera, onClose]);
+
+  if (fullscreen && !camera) {
     return null;
   }
 
+  if (!camera) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        {loading ? (
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-border border-t-primary" />
+        ) : (
+          <p className="px-8 text-center text-sm text-muted-foreground">Nenhuma câmera disponível</p>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="fixed inset-0 z-[1100] flex flex-col bg-black">
-      <video ref={videoRef} className="h-full w-full object-contain" playsInline controls={status === "live"} />
+    <div
+      className={cn("relative h-full w-full overflow-hidden", fullscreen && "fixed inset-0 z-[1100] bg-black")}
+    >
+      <video ref={videoRef} className="h-full w-full object-contain" playsInline />
 
       {status === "connecting" && (
         <div className="absolute inset-0 flex items-center justify-center">
@@ -76,25 +90,43 @@ export function CameraPlayer({ camera, open, onClose, onError }: CameraPlayerPro
       )}
 
       <div
-        className="absolute inset-x-0 top-0 flex items-center justify-between p-4"
-        style={{ paddingTop: "calc(env(safe-area-inset-top) + 1rem)" }}
+        className={cn(
+          "absolute inset-x-0 flex items-center gap-2 p-3",
+          fullscreen ? "top-0 justify-between" : "justify-center",
+        )}
+        style={
+          fullscreen
+            ? { paddingTop: "calc(env(safe-area-inset-top) + 1rem)" }
+            : { bottom: "var(--bottom-nav-clearance)" }
+        }
       >
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-white hover:bg-white/10 hover:text-white"
-          onClick={onClose}
-          aria-label="Fechar"
+        {fullscreen && onClose && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white hover:bg-white/10 hover:text-white"
+            onClick={onClose}
+            aria-label="Fechar"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        )}
+        <span
+          className={cn(
+            "max-w-[60%] truncate rounded-full border px-3 py-1 text-sm backdrop-blur-md",
+            fullscreen ? "border-white/20 bg-black/50 text-white" : "border-white/40 bg-white/70 text-foreground shadow-lg",
+          )}
         >
-          <X className="h-5 w-5" />
-        </Button>
-        <span className="max-w-[60%] truncate rounded-full border border-white/20 bg-black/50 px-3 py-1 text-sm text-white backdrop-blur-md">
           {camera.name}
         </span>
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-white/10 hover:text-white"
+          className={cn(
+            fullscreen
+              ? "text-white hover:bg-white/10 hover:text-white"
+              : "border border-white/40 bg-white/70 text-foreground shadow-lg backdrop-blur-md hover:bg-white/90",
+          )}
           onClick={lockLandscape}
           aria-label="Girar para paisagem"
         >

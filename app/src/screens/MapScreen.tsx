@@ -73,7 +73,8 @@ export function MapScreen() {
 
       <CameraPlayer
         camera={selectedCamera}
-        open={selectedCamera !== null}
+        loading={false}
+        fullscreen
         onClose={() => setSelectedCamera(null)}
       />
 
