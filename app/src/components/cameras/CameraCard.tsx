@@ -6,10 +6,11 @@ interface CameraCardProps {
   camera: Camera;
   locked: boolean;
   unavailable: boolean;
+  active: boolean;
   onSelect: (camera: Camera) => void;
 }
 
-export function CameraCard({ camera, locked, unavailable, onSelect }: CameraCardProps) {
+export function CameraCard({ camera, locked, unavailable, active, onSelect }: CameraCardProps) {
   return (
     <button
       type="button"
@@ -23,6 +24,7 @@ export function CameraCard({ camera, locked, unavailable, onSelect }: CameraCard
         "disabled:pointer-events-none",
         locked && "opacity-50",
         unavailable && "opacity-60",
+        active && "border-primary ring-1 ring-primary",
       )}
     >
       <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary-container">
@@ -46,6 +48,8 @@ export function CameraCard({ camera, locked, unavailable, onSelect }: CameraCard
         <span className="text-sm font-semibold text-foreground truncate">{camera.name}</span>
         {unavailable ? (
           <span className="text-xs text-muted-foreground">Temporariamente indisponível</span>
+        ) : active ? (
+          <span className="text-xs font-medium text-primary">Assistindo agora</span>
         ) : (
           <span className="text-xs text-muted-foreground">Câmera ao vivo</span>
         )}

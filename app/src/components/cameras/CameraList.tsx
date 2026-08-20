@@ -8,10 +8,11 @@ interface CameraListProps {
   locked: boolean;
   loading: boolean;
   unavailableIds: Set<string>;
+  selectedCameraId: string | null;
   onSelect: (camera: Camera) => void;
 }
 
-export function CameraList({ cameras, locked, loading, unavailableIds, onSelect }: CameraListProps) {
+export function CameraList({ cameras, locked, loading, unavailableIds, selectedCameraId, onSelect }: CameraListProps) {
   if (loading) {
     return (
       <div className="flex flex-col gap-3 p-4">
@@ -30,6 +31,7 @@ export function CameraList({ cameras, locked, loading, unavailableIds, onSelect 
           camera={camera}
           locked={locked}
           unavailable={unavailableIds.has(camera.id)}
+          active={camera.id === selectedCameraId}
           onSelect={onSelect}
         />
       ))}
