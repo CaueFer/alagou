@@ -19,7 +19,7 @@ export function WeatherButton({ location }: WeatherButtonProps) {
     >
       <span className="relative flex items-center justify-center">
         <Icon className="absolute -left-3 -top-3 h-6 w-6 text-foreground/55" />
-        <span className="relative top-0.5 left-0.5 text-lg font-bold leading-none text-foreground">
+        <span className="relative top-1.5 left-1.5 text-lg font-bold leading-none text-foreground">
           {status === "ready" && weather ? `${Math.round(weather.temperature)}°` : "--°"}
         </span>
       </span>
