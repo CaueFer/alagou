@@ -1,4 +1,4 @@
-import { HandDrawnWeatherIcon } from "@/components/map/icons";
+import { CloudSunIcon, getWeatherIcon } from "@/components/map/icons";
 import { useWeather } from "@/hooks/useWeather";
 import type { AlertLocation } from "@/types/alert";
 
@@ -8,6 +8,7 @@ interface WeatherButtonProps {
 
 export function WeatherButton({ location }: WeatherButtonProps) {
   const { weather, status } = useWeather(location);
+  const Icon = status === "ready" && weather ? getWeatherIcon(weather.weatherCode, weather.isDay) : CloudSunIcon;
 
   return (
     <button
@@ -16,7 +17,7 @@ export function WeatherButton({ location }: WeatherButtonProps) {
       style={{ bottom: "var(--bottom-nav-clearance)" }}
       aria-label={status === "ready" && weather ? `Condições climáticas: ${weather.condition}` : "Condições climáticas"}
     >
-      <HandDrawnWeatherIcon className="h-5 w-5 text-foreground" />
+      <Icon className="h-5 w-5 text-foreground" />
       <span className="text-[10px] font-medium text-foreground">
         {status === "ready" && weather ? `${Math.round(weather.temperature)}°` : "--°"}
       </span>

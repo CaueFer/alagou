@@ -24,7 +24,7 @@ public class OpenMeteoClient {
         var uri = UriComponentsBuilder.fromUriString(baseUrl)
                 .queryParam("latitude", lat)
                 .queryParam("longitude", lng)
-                .queryParam("current", "temperature_2m,weather_code")
+                .queryParam("current", "temperature_2m,weather_code,is_day")
                 .queryParam("timezone", "UTC")
                 .build()
                 .encode()
@@ -44,7 +44,9 @@ public class OpenMeteoClient {
 
     private CurrentWeatherReading toReading(OpenMeteoResponse.Current current) {
         Instant observedAt = LocalDateTime.parse(current.time()).toInstant(ZoneOffset.UTC);
-        return new CurrentWeatherReading(current.temperature(), mapWeatherCodeToCondition(current.weatherCode()), observedAt);
+        boolean isDay = current.isDay() == null || current.isDay() == 1;
+        return new CurrentWeatherReading(current.temperature(), mapWeatherCodeToCondition(current.weatherCode()),
+                current.weatherCode(), isDay, observedAt);
     }
 
     private String mapWeatherCodeToCondition(Integer code) {
