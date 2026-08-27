@@ -4,12 +4,14 @@ import { httpCameraClient } from "@/api/httpCameraClient";
 import { httpCivilDefenseClient } from "@/api/httpCivilDefenseClient";
 import { httpRecentAlertsClient } from "@/api/httpRecentAlertsClient";
 import { httpWeatherClient } from "@/api/httpWeatherClient";
+import { httpZoneClient } from "@/api/httpZoneClient";
 import type { AlertClient } from "@/api/alertClient";
 import type { AuthClient } from "@/api/authClient";
 import type { CameraClient } from "@/api/cameraClient";
 import type { CivilDefenseClient } from "@/api/civilDefenseClient";
 import type { RecentAlertsClient } from "@/api/recentAlertsClient";
 import type { WeatherClient } from "@/api/weatherClient";
+import type { ZoneClient } from "@/api/zoneClient";
 
 export const alertClient: AlertClient = httpAlertClient;
 export const authClient: AuthClient = httpAuthClient;
@@ -17,6 +19,7 @@ export const cameraClient: CameraClient = httpCameraClient;
 export const civilDefenseClient: CivilDefenseClient = httpCivilDefenseClient;
 export const recentAlertsClient: RecentAlertsClient = httpRecentAlertsClient;
 export const weatherClient: WeatherClient = httpWeatherClient;
+export const zoneClient: ZoneClient = httpZoneClient;
 
 export type { AlertClient } from "@/api/alertClient";
 export type { AuthClient } from "@/api/authClient";
@@ -24,3 +27,4 @@ export type { CameraClient } from "@/api/cameraClient";
 export type { CivilDefenseClient } from "@/api/civilDefenseClient";
 export type { RecentAlertsClient } from "@/api/recentAlertsClient";
 export type { WeatherClient } from "@/api/weatherClient";
+export type { ZoneClient } from "@/api/zoneClient";
