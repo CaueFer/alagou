@@ -25,9 +25,11 @@ class WorldTidesClientTest {
         WorldTidesClient client = new WorldTidesClient(builder, BASE_URL, "test-key", -26.2439, -48.6386);
 
         String body = """
-                {"status":200,"extremes":[
-                  {"dt":1755518400,"date":"2026-08-18T12:00:00+000","height":1.42,"type":"High"},
-                  {"dt":1755540000,"date":"2026-08-18T18:00:00+000","height":0.21,"type":"Low"}
+                {"status":200,"callCount":1,"copyright":"Tidal data retrieved from www.worldtides.info",
+                 "requestLat":-26.2439,"requestLon":-48.6386,"responseLat":-26.25,"responseLon":-48.6333,
+                 "atlas":"FES2022","station":"Sao Francisco do Sul","extremes":[
+                  {"dt":1755518400,"date":"2026-08-18T12:00+0000","height":1.42,"type":"High"},
+                  {"dt":1755540000,"date":"2026-08-18T18:00+0000","height":0.21,"type":"Low"}
                 ]}
                 """;
 
