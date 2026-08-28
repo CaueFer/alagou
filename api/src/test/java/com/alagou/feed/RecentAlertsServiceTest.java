@@ -8,6 +8,8 @@ import com.alagou.civildefense.CivilDefenseRiskLevel;
 import com.alagou.civildefense.dto.CivilDefenseNoticeResponse;
 import com.alagou.civildefense.service.CivilDefenseNoticeService;
 import com.alagou.zone.RiverData;
+import com.alagou.zone.OverallStatus;
+import com.alagou.zone.RiverStatus;
 import com.alagou.zone.Zone;
 import com.alagou.zone.ZoneData;
 import com.alagou.zone.ZoneService;
@@ -137,8 +139,9 @@ class RecentAlertsServiceTest {
 
     private ZoneData zoneData(Instant lastUpdate) {
         return new ZoneData("central", "Zona Central",
-                List.of(new RiverData("82274000", "Rio Cachoeira", 2.5, lastUpdate)),
-                null, null, lastUpdate);
+                List.of(List.of(List.of(-48.85, -26.30))),
+                List.of(new RiverData("82274000", "Rio Cachoeira", 2.5, RiverStatus.ATTENTION, lastUpdate)),
+                null, null, OverallStatus.ATTENTION, lastUpdate);
     }
 
     private Zone zone() {

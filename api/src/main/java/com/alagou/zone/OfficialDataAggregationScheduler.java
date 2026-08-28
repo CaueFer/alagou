@@ -1,8 +1,11 @@
 package com.alagou.zone;
 
-import com.alagou.officialdata.civildefense.CivilDefenseNewsClient;
-import com.alagou.officialdata.civildefense.CivilDefenseNewsItem;
+import com.alagou.civildefense.CivilDefenseNotice;
+import com.alagou.civildefense.CivilDefenseRiskLevel;
+import com.alagou.civildefense.dao.CivilDefenseNoticeRepository;
 import com.alagou.officialdata.river.AnaHidrowebClient;
+import com.alagou.officialdata.river.AnaStationThresholds;
+import com.alagou.officialdata.river.StationThresholds;
 import com.alagou.officialdata.tide.TideExtreme;
 import com.alagou.officialdata.tide.TideType;
 import com.alagou.officialdata.tide.WorldTidesClient;
@@ -14,21 +17,24 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 public class OfficialDataAggregationScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(OfficialDataAggregationScheduler.class);
     private static final List<String> RIVER_STATIONS = List.of("82274000", "82270060");
-    private static final String CIVIL_DEFENSE_KEYWORD = "alagamento";
     private static final int TIDE_FORECAST_DAYS = 7;
 
     private final ZoneService zoneService;
     private final AnaHidrowebClient anaClient;
     private final WorldTidesClient tideClient;
-    private final CivilDefenseNewsClient civilDefenseClient;
+    private final CivilDefenseNoticeRepository civilDefenseRepository;
+    private final AnaStationThresholds stationThresholds;
 
     private String anaToken;
     private Instant anaTokenExpiresAt;
@@ -39,15 +45,17 @@ public class OfficialDataAggregationScheduler {
             ZoneService zoneService,
             AnaHidrowebClient anaClient,
             WorldTidesClient tideClient,
-            CivilDefenseNewsClient civilDefenseClient
+            CivilDefenseNoticeRepository civilDefenseRepository,
+            AnaStationThresholds stationThresholds
     ) {
         this.zoneService = zoneService;
         this.anaClient = anaClient;
         this.tideClient = tideClient;
-        this.civilDefenseClient = civilDefenseClient;
+        this.civilDefenseRepository = civilDefenseRepository;
+        this.stationThresholds = stationThresholds;
     }
 
-    @Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedRate = 15, timeUnit = TimeUnit.MINUTES)
     public void aggregateOfficialData() {
         log.info("Starting official data aggregation");
 
@@ -56,12 +64,21 @@ public class OfficialDataAggregationScheduler {
         CivilDefenseData civilDefense = fetchCivilDefenseData();
 
         for (Zone zone : zoneService.getZones()) {
+            List<RiverData> zoneRivers = riversForZone(zone, rivers);
+            CivilDefenseData zoneCivilDefense = civilDefense != null
+                    ? civilDefense
+                    : zoneService.getLastKnownCivilDefenseData(zone.id());
+            TideData zoneTide = zone.tideAffected() ? tide : null;
+            OverallStatus overallStatus = computeOverallStatus(zoneRivers, zoneCivilDefense);
+
             ZoneData data = new ZoneData(
                     zone.id(),
                     zone.name(),
-                    rivers,
-                    tide,
-                    civilDefense,
+                    zone.polygon(),
+                    zoneRivers,
+                    zoneTide,
+                    zoneCivilDefense,
+                    overallStatus,
                     Instant.now()
             );
             zoneService.updateZoneData(data);
@@ -81,7 +98,7 @@ public class OfficialDataAggregationScheduler {
             return parseRiverData(response);
         } catch (Exception e) {
             log.error("Failed to fetch river data from ANA", e);
-            return getLastKnownRiverData();
+            return null;
         }
     }
 
@@ -112,11 +129,58 @@ public class OfficialDataAggregationScheduler {
         return rivers;
     }
 
-    private List<RiverData> getLastKnownRiverData() {
-        return zoneService.getAllZoneData().stream()
-                .findFirst()
-                .map(ZoneData::rivers)
-                .orElse(List.of());
+    private List<RiverData> riversForZone(Zone zone, List<RiverData> fetched) {
+        List<RiverData> source;
+        if (fetched != null) {
+            source = fetched.stream()
+                    .filter(river -> zone.riverStations().contains(river.stationCode()))
+                    .toList();
+        } else {
+            source = zoneService.getLastKnownRiverData(zone.id());
+        }
+
+        Map<String, RiverData> byStationCode = source.stream()
+                .collect(Collectors.toMap(RiverData::stationCode, river -> river, (first, second) -> first));
+
+        List<RiverData> result = new ArrayList<>();
+        for (String stationCode : zone.riverStations()) {
+            RiverData known = byStationCode.get(stationCode);
+            result.add(known != null ? withStatus(known) : unknownReading(stationCode));
+        }
+        return result;
+    }
+
+    private RiverData unknownReading(String stationCode) {
+        StationThresholds thresholds = stationThresholds.forStation(stationCode);
+        String name = thresholds != null && thresholds.getName() != null ? thresholds.getName() : "Unknown";
+        return new RiverData(stationCode, name, null, RiverStatus.UNKNOWN, Instant.now());
+    }
+
+    private RiverData withStatus(RiverData river) {
+        return new RiverData(
+                river.stationCode(),
+                river.stationName(),
+                river.level(),
+                classifyRiverStatus(river.level(), river.stationCode()),
+                river.lastUpdate()
+        );
+    }
+
+    private RiverStatus classifyRiverStatus(Double level, String stationCode) {
+        if (level == null) {
+            return RiverStatus.UNKNOWN;
+        }
+
+        StationThresholds thresholds = stationThresholds.forStation(stationCode);
+        if (thresholds == null || thresholds.getAttention() == null
+                || thresholds.getAlert() == null || thresholds.getOverflow() == null) {
+            return RiverStatus.UNKNOWN;
+        }
+
+        if (level >= thresholds.getOverflow()) return RiverStatus.OVERFLOW;
+        if (level >= thresholds.getAlert()) return RiverStatus.ALERT;
+        if (level >= thresholds.getAttention()) return RiverStatus.ATTENTION;
+        return RiverStatus.NORMAL;
     }
 
     @Scheduled(initialDelay = 0, fixedRate = 1, timeUnit = TimeUnit.DAYS)
@@ -156,42 +220,68 @@ public class OfficialDataAggregationScheduler {
 
     private CivilDefenseData fetchCivilDefenseData() {
         try {
-            List<CivilDefenseNewsItem> items = civilDefenseClient.searchRecent(CIVIL_DEFENSE_KEYWORD, 10);
+            Instant since = Instant.now().minusSeconds(86400);
+            List<CivilDefenseNotice> notices = civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(since);
 
-            List<String> recentAlerts = items.stream()
-                    .map(CivilDefenseNewsItem::title)
+            List<String> recentAlerts = notices.stream()
+                    .map(CivilDefenseNotice::getTitle)
                     .limit(5)
                     .toList();
 
-            int alertLevel = calculateAlertLevel(items);
-            Instant lastUpdate = items.isEmpty() ? Instant.now() : items.get(0).publishedAt();
+            CivilDefenseRiskLevel riskLevel = notices.stream()
+                    .map(CivilDefenseNotice::getRiskLevel)
+                    .max(Comparator.comparingInt(CivilDefenseRiskLevel::ordinal))
+                    .orElse(CivilDefenseRiskLevel.NONE);
 
-            return new CivilDefenseData(alertLevel, recentAlerts, lastUpdate);
+            Instant lastUpdate = notices.isEmpty() ? Instant.now() : notices.get(0).getPublishedAt();
+
+            return new CivilDefenseData(riskLevel, recentAlerts, lastUpdate);
         } catch (Exception e) {
             log.error("Failed to fetch civil defense data", e);
-            return getLastKnownCivilDefenseData();
+            return null;
         }
     }
 
-    private int calculateAlertLevel(List<CivilDefenseNewsItem> items) {
-        if (items.isEmpty()) {
-            return 0;
+    private OverallStatus computeOverallStatus(List<RiverData> rivers, CivilDefenseData civilDefense) {
+        int worst = overallRank(OverallStatus.UNKNOWN);
+
+        for (RiverData river : rivers) {
+            int rank = switch (river.status()) {
+                case OVERFLOW -> overallRank(OverallStatus.CRITICAL);
+                case ALERT -> overallRank(OverallStatus.ALERT);
+                case ATTENTION -> overallRank(OverallStatus.ATTENTION);
+                case NORMAL -> overallRank(OverallStatus.NORMAL);
+                case UNKNOWN -> overallRank(OverallStatus.UNKNOWN);
+            };
+            if (rank > worst) worst = rank;
         }
 
-        long recentCount = items.stream()
-                .filter(item -> item.publishedAt().isAfter(Instant.now().minusSeconds(86400)))
-                .count();
+        if (civilDefense != null) {
+            int rank = switch (civilDefense.riskLevel()) {
+                case EMERGENCY -> overallRank(OverallStatus.CRITICAL);
+                case ALERT -> overallRank(OverallStatus.ALERT);
+                case ATTENTION -> overallRank(OverallStatus.ATTENTION);
+                case NONE -> overallRank(OverallStatus.NORMAL);
+            };
+            if (rank > worst) worst = rank;
+        }
 
-        if (recentCount >= 5) return 3;
-        if (recentCount >= 2) return 2;
-        if (recentCount >= 1) return 1;
-        return 0;
+        return switch (worst) {
+            case 4 -> OverallStatus.CRITICAL;
+            case 3 -> OverallStatus.ALERT;
+            case 2 -> OverallStatus.ATTENTION;
+            case 1 -> OverallStatus.NORMAL;
+            default -> OverallStatus.UNKNOWN;
+        };
     }
 
-    private CivilDefenseData getLastKnownCivilDefenseData() {
-        return zoneService.getAllZoneData().stream()
-                .findFirst()
-                .map(ZoneData::civilDefense)
-                .orElse(new CivilDefenseData(0, List.of(), Instant.now()));
+    private static int overallRank(OverallStatus status) {
+        return switch (status) {
+            case NORMAL -> 1;
+            case ATTENTION -> 2;
+            case ALERT -> 3;
+            case CRITICAL -> 4;
+            case UNKNOWN -> 0;
+        };
     }
 }

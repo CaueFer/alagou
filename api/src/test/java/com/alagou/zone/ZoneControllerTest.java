@@ -1,5 +1,6 @@
 package com.alagou.zone;
 
+import com.alagou.civildefense.CivilDefenseRiskLevel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,12 +27,17 @@ class ZoneControllerTest {
 
     @Test
     void shouldReturnZones() throws Exception {
+        List<List<List<Double>>> polygon = List.of(
+                List.of(List.of(-48.8550, -26.2950), List.of(-48.8350, -26.2950), List.of(-48.8350, -26.3100), List.of(-48.8550, -26.2950))
+        );
         ZoneData data = new ZoneData(
                 "central",
                 "Zona Central",
-                List.of(),
+                polygon,
+                List.of(new RiverData("82274000", "Rio Cachoeira", 2.5, RiverStatus.ATTENTION, Instant.now())),
                 new TideData(1.5, Instant.now(), "HIGH_TIDE"),
-                new CivilDefenseData(1, List.of(), Instant.now()),
+                new CivilDefenseData(CivilDefenseRiskLevel.ALERT, List.of("Aviso"), Instant.now()),
+                OverallStatus.ALERT,
                 Instant.now()
         );
 
@@ -40,6 +46,13 @@ class ZoneControllerTest {
         mockMvc.perform(get("/api/zones"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].zoneId").value("central"))
-                .andExpect(jsonPath("$[0].zoneName").value("Zona Central"));
+                .andExpect(jsonPath("$[0].zoneName").value("Zona Central"))
+                .andExpect(jsonPath("$[0].polygon[0][0][0]").value(-48.8550))
+                .andExpect(jsonPath("$[0].polygon[0][0][1]").value(-26.2950))
+                .andExpect(jsonPath("$[0].rivers[0].stationCode").value("82274000"))
+                .andExpect(jsonPath("$[0].rivers[0].status").value("ATTENTION"))
+                .andExpect(jsonPath("$[0].tide.status").value("HIGH_TIDE"))
+                .andExpect(jsonPath("$[0].civilDefense.riskLevel").value("ALERT"))
+                .andExpect(jsonPath("$[0].overallStatus").value("ALERT"));
     }
 }
