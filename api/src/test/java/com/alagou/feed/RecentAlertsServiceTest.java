@@ -139,14 +139,14 @@ class RecentAlertsServiceTest {
 
     private ZoneData zoneData(Instant lastUpdate) {
         return new ZoneData("central", "Zona Central",
-                List.of(List.of(List.of(-48.85, -26.30))),
+                List.of(List.of(List.of(List.of(-48.85, -26.30)))),
                 List.of(new RiverData("82274000", "Rio Cachoeira", 2.5, RiverStatus.ATTENTION, lastUpdate)),
                 null, null, OverallStatus.ATTENTION, lastUpdate);
     }
 
     private Zone zone() {
         return new Zone("central", "Zona Central",
-                List.of(List.of(List.of(-48.85, -26.30), List.of(-48.86, -26.31))));
+                List.of(List.of(List.of(List.of(-48.85, -26.30), List.of(-48.86, -26.31)))));
     }
 
     private RecentAlertResponse findByType(List<RecentAlertResponse> items, AlertType type) {

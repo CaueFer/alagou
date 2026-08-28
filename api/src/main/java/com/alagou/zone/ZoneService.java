@@ -51,13 +51,17 @@ public class ZoneService {
                 String name = properties.path("name").asText();
                 JsonNode coordinates = feature.path("geometry").path("coordinates");
 
-                List<List<List<Double>>> polygon = new ArrayList<>();
-                for (JsonNode ring : coordinates) {
-                    List<List<Double>> ringCoords = new ArrayList<>();
-                    for (JsonNode point : ring) {
-                        ringCoords.add(List.of(point.get(0).asDouble(), point.get(1).asDouble()));
+                List<List<List<List<Double>>>> polygon = new ArrayList<>();
+                for (JsonNode polygonNode : coordinates) {
+                    List<List<List<Double>>> rings = new ArrayList<>();
+                    for (JsonNode ring : polygonNode) {
+                        List<List<Double>> ringCoords = new ArrayList<>();
+                        for (JsonNode point : ring) {
+                            ringCoords.add(List.of(point.get(0).asDouble(), point.get(1).asDouble()));
+                        }
+                        rings.add(ringCoords);
                     }
-                    polygon.add(ringCoords);
+                    polygon.add(rings);
                 }
 
                 List<String> neighborhoods = new ArrayList<>();

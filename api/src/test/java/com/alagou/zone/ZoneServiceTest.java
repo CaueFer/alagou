@@ -70,11 +70,27 @@ class ZoneServiceTest {
     }
 
     @Test
+    void shouldLoadMultiPolygonZones() {
+        Zone norte = zoneService.getZones().stream()
+                .filter(z -> z.id().equals("norte"))
+                .findFirst()
+                .orElseThrow();
+
+        assertFalse(norte.polygon().isEmpty());
+        assertEquals(2, norte.polygon().size());
+        for (List<List<List<Double>>> polygon : norte.polygon()) {
+            assertFalse(polygon.isEmpty());
+            List<List<Double>> exterior = polygon.get(0);
+            assertEquals(exterior.get(0), exterior.get(exterior.size() - 1));
+        }
+    }
+
+    @Test
     void shouldUpdateAndGetZoneData() {
         ZoneData data = new ZoneData(
                 "centro",
                 "Centro",
-                List.of(List.of(List.of(-48.8550, -26.2950))),
+                List.of(List.of(List.of(List.of(-48.8550, -26.2950)))),
                 List.of(),
                 new TideData(1.5, Instant.now(), "HIGH_TIDE"),
                 new CivilDefenseData(CivilDefenseRiskLevel.ALERT, List.of("Alerta teste"), Instant.now()),

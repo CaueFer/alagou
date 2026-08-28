@@ -119,10 +119,11 @@ public class RecentAlertsService {
     }
 
     private double[] centroid(Zone zone) {
-        if (zone.polygon() == null || zone.polygon().isEmpty() || zone.polygon().get(0).isEmpty()) {
+        if (zone.polygon() == null || zone.polygon().isEmpty()
+                || zone.polygon().get(0).isEmpty() || zone.polygon().get(0).get(0).isEmpty()) {
             return null;
         }
-        List<List<Double>> ring = zone.polygon().get(0);
+        List<List<Double>> ring = zone.polygon().get(0).get(0);
         double sumLat = 0;
         double sumLng = 0;
         for (List<Double> point : ring) {

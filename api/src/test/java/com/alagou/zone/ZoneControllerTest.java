@@ -27,8 +27,8 @@ class ZoneControllerTest {
 
     @Test
     void shouldReturnZones() throws Exception {
-        List<List<List<Double>>> polygon = List.of(
-                List.of(List.of(-48.8550, -26.2950), List.of(-48.8350, -26.2950), List.of(-48.8350, -26.3100), List.of(-48.8550, -26.2950))
+        List<List<List<List<Double>>>> polygon = List.of(
+                List.of(List.of(List.of(-48.8550, -26.2950), List.of(-48.8350, -26.2950), List.of(-48.8350, -26.3100), List.of(-48.8550, -26.2950)))
         );
         ZoneData data = new ZoneData(
                 "central",
@@ -47,8 +47,8 @@ class ZoneControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].zoneId").value("central"))
                 .andExpect(jsonPath("$[0].zoneName").value("Zona Central"))
-                .andExpect(jsonPath("$[0].polygon[0][0][0]").value(-48.8550))
-                .andExpect(jsonPath("$[0].polygon[0][0][1]").value(-26.2950))
+                .andExpect(jsonPath("$[0].polygon[0][0][0][0]").value(-48.8550))
+                .andExpect(jsonPath("$[0].polygon[0][0][0][1]").value(-26.2950))
                 .andExpect(jsonPath("$[0].rivers[0].stationCode").value("82274000"))
                 .andExpect(jsonPath("$[0].rivers[0].status").value("ATTENTION"))
                 .andExpect(jsonPath("$[0].tide.status").value("HIGH_TIDE"))
