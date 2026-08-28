@@ -7,22 +7,42 @@ import { RecenterMap } from "@/components/map/RecenterMap";
 import { AlertSummaryBar } from "@/components/map/AlertSummaryBar";
 import { SeverityLegend } from "@/components/map/SeverityLegend";
 import { WeatherButton } from "@/components/map/WeatherButton";
+import { ZoneLayer } from "@/components/map/ZoneLayer";
+import { ZonesToggleButton } from "@/components/map/ZonesToggleButton";
 import { Button } from "@/components/ui/button";
 import type { Alert, AlertLocation } from "@/types/alert";
 import type { Camera } from "@/types/camera";
+import type { Zone } from "@/types/zone";
 
 interface MapViewProps {
   alerts: Alert[];
   cameras: Camera[];
+  zones: Zone[];
+  zonesVisible: boolean;
   loading: boolean;
   focusLocation: AlertLocation | null;
   userLocation: AlertLocation | null;
   onSelectAlert: (id: string) => void;
   onSelectCamera: (camera: Camera) => void;
+  onSelectZone: (zone: Zone) => void;
+  onToggleZones: () => void;
   onCreateReport: () => void;
 }
 
-export function MapView({ alerts, cameras, loading, focusLocation, userLocation, onSelectAlert, onSelectCamera, onCreateReport }: MapViewProps) {
+export function MapView({
+  alerts,
+  cameras,
+  zones,
+  zonesVisible,
+  loading,
+  focusLocation,
+  userLocation,
+  onSelectAlert,
+  onSelectCamera,
+  onSelectZone,
+  onToggleZones,
+  onCreateReport,
+}: MapViewProps) {
   return (
     <div className="relative h-full w-full">
       <BaseMap className="h-full w-full">
@@ -31,6 +51,7 @@ export function MapView({ alerts, cameras, loading, focusLocation, userLocation,
         ) : (
           userLocation && <RecenterMap location={userLocation} />
         )}
+        {zonesVisible && <ZoneLayer zones={zones} onSelectZone={onSelectZone} />}
         {alerts.map((alert) => (
           <AlertAreaCircle key={`area-${alert.id}`} alert={alert} />
         ))}
@@ -45,6 +66,7 @@ export function MapView({ alerts, cameras, loading, focusLocation, userLocation,
       <AlertSummaryBar alerts={alerts} />
       <SeverityLegend />
       <WeatherButton location={userLocation} />
+      <ZonesToggleButton visible={zonesVisible} onToggle={onToggleZones} />
 
       {loading && (
         <div className="pointer-events-none absolute inset-0 z-[500] flex items-center justify-center">

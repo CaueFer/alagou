@@ -4,23 +4,30 @@ import { MapView } from "@/components/map/MapView";
 import { AlertDetailSheet } from "@/components/alert-detail/AlertDetailSheet";
 import { NewReportFlow } from "@/components/new-report/NewReportFlow";
 import { CameraPlayer } from "@/components/cameras/CameraPlayer";
+import { ZoneDetailSheet } from "@/components/map/ZoneDetailSheet";
 import { useAlerts } from "@/hooks/useAlerts";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import { useZones } from "@/hooks/useZones";
 import { alertClient, cameraClient } from "@/api";
+import { getZonesVisible, setZonesVisible } from "@/lib/zonePreference";
 import type { AlertLocation } from "@/types/alert";
 import type { Camera } from "@/types/camera";
+import type { Zone } from "@/types/zone";
 
 export function MapScreen() {
   const { alerts, status, updateAlert, removeAlert, addAlert } = useAlerts();
   const { confirm, reportClear, pendingAction } = useConfirmation();
   const { position } = useGeolocation(true);
+  const { zones, status: zonesStatus } = useZones();
 
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [isCreatingReport, setIsCreatingReport] = useState(false);
   const [focusLocation, setFocusLocation] = useState<AlertLocation | null>(null);
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
+  const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
+  const [zonesVisible, setZonesVisibleState] = useState<boolean>(() => getZonesVisible());
 
   const fetchCameras = useCallback(async () => {
     try {
@@ -40,6 +47,20 @@ export function MapScreen() {
       toast.error("Falha ao atualizar alertas. Exibindo dados salvos.");
     }
   }, [status]);
+
+  useEffect(() => {
+    if (zonesStatus === "error") {
+      toast.error("Falha ao carregar zonas de risco.");
+    }
+  }, [zonesStatus]);
+
+  function handleToggleZones() {
+    setZonesVisibleState((visible) => {
+      const next = !visible;
+      setZonesVisible(next);
+      return next;
+    });
+  }
 
   const selectedAlert = alerts.find((alert) => alert.id === selectedAlertId) ?? null;
 
@@ -63,11 +84,15 @@ export function MapScreen() {
       <MapView
         alerts={alerts}
         cameras={cameras}
+        zones={zones}
+        zonesVisible={zonesVisible}
         loading={status === "loading"}
         focusLocation={focusLocation}
         userLocation={position}
         onSelectAlert={setSelectedAlertId}
         onSelectCamera={setSelectedCamera}
+        onSelectZone={setSelectedZone}
+        onToggleZones={handleToggleZones}
         onCreateReport={() => setIsCreatingReport(true)}
       />
 
@@ -76,6 +101,12 @@ export function MapScreen() {
         loading={false}
         fullscreen
         onClose={() => setSelectedCamera(null)}
+      />
+
+      <ZoneDetailSheet
+        zone={selectedZone}
+        open={selectedZone !== null}
+        onOpenChange={(open) => !open && setSelectedZone(null)}
       />
 
       <AlertDetailSheet
