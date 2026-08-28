@@ -23,6 +23,7 @@ public class OfficialDataAggregationScheduler {
     private static final Logger log = LoggerFactory.getLogger(OfficialDataAggregationScheduler.class);
     private static final List<String> RIVER_STATIONS = List.of("82274000", "82270060");
     private static final String CIVIL_DEFENSE_KEYWORD = "alagamento";
+    private static final int TIDE_FORECAST_DAYS = 7;
 
     private final ZoneService zoneService;
     private final AnaHidrowebClient anaClient;
@@ -31,6 +32,8 @@ public class OfficialDataAggregationScheduler {
 
     private String anaToken;
     private Instant anaTokenExpiresAt;
+
+    private volatile List<TideExtreme> cachedTideExtremes;
 
     public OfficialDataAggregationScheduler(
             ZoneService zoneService,
@@ -49,7 +52,7 @@ public class OfficialDataAggregationScheduler {
         log.info("Starting official data aggregation");
 
         List<RiverData> rivers = fetchRiverData();
-        TideData tide = fetchTideData();
+        TideData tide = computeTide();
         CivilDefenseData civilDefense = fetchCivilDefenseData();
 
         for (Zone zone : zoneService.getZones()) {
@@ -116,39 +119,39 @@ public class OfficialDataAggregationScheduler {
                 .orElse(List.of());
     }
 
-    private TideData fetchTideData() {
+    @Scheduled(initialDelay = 0, fixedRate = 1, timeUnit = TimeUnit.DAYS)
+    public void refreshTideData() {
+        log.info("Refreshing tide forecast from WorldTides");
         try {
-            List<TideExtreme> extremes = tideClient.fetchExtremes(1);
-
-            if (extremes.isEmpty()) {
-                return new TideData(null, Instant.now(), "UNKNOWN");
+            List<TideExtreme> extremes = tideClient.fetchExtremes(TIDE_FORECAST_DAYS);
+            if (!extremes.isEmpty()) {
+                cachedTideExtremes = extremes;
             }
-
-            Instant now = Instant.now();
-            TideExtreme nearest = null;
-            double minDiff = Double.MAX_VALUE;
-
-            for (TideExtreme extreme : extremes) {
-                double diff = Math.abs(extreme.dateTime().toEpochMilli() - now.toEpochMilli());
-                if (diff < minDiff) {
-                    minDiff = diff;
-                    nearest = extreme;
-                }
-            }
-
-            String status = nearest != null && nearest.type() == TideType.HIGH ? "HIGH_TIDE" : "LOW_TIDE";
-            return new TideData(nearest != null ? nearest.heightMeters() : null, now, status);
         } catch (Exception e) {
-            log.error("Failed to fetch tide data from WorldTides", e);
-            return getLastKnownTideData();
+            log.error("Failed to refresh tide forecast from WorldTides", e);
         }
     }
 
-    private TideData getLastKnownTideData() {
-        return zoneService.getAllZoneData().stream()
-                .findFirst()
-                .map(ZoneData::tide)
-                .orElse(new TideData(null, Instant.now(), "UNKNOWN"));
+    private TideData computeTide() {
+        List<TideExtreme> extremes = cachedTideExtremes;
+        if (extremes == null || extremes.isEmpty()) {
+            return new TideData(null, Instant.now(), "UNKNOWN");
+        }
+
+        Instant now = Instant.now();
+        TideExtreme nearest = null;
+        double minDiff = Double.MAX_VALUE;
+
+        for (TideExtreme extreme : extremes) {
+            double diff = Math.abs(extreme.dateTime().toEpochMilli() - now.toEpochMilli());
+            if (diff < minDiff) {
+                minDiff = diff;
+                nearest = extreme;
+            }
+        }
+
+        String status = nearest != null && nearest.type() == TideType.HIGH ? "HIGH_TIDE" : "LOW_TIDE";
+        return new TideData(nearest != null ? nearest.heightMeters() : null, now, status);
     }
 
     private CivilDefenseData fetchCivilDefenseData() {
