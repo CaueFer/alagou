@@ -19,7 +19,7 @@ public class CivilDefenseNoticeScheduler {
         this.service = service;
     }
 
-    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedRate = 60, timeUnit = TimeUnit.MINUTES)
     public void ingestNotices() {
         try {
             service.ingestNotices();

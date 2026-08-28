@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface CivilDefenseNoticeRepository extends JpaRepository<CivilDefenseNotice, Long> {
     Optional<CivilDefenseNotice> findByExternalId(long externalId);
     List<CivilDefenseNotice> findAllByOrderByPublishedAtDesc();
+    List<CivilDefenseNotice> findByPublishedAtAfterOrderByPublishedAtDesc(Instant since);
     long countByRiskLevelInAndPublishedAtAfter(List<CivilDefenseRiskLevel> levels, Instant since);
 }
