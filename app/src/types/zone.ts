@@ -27,7 +27,7 @@ export interface ZoneCivilDefense {
 export interface Zone {
   zoneId: string;
   zoneName: string;
-  polygon: number[][][];
+  polygon: number[][][][];
   rivers: ZoneRiver[];
   tide: ZoneTide | null;
   civilDefense: ZoneCivilDefense;
