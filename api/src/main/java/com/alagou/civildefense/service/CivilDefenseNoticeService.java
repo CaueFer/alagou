@@ -6,6 +6,7 @@ import com.alagou.civildefense.dao.CivilDefenseNoticeRepository;
 import com.alagou.civildefense.dto.CivilDefenseNoticeResponse;
 import com.alagou.officialdata.civildefense.CivilDefenseNewsClient;
 import com.alagou.officialdata.civildefense.CivilDefenseNewsItem;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -17,6 +18,7 @@ public class CivilDefenseNoticeService {
 
     private static final String SEARCH_KEYWORD = "alagamento";
     private static final int SEARCH_LIMIT = 20;
+    private static final int MAX_RESULTS = 200;
 
     private static final List<String> EMERGENCY_KEYWORDS = List.of(
             "emergencia", "evacuacao", "estado de emergencia", "critico");
@@ -32,7 +34,7 @@ public class CivilDefenseNoticeService {
     }
 
     public List<CivilDefenseNoticeResponse> listNotices() {
-        return repository.findAllByOrderByPublishedAtDesc().stream()
+        return repository.findAllByOrderByPublishedAtDesc(PageRequest.of(0, MAX_RESULTS)).stream()
                 .map(this::toResponse)
                 .toList();
     }
