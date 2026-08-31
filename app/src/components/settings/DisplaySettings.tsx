@@ -37,7 +37,7 @@ export function DisplaySettings() {
     <section className="flex flex-col gap-3">
       <h2 className="text-xs font-bold uppercase tracking-[0.05em] text-muted-foreground">Exibição</h2>
 
-      <div className="flex flex-col [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+      <div className="flex flex-col pl-3 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
         <div className="flex flex-col gap-2 border-b border-border py-3">
           <p className="text-sm font-medium">Tipo de mapa</p>
           <SegmentedControl options={MAP_TYPE_OPTIONS} value={mapType} onValueChange={handleMapTypeChange} />

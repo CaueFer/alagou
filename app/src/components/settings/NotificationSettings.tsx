@@ -75,7 +75,7 @@ export function NotificationSettings() {
     <section className="flex flex-col gap-3">
       <h2 className="text-xs font-bold uppercase tracking-[0.05em] text-muted-foreground">Notificações</h2>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col pl-3">
         {permission === "default" && (
           <div className="flex flex-col gap-3">
             <div className="flex items-start gap-3">
