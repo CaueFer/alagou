@@ -11,6 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pkg = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8')) as { version: string }
 
 export default defineConfig({
+  envDir: path.resolve(__dirname, '..'),
   plugins: [
     react(),
     tailwindcss(),
