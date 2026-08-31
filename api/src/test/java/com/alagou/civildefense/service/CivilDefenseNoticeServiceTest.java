@@ -6,6 +6,7 @@ import com.alagou.civildefense.dao.CivilDefenseNoticeRepository;
 import com.alagou.civildefense.dto.CivilDefenseNoticeResponse;
 import com.alagou.officialdata.civildefense.CivilDefenseNewsClient;
 import com.alagou.officialdata.civildefense.CivilDefenseNewsItem;
+import com.alagou.push.service.PushDispatchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,11 +34,14 @@ class CivilDefenseNoticeServiceTest {
     @Mock
     private CivilDefenseNewsClient client;
 
+    @Mock
+    private PushDispatchService pushDispatchService;
+
     private CivilDefenseNoticeService service;
 
     @BeforeEach
     void setUp() {
-        service = new CivilDefenseNoticeService(repository, client);
+        service = new CivilDefenseNoticeService(repository, client, pushDispatchService);
     }
 
     @Test
@@ -82,6 +86,30 @@ class CivilDefenseNoticeServiceTest {
     }
 
     @Test
+    void dispatchesEmergencyPushForNewEmergencyNotice() {
+        CivilDefenseNewsItem item = new CivilDefenseNewsItem(9L, Instant.now(), "link", "Estado de Emergencia decretado", "resumo", "conteudo", "thumb.jpg");
+        when(client.searchRecent("alagamento", 20)).thenReturn(List.of(item));
+        when(repository.findByExternalId(9L)).thenReturn(Optional.empty());
+
+        service.ingestNotices();
+
+        ArgumentCaptor<CivilDefenseNotice> captor = ArgumentCaptor.forClass(CivilDefenseNotice.class);
+        verify(pushDispatchService).publishCivilDefenseEmergency(captor.capture());
+        assertThat(captor.getValue().getRiskLevel()).isEqualTo(CivilDefenseRiskLevel.EMERGENCY);
+    }
+
+    @Test
+    void doesNotDispatchPushForNonEmergencyNotice() {
+        CivilDefenseNewsItem item = new CivilDefenseNewsItem(10L, Instant.now(), "link", "Alerta de risco em Joinville", "resumo", "conteudo", "thumb.jpg");
+        when(client.searchRecent("alagamento", 20)).thenReturn(List.of(item));
+        when(repository.findByExternalId(10L)).thenReturn(Optional.empty());
+
+        service.ingestNotices();
+
+        verify(pushDispatchService, never()).publishCivilDefenseEmergency(any());
+    }
+
+    @Test
     void classifiesAlertRiskLevelFromTitleKeywords() {
         CivilDefenseNewsItem item = new CivilDefenseNewsItem(3L, Instant.now(), "link", "Alerta de risco em Joinville", "resumo", "conteudo", "thumb.jpg");
         when(client.searchRecent("alagamento", 20)).thenReturn(List.of(item));
@@ -111,12 +139,13 @@ class CivilDefenseNoticeServiceTest {
     void listsNoticesOrderedByPublishedAtDescending() {
         CivilDefenseNotice recent = new CivilDefenseNotice(1L, "Aviso recente", "resumo", "conteudo", "link", "thumb.jpg",
                 CivilDefenseRiskLevel.ATTENTION, Instant.now(), Instant.now());
-        when(repository.findAllByOrderByPublishedAtDesc()).thenReturn(List.of(recent));
+        when(repository.findAllByOrderByPublishedAtDesc(any(org.springframework.data.domain.Pageable.class)))
+                .thenReturn(List.of(recent));
 
         List<CivilDefenseNoticeResponse> result = service.listNotices();
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).title()).isEqualTo("Aviso recente");
-        verify(repository, times(1)).findAllByOrderByPublishedAtDesc();
+        verify(repository, times(1)).findAllByOrderByPublishedAtDesc(any(org.springframework.data.domain.Pageable.class));
     }
 }

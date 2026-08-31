@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -127,5 +128,39 @@ class AuthServiceTest {
 
         assertThat(existing.getGoogleId()).isEqualTo("google-id");
         assertThat(existing.getPasswordHash()).isEqualTo("hashed");
+    }
+
+    @Test
+    void spendsPasswordHashComparisonEvenWhenUserDoesNotExist() {
+        LoginRequest request = new LoginRequest("ghost@example.com", "secret123");
+        when(usuarioRepository.findByEmail("ghost@example.com")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> authService.login(request))
+                .isInstanceOf(InvalidCredentialsException.class)
+                .hasMessage("E-mail ou senha inválidos");
+
+        verify(passwordEncoder).matches(eq("secret123"), anyString());
+    }
+
+    @Test
+    void usesTheSameGenericMessageForGoogleOnlyAccounts() {
+        Usuario usuario = new Usuario("citizen@example.com", "Citizen", "google-id", "pic-url");
+        LoginRequest request = new LoginRequest("citizen@example.com", "anything");
+        when(usuarioRepository.findByEmail("citizen@example.com")).thenReturn(Optional.of(usuario));
+
+        assertThatThrownBy(() -> authService.login(request))
+                .isInstanceOf(InvalidCredentialsException.class)
+                .hasMessage("E-mail ou senha inválidos");
+
+        verify(passwordEncoder).matches(eq("anything"), anyString());
+    }
+
+    @Test
+    void propagatesRejectionWhenGoogleEmailIsNotVerified() {
+        when(googleIdTokenVerifierService.verify("id-token"))
+                .thenThrow(new InvalidCredentialsException("E-mail do Google não verificado"));
+
+        assertThatThrownBy(() -> authService.loginWithGoogle("id-token"))
+                .isInstanceOf(InvalidCredentialsException.class);
     }
 }

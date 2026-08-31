@@ -11,10 +11,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pkg = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8')) as { version: string }
 
 export default defineConfig({
+  envDir: path.resolve(__dirname, '..'),
   plugins: [
     react(),
     tailwindcss(),
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
@@ -33,37 +37,8 @@ export default defineConfig({
           { src: 'pwa-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
-      workbox: {
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//],
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => url.hostname.endsWith('basemaps.cartocdn.com'),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'map-tiles',
-              expiration: {
-                maxEntries: 1000,
-                maxAgeSeconds: 7 * 24 * 60 * 60,
-              },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
-            urlPattern: ({ url }) =>
-              url.pathname.startsWith('/api/') &&
-              !url.pathname.startsWith('/api/alerts') &&
-              !url.pathname.startsWith('/api/zones'),
-            handler: 'NetworkFirst',
-            method: 'GET',
-            options: {
-              cacheName: 'api-responses',
-              networkTimeoutSeconds: 5,
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-        ],
       },
       devOptions: {
         enabled: false,

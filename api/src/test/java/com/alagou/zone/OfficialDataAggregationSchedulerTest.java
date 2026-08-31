@@ -14,6 +14,7 @@ import com.alagou.officialdata.river.RiverDischargeReading;
 import com.alagou.officialdata.tide.TideExtreme;
 import com.alagou.officialdata.tide.TideType;
 import com.alagou.officialdata.tide.WorldTidesClient;
+import com.alagou.push.service.PushDispatchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,6 +63,9 @@ class OfficialDataAggregationSchedulerTest {
     @Mock
     private CivilDefenseNoticeRepository civilDefenseRepository;
 
+    @Mock
+    private PushDispatchService pushDispatchService;
+
     private RainThresholds rainThresholds;
     private OfficialDataAggregationScheduler scheduler;
 
@@ -75,7 +81,7 @@ class OfficialDataAggregationSchedulerTest {
         rainThresholds.setStationRadiusKm(5.0);
 
         scheduler = new OfficialDataAggregationScheduler(zoneService, cemadenClient, rainForecastClient,
-                floodClient, tideClient, civilDefenseRepository, rainThresholds);
+                floodClient, tideClient, civilDefenseRepository, rainThresholds, pushDispatchService);
     }
 
     private Zone zone(String id, double lat, double lng, boolean tideAffected) {
@@ -103,6 +109,7 @@ class OfficialDataAggregationSchedulerTest {
                 new RiverData(null, null, RiverStatus.UNKNOWN, Instant.now()));
         lenient().when(zoneService.getLastKnownCivilDefenseData(anyString())).thenReturn(
                 new CivilDefenseData(CivilDefenseRiskLevel.NONE, List.of(), Instant.now()));
+        lenient().when(zoneService.getZoneData(anyString())).thenReturn(Optional.empty());
     }
 
     private Map<String, ZoneData> runAggregation() {
@@ -364,6 +371,34 @@ class OfficialDataAggregationSchedulerTest {
         quietSources();
 
         assertThat(runAggregation().get("oeste").tide()).isNull();
+    }
+
+    @Test
+    void publishesClimaticPushWhenZoneStatusWorsensIntoCritical() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        lenient().when(zoneService.getZoneData("centro")).thenReturn(Optional.of(new ZoneData(
+                "centro", "centro", List.of(), null, null, null, null, OverallStatus.ALERT, Instant.now())));
+        doReturn(new ForecastRainReading(30.0, 5.0, Instant.now()))
+                .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
+
+        scheduler.aggregateOfficialData();
+
+        verify(pushDispatchService).publishClimatic("centro", OverallStatus.ALERT, OverallStatus.CRITICAL);
+    }
+
+    @Test
+    void doesNotPublishClimaticPushWhenStatusDoesNotWorsen() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        lenient().when(zoneService.getZoneData("centro")).thenReturn(Optional.of(new ZoneData(
+                "centro", "centro", List.of(), null, null, null, null, OverallStatus.CRITICAL, Instant.now())));
+        doReturn(new ForecastRainReading(30.0, 5.0, Instant.now()))
+                .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
+
+        scheduler.aggregateOfficialData();
+
+        verify(pushDispatchService, never()).publishClimatic(anyString(), any(), any());
     }
 
     private CivilDefenseNotice notice(CivilDefenseRiskLevel riskLevel) {

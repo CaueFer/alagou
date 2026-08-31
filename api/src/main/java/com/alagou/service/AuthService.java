@@ -16,6 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
+    // bcrypt hash of a discarded random value; matched against on the failure path so a missing or
+    // Google-only account costs the same wall-clock time as a wrong password (no user enumeration).
+    private static final String DUMMY_BCRYPT_HASH = "$2b$10$RuHOtmI676mjFjyQPKAd/u0WZrp4VI7i8IlT9ipcPbVeE7sYkvgXC";
+
     private final GoogleIdTokenVerifierService googleIdTokenVerifierService;
     private final UsuarioRepository usuarioRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -57,13 +61,14 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
-        Usuario usuario = usuarioRepository.findByEmail(request.email())
-                .orElseThrow(() -> new InvalidCredentialsException("E-mail ou senha inválidos"));
+        Usuario usuario = usuarioRepository.findByEmail(request.email()).orElse(null);
+        String passwordHash = (usuario != null && usuario.getPasswordHash() != null)
+                ? usuario.getPasswordHash()
+                : DUMMY_BCRYPT_HASH;
 
-        if (usuario.getPasswordHash() == null) {
-            throw new InvalidCredentialsException("Esta conta usa login via Google");
-        }
-        if (!passwordEncoder.matches(request.password(), usuario.getPasswordHash())) {
+        boolean passwordMatches = passwordEncoder.matches(request.password(), passwordHash);
+
+        if (usuario == null || usuario.getPasswordHash() == null || !passwordMatches) {
             throw new InvalidCredentialsException("E-mail ou senha inválidos");
         }
 
@@ -71,6 +76,8 @@ public class AuthService {
     }
 
     private Usuario linkOrCreateGoogleAccount(GoogleUserInfo googleUserInfo) {
+        // Reached only after GoogleIdTokenVerifierService has asserted the Google e-mail is verified,
+        // so linking onto an existing password account here cannot be driven by an unverified address.
         Usuario usuario = usuarioRepository.findByEmail(googleUserInfo.email())
                 .orElseGet(() -> new Usuario(
                         googleUserInfo.email(),

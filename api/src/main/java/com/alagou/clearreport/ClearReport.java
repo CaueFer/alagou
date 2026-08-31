@@ -18,19 +18,24 @@ public class ClearReport {
     @Column(nullable = false)
     private String username;
 
+    @Column(name = "source_ip")
+    private String sourceIp;
+
     @Column(nullable = false)
     private Instant createdAt;
 
     protected ClearReport() {}
 
-    public ClearReport(Long alertId, String username, Instant createdAt) {
+    public ClearReport(Long alertId, String username, String sourceIp, Instant createdAt) {
         this.alertId = alertId;
         this.username = username;
+        this.sourceIp = sourceIp;
         this.createdAt = createdAt;
     }
 
     public Long getId() { return id; }
     public Long getAlertId() { return alertId; }
     public String getUsername() { return username; }
+    public String getSourceIp() { return sourceIp; }
     public Instant getCreatedAt() { return createdAt; }
 }

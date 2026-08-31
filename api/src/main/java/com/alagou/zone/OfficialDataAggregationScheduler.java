@@ -13,6 +13,7 @@ import com.alagou.officialdata.river.RiverDischargeReading;
 import com.alagou.officialdata.tide.TideExtreme;
 import com.alagou.officialdata.tide.TideType;
 import com.alagou.officialdata.tide.WorldTidesClient;
+import com.alagou.push.service.PushDispatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -41,6 +42,7 @@ public class OfficialDataAggregationScheduler {
     private final WorldTidesClient tideClient;
     private final CivilDefenseNoticeRepository civilDefenseRepository;
     private final RainThresholds rainThresholds;
+    private final PushDispatchService pushDispatchService;
 
     private final Map<String, RiverData> riverCache = new HashMap<>();
     private Instant riverCacheLoadedAt;
@@ -54,7 +56,8 @@ public class OfficialDataAggregationScheduler {
             OpenMeteoFloodClient floodClient,
             WorldTidesClient tideClient,
             CivilDefenseNoticeRepository civilDefenseRepository,
-            RainThresholds rainThresholds
+            RainThresholds rainThresholds,
+            PushDispatchService pushDispatchService
     ) {
         this.zoneService = zoneService;
         this.cemadenClient = cemadenClient;
@@ -63,6 +66,7 @@ public class OfficialDataAggregationScheduler {
         this.tideClient = tideClient;
         this.civilDefenseRepository = civilDefenseRepository;
         this.rainThresholds = rainThresholds;
+        this.pushDispatchService = pushDispatchService;
     }
 
     @Scheduled(fixedRate = 15, timeUnit = TimeUnit.MINUTES)
@@ -85,6 +89,10 @@ public class OfficialDataAggregationScheduler {
             TideData zoneTide = zone.tideAffected() ? tide : null;
             OverallStatus overallStatus = computeOverallStatus(rain, river, zoneCivilDefense);
 
+            OverallStatus previousStatus = zoneService.getZoneData(zone.id())
+                    .map(ZoneData::overallStatus)
+                    .orElse(OverallStatus.UNKNOWN);
+
             ZoneData data = new ZoneData(
                     zone.id(),
                     zone.name(),
@@ -97,6 +105,11 @@ public class OfficialDataAggregationScheduler {
                     Instant.now()
             );
             zoneService.updateZoneData(data);
+
+            if (worsened(previousStatus, overallStatus)
+                    && (overallStatus == OverallStatus.ALERT || overallStatus == OverallStatus.CRITICAL)) {
+                pushDispatchService.publishClimatic(zone.id(), previousStatus, overallStatus);
+            }
         }
 
         log.info("Official data aggregation completed");
@@ -371,6 +384,10 @@ public class OfficialDataAggregationScheduler {
             case 1 -> OverallStatus.NORMAL;
             default -> OverallStatus.UNKNOWN;
         };
+    }
+
+    private static boolean worsened(OverallStatus before, OverallStatus after) {
+        return overallRank(after) > overallRank(before);
     }
 
     private static int overallRank(OverallStatus status) {

@@ -7,7 +7,9 @@ import com.alagou.confirmation.dao.ConfirmationRepository;
 import com.alagou.confirmation.dto.ConfirmationResponse;
 import com.alagou.exception.BusinessRuleException;
 import com.alagou.exception.ResourceNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -25,7 +27,8 @@ public class ConfirmationService {
         this.alertRepository = alertRepository;
     }
 
-    public ConfirmationResponse create(Long alertId, String username) {
+    @Transactional
+    public ConfirmationResponse create(Long alertId, String username, String sourceIp) {
         Alert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new ResourceNotFoundException("Alert not found: " + alertId));
 
@@ -36,7 +39,12 @@ public class ConfirmationService {
             throw new BusinessRuleException("User has already confirmed this alert");
         }
 
-        Confirmation confirmation = repository.save(new Confirmation(alertId, username, Instant.now()));
+        Confirmation confirmation;
+        try {
+            confirmation = repository.saveAndFlush(new Confirmation(alertId, username, sourceIp, Instant.now()));
+        } catch (DataIntegrityViolationException ex) {
+            throw new BusinessRuleException("User has already confirmed this alert");
+        }
 
         alert.renewExpiration(Instant.now().plus(RENEWAL_MINUTES, ChronoUnit.MINUTES));
         alertRepository.save(alert);

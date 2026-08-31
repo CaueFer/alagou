@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,9 @@ import java.util.Optional;
 
 @Component
 public class JwtTokenProvider {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
+    private static final String ISSUER = "alagou";
 
     private final SecretKey key;
     private final long expirationMs;
@@ -30,6 +35,7 @@ public class JwtTokenProvider {
     public String generateToken(Long userId, String email) {
         Instant now = Instant.now();
         return Jwts.builder()
+                .issuer(ISSUER)
                 .subject(userId.toString())
                 .claim("email", email)
                 .issuedAt(Date.from(now))
@@ -42,11 +48,13 @@ public class JwtTokenProvider {
         try {
             Claims claims = Jwts.parser()
                     .verifyWith(key)
+                    .requireIssuer(ISSUER)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
             return Optional.of(Long.valueOf(claims.getSubject()));
         } catch (JwtException | IllegalArgumentException ex) {
+            log.debug("Rejected JWT: {}", ex.getMessage());
             return Optional.empty();
         }
     }

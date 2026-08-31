@@ -31,10 +31,10 @@ Dica: use Docker para subir o banco de dados sem precisar instalar PostgreSQL/Po
    docker compose up -d
    ```
 
-3. Configure as variáveis de ambiente da API:
+3. Configure as variáveis de ambiente (arquivo único na raiz, usado pelo backend e pelo frontend):
 
    ```bash
-   cp api/.env.example api/.env
+   cp .env.example .env
    ```
 
 4. Rode a API:
@@ -44,7 +44,19 @@ Dica: use Docker para subir o banco de dados sem precisar instalar PostgreSQL/Po
    mvn spring-boot:run
    ```
 
+   A API lê `../.env` (resolvido a partir de `api/` via `api/src/main/resources/.env.properties`), então rode-a de dentro de `api/`.
+
 5. A API estará disponível em `http://localhost:8080`.
+
+6. Rode o frontend (lê o mesmo `.env` da raiz via `envDir`):
+
+   ```bash
+   cd app
+   npm install
+   npm run dev
+   ```
+
+   App em `http://localhost:5173`.
 
 ---
 

@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Bell, BellOff } from "lucide-react";
+import { toast } from "sonner";
 import { RadiusSelector } from "@/components/settings/RadiusSelector";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useNotificationPermission } from "@/hooks/useNotificationPermission";
+import { usePushSubscription } from "@/hooks/usePushSubscription";
+import type { PushFlags } from "@/types/push";
 import {
   getCivilDefenseAlertsEnabled,
   getClimaticAlertsEnabled,
@@ -18,6 +21,7 @@ import {
 
 export function NotificationSettings() {
   const { permission, request } = useNotificationPermission();
+  const { syncEnabled, disableAll } = usePushSubscription();
   const [nearbyEnabled, setNearbyEnabled] = useState(() => getNearbyAlertsEnabled());
   const [climaticEnabled, setClimaticEnabled] = useState(() => getClimaticAlertsEnabled());
   const [civilDefenseEnabled, setCivilDefenseEnabled] = useState(() => getCivilDefenseAlertsEnabled());
@@ -25,19 +29,41 @@ export function NotificationSettings() {
 
   const togglesDisabled = permission !== "granted";
 
+  async function syncServer(flags: PushFlags) {
+    try {
+      if (flags.nearbyEnabled || flags.climaticEnabled || flags.civilDefenseEnabled) {
+        await syncEnabled(flags);
+      } else {
+        await disableAll();
+      }
+    } catch {
+      toast.error("Não foi possível atualizar as notificações.");
+    }
+  }
+
+  async function handleRequest() {
+    const result = await request();
+    if (result === "granted") {
+      void syncServer({ nearbyEnabled, climaticEnabled, civilDefenseEnabled });
+    }
+  }
+
   function handleNearbyChange(enabled: boolean) {
     setNearbyEnabled(enabled);
     setNearbyAlertsEnabled(enabled);
+    void syncServer({ nearbyEnabled: enabled, climaticEnabled, civilDefenseEnabled });
   }
 
   function handleClimaticChange(enabled: boolean) {
     setClimaticEnabled(enabled);
     setClimaticAlertsEnabled(enabled);
+    void syncServer({ nearbyEnabled, climaticEnabled: enabled, civilDefenseEnabled });
   }
 
   function handleCivilDefenseChange(enabled: boolean) {
     setCivilDefenseEnabled(enabled);
     setCivilDefenseAlertsEnabled(enabled);
+    void syncServer({ nearbyEnabled, climaticEnabled, civilDefenseEnabled: enabled });
   }
 
   function handleRadiusChange(value: NotificationRadiusKm) {
@@ -61,7 +87,7 @@ export function NotificationSettings() {
                 </p>
               </div>
             </div>
-            <Button type="button" onClick={() => void request()}>
+            <Button type="button" onClick={() => void handleRequest()}>
               Ativar notificações
             </Button>
           </div>

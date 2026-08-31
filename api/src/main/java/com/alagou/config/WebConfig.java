@@ -1,6 +1,8 @@
 package com.alagou.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -18,5 +20,12 @@ public class WebConfig implements WebMvcConfigurer {
         String absolutePath = Paths.get(uploadDir).toAbsolutePath().toString();
         registry.addResourceHandler("/uploads/photos/**")
                 .addResourceLocations("file:" + absolutePath + "/");
+    }
+
+    @Bean
+    public FilterRegistrationBean<UploadPhotoHeadersFilter> uploadPhotoHeadersFilter() {
+        FilterRegistrationBean<UploadPhotoHeadersFilter> registration = new FilterRegistrationBean<>(new UploadPhotoHeadersFilter());
+        registration.addUrlPatterns("/uploads/photos/*");
+        return registration;
     }
 }
