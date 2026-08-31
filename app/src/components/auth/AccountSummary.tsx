@@ -9,7 +9,7 @@ interface AccountSummaryProps {
 
 export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface-container-lowest p-4 shadow-[0_1px_3px_0_rgba(11,28,48,0.08)]">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         {user.pictureUrl ? (
           <img src={user.pictureUrl} alt="" className="h-10 w-10 rounded-full object-cover" />

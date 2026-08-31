@@ -72,10 +72,10 @@ export function NotificationSettings() {
   }
 
   return (
-    <section className="flex flex-col gap-2">
-      <h2 className="px-1 text-xs font-bold uppercase tracking-[0.05em] text-muted-foreground">Notificações</h2>
+    <section className="flex flex-col gap-3">
+      <h2 className="text-xs font-bold uppercase tracking-[0.05em] text-muted-foreground">Notificações</h2>
 
-      <div className="rounded-lg border border-border bg-surface-container-lowest p-4 shadow-[0_1px_3px_0_rgba(11,28,48,0.08)]">
+      <div className="flex flex-col pl-3">
         {permission === "default" && (
           <div className="flex flex-col gap-3">
             <div className="flex items-start gap-3">
@@ -118,8 +118,8 @@ export function NotificationSettings() {
         )}
 
         {(permission === "granted" || permission === "denied") && (
-          <div className="flex flex-col">
-            <div className="flex min-h-12 items-center justify-between gap-3 border-b border-border py-2">
+          <div className="flex flex-col [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+            <div className="flex min-h-12 items-center justify-between gap-3 border-b border-border py-3">
               <div className="flex flex-col gap-0.5">
                 <p className="text-sm font-medium">Alertas de cidadãos próximos</p>
                 <p className="text-sm text-muted-foreground">Alertas relatados por outros cidadãos nas proximidades.</p>
@@ -134,7 +134,7 @@ export function NotificationSettings() {
               </div>
             )}
 
-            <div className="flex min-h-12 items-center justify-between gap-3 border-b border-border py-2">
+            <div className="flex min-h-12 items-center justify-between gap-3 border-b border-border py-3">
               <div className="flex flex-col gap-0.5">
                 <p className="text-sm font-medium">Alertas climáticos</p>
                 <p className="text-sm text-muted-foreground">Avisos baseados em dados meteorológicos e de rios.</p>
@@ -142,7 +142,7 @@ export function NotificationSettings() {
               <Switch checked={climaticEnabled} onCheckedChange={handleClimaticChange} disabled={togglesDisabled} aria-label="Alertas climáticos" />
             </div>
 
-            <div className="flex min-h-12 items-center justify-between gap-3 py-2">
+            <div className="flex min-h-12 items-center justify-between gap-3 py-3">
               <div className="flex flex-col gap-0.5">
                 <p className="text-sm font-medium">Avisos graves da Defesa Civil</p>
                 <p className="text-sm text-muted-foreground">Avisos oficiais da Defesa Civil de Joinville.</p>

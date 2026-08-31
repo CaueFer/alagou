@@ -34,16 +34,16 @@ export function DisplaySettings() {
   }
 
   return (
-    <section className="flex flex-col gap-2">
-      <h2 className="px-1 text-xs font-bold uppercase tracking-[0.05em] text-muted-foreground">Exibição</h2>
+    <section className="flex flex-col gap-3">
+      <h2 className="text-xs font-bold uppercase tracking-[0.05em] text-muted-foreground">Exibição</h2>
 
-      <div className="rounded-lg border border-border bg-surface-container-lowest p-4 shadow-[0_1px_3px_0_rgba(11,28,48,0.08)]">
-        <div className="flex flex-col gap-2 border-b border-border pb-3">
+      <div className="flex flex-col pl-3 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+        <div className="flex flex-col gap-2 border-b border-border py-3">
           <p className="text-sm font-medium">Tipo de mapa</p>
           <SegmentedControl options={MAP_TYPE_OPTIONS} value={mapType} onValueChange={handleMapTypeChange} />
         </div>
 
-        <div className="flex flex-col gap-2 pt-3">
+        <div className="flex flex-col gap-2 py-3">
           <p className="text-sm font-medium">Unidade de distância</p>
           <SegmentedControl
             options={DISTANCE_UNIT_OPTIONS}
