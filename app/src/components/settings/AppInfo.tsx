@@ -22,9 +22,9 @@ const DATA_SOURCES = [
 export function AppInfo() {
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="px-1 text-xs font-bold uppercase tracking-[0.05em] text-muted-foreground">Sobre o app</h2>
+      <h2 className="text-xs font-bold uppercase tracking-[0.05em] text-muted-foreground">Sobre o app</h2>
 
-      <div className="rounded-lg border border-border bg-surface-container-lowest p-4 shadow-[0_1px_3px_0_rgba(11,28,48,0.08)]">
+      <div className="flex flex-col">
         <div className="flex items-center justify-between gap-3 border-b border-border py-2">
           <p className="text-sm font-medium">Versão</p>
           <p className="text-sm text-muted-foreground">{__APP_VERSION__}</p>
