@@ -19,17 +19,21 @@ export const ZONES_FIXTURE: Zone[] = [
         ],
       ],
     ],
-    rivers: [
-      {
-        stationCode: "82274000",
-        stationName: "Rio Cachoeira",
-        level: null,
-        status: "UNKNOWN",
-        lastUpdate: "2026-08-27T12:00:00Z",
-      },
-    ],
+    rain: {
+      lastHour: { measuredMm: 9.0, forecastMm: 11.0, averageMm: 10.0 },
+      last24Hours: { measuredMm: 70.0, forecastMm: 90.0, averageMm: 80.0 },
+      stationNames: ["Centro"],
+      status: "ALERT",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
+    river: {
+      dischargeCubicMetersPerSecond: 1.1,
+      forecastPeakCubicMetersPerSecond: 3.4,
+      status: "ALERT",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
     tide: {
-      currentLevel: 1.42,
+      nearestExtremeHeightMeters: 1.42,
       status: "HIGH_TIDE",
       lastUpdate: "2026-08-27T12:00:00Z",
     },
@@ -64,15 +68,19 @@ export const ZONES_FIXTURE: Zone[] = [
         ],
       ],
     ],
-    rivers: [
-      {
-        stationCode: "82272000",
-        stationName: "Rio Itaum",
-        level: null,
-        status: "UNKNOWN",
-        lastUpdate: "2026-08-27T10:30:00Z",
-      },
-    ],
+    rain: {
+      lastHour: { measuredMm: null, forecastMm: null, averageMm: null },
+      last24Hours: { measuredMm: null, forecastMm: null, averageMm: null },
+      stationNames: [],
+      status: "UNKNOWN",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
+    river: {
+      dischargeCubicMetersPerSecond: null,
+      forecastPeakCubicMetersPerSecond: null,
+      status: "UNKNOWN",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
     tide: null,
     civilDefense: {
       riskLevel: "NONE",
@@ -96,17 +104,21 @@ export const ZONES_FIXTURE: Zone[] = [
         ],
       ],
     ],
-    rivers: [
-      {
-        stationCode: "82270000",
-        stationName: "Rio Cachoeira",
-        level: 2.84,
-        status: "OVERFLOW",
-        lastUpdate: "2026-08-27T12:00:00Z",
-      },
-    ],
+    rain: {
+      lastHour: { measuredMm: 18.0, forecastMm: 22.0, averageMm: 20.0 },
+      last24Hours: { measuredMm: 95.0, forecastMm: 105.0, averageMm: 100.0 },
+      stationNames: ["Centro"],
+      status: "CRITICAL",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
+    river: {
+      dischargeCubicMetersPerSecond: 1.2,
+      forecastPeakCubicMetersPerSecond: 4.4,
+      status: "ALERT",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
     tide: {
-      currentLevel: 1.85,
+      nearestExtremeHeightMeters: 1.85,
       status: "HIGH_TIDE",
       lastUpdate: "2026-08-27T12:00:00Z",
     },
@@ -139,15 +151,19 @@ export const ZONES_FIXTURE: Zone[] = [
         ],
       ],
     ],
-    rivers: [
-      {
-        stationCode: "82266000",
-        stationName: "Rio Piraí",
-        level: 1.55,
-        status: "ATTENTION",
-        lastUpdate: "2026-08-27T11:00:00Z",
-      },
-    ],
+    rain: {
+      lastHour: { measuredMm: 5.0, forecastMm: 7.0, averageMm: 6.0 },
+      last24Hours: { measuredMm: 45.0, forecastMm: 55.0, averageMm: 50.0 },
+      stationNames: ["Centro"],
+      status: "ATTENTION",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
+    river: {
+      dischargeCubicMetersPerSecond: 0.9,
+      forecastPeakCubicMetersPerSecond: 2.1,
+      status: "ATTENTION",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
     tide: null,
     civilDefense: {
       riskLevel: "ATTENTION",
@@ -171,17 +187,21 @@ export const ZONES_FIXTURE: Zone[] = [
         ],
       ],
     ],
-    rivers: [
-      {
-        stationCode: "82258000",
-        stationName: "Rio Cubatão",
-        level: 0.62,
-        status: "NORMAL",
-        lastUpdate: "2026-08-27T09:00:00Z",
-      },
-    ],
+    rain: {
+      lastHour: { measuredMm: 0.2, forecastMm: 0.0, averageMm: 0.1 },
+      last24Hours: { measuredMm: 3.0, forecastMm: 1.0, averageMm: 2.0 },
+      stationNames: ["Centro"],
+      status: "NORMAL",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
+    river: {
+      dischargeCubicMetersPerSecond: 0.5,
+      forecastPeakCubicMetersPerSecond: 0.6,
+      status: "NORMAL",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
     tide: {
-      currentLevel: 0.55,
+      nearestExtremeHeightMeters: 0.55,
       status: "LOW_TIDE",
       lastUpdate: "2026-08-27T09:00:00Z",
     },
@@ -207,7 +227,19 @@ export const ZONES_FIXTURE: Zone[] = [
         ],
       ],
     ],
-    rivers: [],
+    rain: {
+      lastHour: { measuredMm: null, forecastMm: null, averageMm: null },
+      last24Hours: { measuredMm: null, forecastMm: null, averageMm: null },
+      stationNames: [],
+      status: "UNKNOWN",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
+    river: {
+      dischargeCubicMetersPerSecond: null,
+      forecastPeakCubicMetersPerSecond: null,
+      status: "UNKNOWN",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
     tide: null,
     civilDefense: {
       riskLevel: "NONE",
@@ -240,15 +272,19 @@ export const ZONES_FIXTURE: Zone[] = [
         ],
       ],
     ],
-    rivers: [
-      {
-        stationCode: "82264000",
-        stationName: "Rio Velho",
-        level: null,
-        status: "UNKNOWN",
-        lastUpdate: "2026-08-27T10:00:00Z",
-      },
-    ],
+    rain: {
+      lastHour: { measuredMm: 5.0, forecastMm: 7.0, averageMm: 6.0 },
+      last24Hours: { measuredMm: 45.0, forecastMm: 55.0, averageMm: 50.0 },
+      stationNames: ["Centro"],
+      status: "ATTENTION",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
+    river: {
+      dischargeCubicMetersPerSecond: 0.9,
+      forecastPeakCubicMetersPerSecond: 2.1,
+      status: "ATTENTION",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
     tide: null,
     civilDefense: {
       riskLevel: "ATTENTION",
@@ -272,15 +308,19 @@ export const ZONES_FIXTURE: Zone[] = [
         ],
       ],
     ],
-    rivers: [
-      {
-        stationCode: "82256000",
-        stationName: "Rio do Braço",
-        level: null,
-        status: "UNKNOWN",
-        lastUpdate: "2026-08-27T09:30:00Z",
-      },
-    ],
+    rain: {
+      lastHour: { measuredMm: null, forecastMm: null, averageMm: null },
+      last24Hours: { measuredMm: null, forecastMm: null, averageMm: null },
+      stationNames: [],
+      status: "UNKNOWN",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
+    river: {
+      dischargeCubicMetersPerSecond: null,
+      forecastPeakCubicMetersPerSecond: null,
+      status: "UNKNOWN",
+      lastUpdate: "2026-08-27T12:00:00Z",
+    },
     tide: null,
     civilDefense: {
       riskLevel: "NONE",

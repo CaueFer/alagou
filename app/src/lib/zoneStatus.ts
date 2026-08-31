@@ -1,4 +1,4 @@
-import type { RiverStatus, ZoneStatus } from "@/types/zone";
+import type { RainStatus, RiverStatus, ZoneStatus } from "@/types/zone";
 
 interface ZoneStatusInfo {
   label: string;
@@ -82,12 +82,6 @@ const RIVER_STATUS_INFO: Record<RiverStatus, RiverStatusInfo> = {
     bgClass: "bg-severity-severe",
     textClass: "text-on-severity-severe",
   },
-  OVERFLOW: {
-    label: "Transbordamento",
-    color: "#ba1a1a",
-    bgClass: "bg-severity-critical",
-    textClass: "text-on-severity-critical",
-  },
   UNKNOWN: {
     label: "Sem dado",
     color: "#45464d",
@@ -98,4 +92,8 @@ const RIVER_STATUS_INFO: Record<RiverStatus, RiverStatusInfo> = {
 
 export function getRiverStatusInfo(status: RiverStatus): RiverStatusInfo {
   return RIVER_STATUS_INFO[status];
+}
+
+export function getRainStatusInfo(status: RainStatus): ZoneStatusInfo {
+  return ZONE_STATUS_INFO[status];
 }
