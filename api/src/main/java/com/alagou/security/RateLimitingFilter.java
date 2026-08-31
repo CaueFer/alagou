@@ -30,7 +30,10 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             new RateLimitRule("POST", "/api/alerts/*/confirmations", 20, Duration.ofHours(1)),
             new RateLimitRule("POST", "/api/alerts/*/clear-reports", 10, Duration.ofHours(1)),
             new RateLimitRule("POST", "/api/auth/register", 5, Duration.ofHours(1)),
-            new RateLimitRule("POST", "/api/auth/login", 10, Duration.ofMinutes(15))
+            new RateLimitRule("POST", "/api/auth/login", 10, Duration.ofMinutes(15)),
+            new RateLimitRule("POST", "/api/push/subscriptions", 30, Duration.ofHours(1)),
+            new RateLimitRule("PUT", "/api/push/subscriptions", 30, Duration.ofHours(1)),
+            new RateLimitRule("DELETE", "/api/push/subscriptions", 30, Duration.ofHours(1))
     );
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();

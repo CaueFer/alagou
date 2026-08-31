@@ -9,12 +9,14 @@ import com.alagou.clearreport.dao.ClearReportRepository;
 import com.alagou.confirmation.dao.ConfirmationRepository;
 import com.alagou.exception.BusinessRuleException;
 import com.alagou.exception.ResourceNotFoundException;
+import com.alagou.push.service.PushDispatchService;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
@@ -31,19 +33,23 @@ public class AlertService {
     private final PhotoStorageService photoStorage;
     private final ConfirmationRepository confirmationRepository;
     private final ClearReportRepository clearReportRepository;
+    private final PushDispatchService pushDispatchService;
 
     public AlertService(
             AlertRepository repository,
             PhotoStorageService photoStorage,
             ConfirmationRepository confirmationRepository,
-            ClearReportRepository clearReportRepository
+            ClearReportRepository clearReportRepository,
+            PushDispatchService pushDispatchService
     ) {
         this.repository = repository;
         this.photoStorage = photoStorage;
         this.confirmationRepository = confirmationRepository;
         this.clearReportRepository = clearReportRepository;
+        this.pushDispatchService = pushDispatchService;
     }
 
+    @Transactional
     public AlertResponse create(AlertType type, String username, Severity severity, double lat, double lng, List<MultipartFile> photos) {
         if (repository.existsActiveByUsernameWithinRadius(username, lat, lng, DUPLICATE_RADIUS_METERS)) {
             throw new BusinessRuleException("User already has an active alert within " + (int) DUPLICATE_RADIUS_METERS + " meters of this location");
@@ -53,7 +59,13 @@ public class AlertService {
         List<String> stored = photoStorage.store(photos);
         Point location = GEOMETRY_FACTORY.createPoint(new Coordinate(lng, lat));
         Alert alert = new Alert(type, username, severity, location, stored, now.plus(3, ChronoUnit.HOURS), now);
-        return toResponse(repository.save(alert));
+        Alert saved = repository.save(alert);
+
+        if (type == AlertType.USER && (severity == Severity.SEVERE || severity == Severity.CRITICAL)) {
+            pushDispatchService.publishUserAlert(saved);
+        }
+
+        return toResponse(saved);
     }
 
     public List<AlertResponse> findAll(Boolean expired, String order) {
