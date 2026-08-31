@@ -6,8 +6,10 @@ import com.alagou.civildefense.dao.CivilDefenseNoticeRepository;
 import com.alagou.civildefense.dto.CivilDefenseNoticeResponse;
 import com.alagou.officialdata.civildefense.CivilDefenseNewsClient;
 import com.alagou.officialdata.civildefense.CivilDefenseNewsItem;
+import com.alagou.push.service.PushDispatchService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -27,10 +29,14 @@ public class CivilDefenseNoticeService {
 
     private final CivilDefenseNoticeRepository repository;
     private final CivilDefenseNewsClient client;
+    private final PushDispatchService pushDispatchService;
 
-    public CivilDefenseNoticeService(CivilDefenseNoticeRepository repository, CivilDefenseNewsClient client) {
+    public CivilDefenseNoticeService(CivilDefenseNoticeRepository repository,
+                                     CivilDefenseNewsClient client,
+                                     PushDispatchService pushDispatchService) {
         this.repository = repository;
         this.client = client;
+        this.pushDispatchService = pushDispatchService;
     }
 
     public List<CivilDefenseNoticeResponse> listNotices() {
@@ -39,6 +45,7 @@ public class CivilDefenseNoticeService {
                 .toList();
     }
 
+    @Transactional
     public void ingestNotices() {
         List<CivilDefenseNewsItem> items = client.searchRecent(SEARCH_KEYWORD, SEARCH_LIMIT);
         for (CivilDefenseNewsItem item : items) {
@@ -60,6 +67,10 @@ public class CivilDefenseNoticeService {
                     Instant.now()
             );
             repository.save(notice);
+
+            if (notice.getRiskLevel() == CivilDefenseRiskLevel.EMERGENCY) {
+                pushDispatchService.publishCivilDefenseEmergency(notice);
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import com.alagou.civildefense.dao.CivilDefenseNoticeRepository;
 import com.alagou.civildefense.dto.CivilDefenseNoticeResponse;
 import com.alagou.officialdata.civildefense.CivilDefenseNewsClient;
 import com.alagou.officialdata.civildefense.CivilDefenseNewsItem;
+import com.alagou.push.service.PushDispatchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,11 +34,14 @@ class CivilDefenseNoticeServiceTest {
     @Mock
     private CivilDefenseNewsClient client;
 
+    @Mock
+    private PushDispatchService pushDispatchService;
+
     private CivilDefenseNoticeService service;
 
     @BeforeEach
     void setUp() {
-        service = new CivilDefenseNoticeService(repository, client);
+        service = new CivilDefenseNoticeService(repository, client, pushDispatchService);
     }
 
     @Test
@@ -79,6 +83,30 @@ class CivilDefenseNoticeServiceTest {
         ArgumentCaptor<CivilDefenseNotice> captor = ArgumentCaptor.forClass(CivilDefenseNotice.class);
         verify(repository).save(captor.capture());
         assertThat(captor.getValue().getRiskLevel()).isEqualTo(CivilDefenseRiskLevel.EMERGENCY);
+    }
+
+    @Test
+    void dispatchesEmergencyPushForNewEmergencyNotice() {
+        CivilDefenseNewsItem item = new CivilDefenseNewsItem(9L, Instant.now(), "link", "Estado de Emergencia decretado", "resumo", "conteudo", "thumb.jpg");
+        when(client.searchRecent("alagamento", 20)).thenReturn(List.of(item));
+        when(repository.findByExternalId(9L)).thenReturn(Optional.empty());
+
+        service.ingestNotices();
+
+        ArgumentCaptor<CivilDefenseNotice> captor = ArgumentCaptor.forClass(CivilDefenseNotice.class);
+        verify(pushDispatchService).publishCivilDefenseEmergency(captor.capture());
+        assertThat(captor.getValue().getRiskLevel()).isEqualTo(CivilDefenseRiskLevel.EMERGENCY);
+    }
+
+    @Test
+    void doesNotDispatchPushForNonEmergencyNotice() {
+        CivilDefenseNewsItem item = new CivilDefenseNewsItem(10L, Instant.now(), "link", "Alerta de risco em Joinville", "resumo", "conteudo", "thumb.jpg");
+        when(client.searchRecent("alagamento", 20)).thenReturn(List.of(item));
+        when(repository.findByExternalId(10L)).thenReturn(Optional.empty());
+
+        service.ingestNotices();
+
+        verify(pushDispatchService, never()).publishCivilDefenseEmergency(any());
     }
 
     @Test

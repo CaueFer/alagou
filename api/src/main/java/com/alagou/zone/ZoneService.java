@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -101,6 +102,10 @@ public class ZoneService {
 
     public List<ZoneData> getAllZoneData() {
         return new ArrayList<>(zoneDataMap.values());
+    }
+
+    public Optional<ZoneData> getZoneData(String zoneId) {
+        return Optional.ofNullable(zoneDataMap.get(zoneId));
     }
 
     public void updateZoneData(ZoneData data) {
