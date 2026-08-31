@@ -425,6 +425,16 @@ Map type selector (Padrão / Satélite, controls the MapCN tile layer) and a dis
 **`AppInfo`**
 App version, GitHub repository link, credits, list of external data sources (Prefeitura de Joinville, CEMADEN, Defesa Civil), and a "Reportar um problema" button linking to the GitHub issue form.
 
+### Shared UI primitives (`components/ui/`)
+
+Reusable controls used across the flows; defined once in the design so each screen does not re-specify interaction details.
+
+**`Switch`**
+Toggle control with a 24px-high track and a 20px thumb. Track is `primary` when checked and `outline-variant`/`border` when off; thumb is white with a subtle shadow. 150ms color/position transitions, 2px `primary` focus ring. Disabled state at 50% opacity. `role="switch"` with `aria-checked`.
+
+**`SegmentedControl`**
+Single-select segmented control rendered as a row of equal-width buttons in a `muted` (`surface-container`) track with 4px radius. The selected segment is `background` with a subtle shadow; unselected segments are `on-surface-variant`. 2px `primary` focus ring on each segment. Used by `RadiusSelector` (1/3/5/10 km), `DisplaySettings` (map type, distance unit), and the login/register switch in `AuthForm`. The active segment is never color-only: it also changes fill and shadow.
+
 ---
 
 ## Screens & states reference

@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from "react";
 import { Loader2 } from "lucide-react";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
-import { cn } from "@/lib/utils";
+import { SegmentedControl, type SegmentedOption } from "@/components/ui/segmented-control";
 import type { AuthCredentials } from "@/types/user";
 
 type Mode = "login" | "register";
@@ -15,6 +15,11 @@ interface AuthFormProps {
   pending: boolean;
   error: string | null;
 }
+
+const MODE_OPTIONS: SegmentedOption<Mode>[] = [
+  { value: "login", label: "Entrar" },
+  { value: "register", label: "Criar conta" },
+];
 
 export function AuthForm({ onLogin, onRegister, onGoogleCredential, pending, error }: AuthFormProps) {
   const [mode, setMode] = useState<Mode>("login");
@@ -33,29 +38,8 @@ export function AuthForm({ onLogin, onRegister, onGoogleCredential, pending, err
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-border p-4">
-      <div className="flex rounded-lg bg-muted p-1">
-        <button
-          type="button"
-          onClick={() => setMode("login")}
-          className={cn(
-            "flex-1 rounded-md py-2 text-sm font-medium transition-colors",
-            mode === "login" ? "bg-background shadow-sm" : "text-muted-foreground",
-          )}
-        >
-          Entrar
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("register")}
-          className={cn(
-            "flex-1 rounded-md py-2 text-sm font-medium transition-colors",
-            mode === "register" ? "bg-background shadow-sm" : "text-muted-foreground",
-          )}
-        >
-          Criar conta
-        </button>
-      </div>
+    <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface-container-lowest p-4 shadow-[0_1px_3px_0_rgba(11,28,48,0.08)]">
+      <SegmentedControl options={MODE_OPTIONS} value={mode} onValueChange={setMode} />
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <div className="flex flex-col gap-1.5">

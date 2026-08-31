@@ -69,7 +69,7 @@ export function GoogleSignInButton({ onCredential, disabled }: GoogleSignInButto
         type: "standard",
         theme: "filled_black",
         size: "large",
-        shape: "pill",
+        shape: "rectangular",
         text: "continue_with",
         logo_alignment: "left",
         locale: "pt-BR",
