@@ -4,6 +4,7 @@ export interface User {
   name?: string;
   pictureUrl?: string;
   createdAt?: string;
+  role: "USER" | "ADMIN";
 }
 
 export interface AuthCredentials {

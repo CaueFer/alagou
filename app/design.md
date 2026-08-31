@@ -425,6 +425,37 @@ Map type selector (Padrão / Satélite, controls the MapCN tile layer) and a dis
 **`AppInfo`**
 App version, GitHub repository link, credits, list of external data sources (Prefeitura de Joinville, CEMADEN, Defesa Civil), and a "Reportar um problema" button linking to the GitHub issue form.
 
+### Fluxo 6 — Administração e Observabilidade
+
+Tela restrita para contas administradoras, acessada a partir de `SettingsPage` e da rota escondida `/admin`. A finalidade é operacional: leitura rápida de números, estado atual da API e diagnóstico dos jobs automáticos.
+
+**`AdminScreen`**
+Painel em rolagem vertical com quatro blocos principais:
+* hero/banner no topo com fundo `primary-container` em degradê sutil, título forte e contagens-chave;
+* grade compacta de KPIs em cards brancos para contas, alertas e fontes oficiais;
+* seção de status da API em card próprio, com destaque para banco, versão e uptime;
+* listas de schedulers e alertas com filtros, mantendo leitura imediata em mobile.
+
+O hero é a assinatura visual da tela: um bloco mais escuro que o restante do app, com alto contraste e informação concentrada, para marcar o contexto de operação sem abandonar o sistema de cores do restante do produto.
+
+**`StatsCard`**
+Card de KPI com label em caixa alta, valor numérico dominante e descrição curta. Usa superfície clara, borda leve e sombra discreta para manter o foco no dado. Os valores devem usar `tabular-nums` quando numéricos.
+
+**`ApiStatusSection`**
+Card de diagnóstico da API, com badge de status no topo e quatro blocos compactos para banco, versão, uptime e última atualização. O estado `UP` usa `status-safe`; `DOWN` usa `severity-critical`.
+
+**`SchedulerStatusList`**
+Lista vertical de jobs agendados. Cada item mostra nome legível, descrição, intervalo, última execução, próxima previsão, duração e falhas. O estado do job nunca é cor apenas: sempre acompanha texto e badge.
+
+**`SchedulerStatusBadge`**
+Badge curto para o status operacional do job. `OK` usa verde, `FAILING` usa vermelho, `LATE` usa amarelo/laranja e `NEVER_RAN` usa neutro.
+
+**`AdminAlertFilters`**
+Painel de filtro em card único, com segmentados para escopo, tipo, severidade e ordenação. A opção de escopo deve manter a tela útil em uma mão só, com toque claro entre "Ativos" e "Todos". A ordem visual dos filtros vai de contexto mais geral para recorte mais específico.
+
+**`AdminAlertCard`**
+Card de alerta com uma faixa superior de severidade, chips para tipo e estado, referência visual de localização e métricas de confirmação, pista limpa e fotos. O card deve continuar legível mesmo com o texto do usuário ou o histórico do alerta vazio.
+
 ### Shared UI primitives (`components/ui/`)
 
 Reusable controls used across the flows; defined once in the design so each screen does not re-specify interaction details.
