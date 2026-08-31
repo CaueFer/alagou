@@ -2,6 +2,8 @@ package com.alagou.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,6 +36,10 @@ public class Usuario {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.USER;
 
     protected Usuario() {
     }
@@ -84,5 +90,9 @@ public class Usuario {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Role getRole() {
+        return role;
     }
 }
