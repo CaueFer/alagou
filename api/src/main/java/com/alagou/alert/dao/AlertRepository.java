@@ -1,7 +1,7 @@
 package com.alagou.alert.dao;
 
 import com.alagou.alert.Alert;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,8 +10,8 @@ import java.time.Instant;
 import java.util.List;
 
 public interface AlertRepository extends JpaRepository<Alert, Long> {
-    List<Alert> findByExpirationDateBefore(Instant now, Sort sort);
-    List<Alert> findByActiveTrueAndExpirationDateGreaterThanEqual(Instant now, Sort sort);
+    List<Alert> findByExpirationDateBefore(Instant now, Pageable pageable);
+    List<Alert> findByActiveTrueAndExpirationDateGreaterThanEqual(Instant now, Pageable pageable);
     List<Alert> findByActiveTrueAndExpirationDateBefore(Instant now);
 
     @Query(value = """
