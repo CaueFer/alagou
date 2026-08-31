@@ -16,9 +16,6 @@
           "Glória",
           "Saguaçu"
         ],
-        "riverStations": [
-          "82274000"
-        ],
         "tideAffected": true
       },
       "geometry": {
@@ -194,9 +191,6 @@
           "Jardim Paraíso",
           "Jardim Sofia",
           "Vale Verde"
-        ],
-        "riverStations": [
-          "82270060"
         ],
         "tideAffected": true
       },
@@ -519,9 +513,6 @@
           "Profipo",
           "Santa Catarina",
           "Ulysses Guimarães"
-        ],
-        "riverStations": [
-          "82274000"
         ],
         "tideAffected": false
       },
@@ -998,8 +989,9 @@
           "Marinas",
           "Vila Cubatão"
         ],
-        "riverStations": [
-          "82274000"
+        "riverPoint": [
+          -48.83,
+          -26.23
         ],
         "tideAffected": true
       },
@@ -1547,7 +1539,6 @@
           "Nova Brasília",
           "São Marcos"
         ],
-        "riverStations": [],
         "tideAffected": false
       },
       "geometry": {
@@ -1806,9 +1797,6 @@
           "Rio Bonito",
           "Dona Francisca"
         ],
-        "riverStations": [
-          "82270060"
-        ],
         "tideAffected": false
       },
       "geometry": {
@@ -2057,9 +2045,6 @@
         "neighborhoods": [
           "Zona Industrial Norte",
           "Zona Industrial Tupy"
-        ],
-        "riverStations": [
-          "82270060"
         ],
         "tideAffected": true
       },
@@ -2505,7 +2490,6 @@
         "neighborhoods": [
           "Vila Nova"
         ],
-        "riverStations": [],
         "tideAffected": false
       },
       "geometry": {

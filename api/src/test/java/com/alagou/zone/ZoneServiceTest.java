@@ -53,7 +53,7 @@ class ZoneServiceTest {
         assertEquals("Centro", centro.name());
         assertNotNull(centro.polygon());
         assertFalse(centro.polygon().isEmpty());
-        assertEquals(List.of("82274000"), centro.riverStations());
+        assertNull(centro.riverPoint());
         assertTrue(centro.tideAffected());
         assertFalse(centro.neighborhoods().isEmpty());
     }
@@ -66,7 +66,20 @@ class ZoneServiceTest {
                 .orElseThrow();
 
         assertFalse(oeste.tideAffected());
-        assertTrue(oeste.riverStations().isEmpty());
+        assertNull(oeste.riverPoint());
+    }
+
+    @Test
+    void shouldLoadRiverPointOverrideForZoneWithoutGridRiverCell() {
+        Zone leste = zoneService.getZones().stream()
+                .filter(z -> z.id().equals("leste"))
+                .findFirst()
+                .orElseThrow();
+
+        assertNotNull(leste.riverPoint());
+        assertEquals(-26.23, leste.riverPoint().latitude());
+        assertEquals(-48.83, leste.riverPoint().longitude());
+        assertEquals(leste.riverPoint(), leste.riverSamplingPoint());
     }
 
     @Test
@@ -91,7 +104,9 @@ class ZoneServiceTest {
                 "centro",
                 "Centro",
                 List.of(List.of(List.of(List.of(-48.8550, -26.2950)))),
-                List.of(),
+                new RainData(RainWindow.of(4.0, 6.0), RainWindow.of(40.0, 60.0), List.of("Centro"),
+                        RainStatus.ATTENTION, Instant.now()),
+                new RiverData(0.47, 1.2, RiverStatus.NORMAL, Instant.now()),
                 new TideData(1.5, Instant.now(), "HIGH_TIDE"),
                 new CivilDefenseData(CivilDefenseRiskLevel.ALERT, List.of("Alerta teste"), Instant.now()),
                 OverallStatus.ALERT,
@@ -107,10 +122,19 @@ class ZoneServiceTest {
     }
 
     @Test
-    void shouldReturnEmptyRiverDataForZoneWithoutSnapshot() {
-        List<RiverData> rivers = zoneService.getLastKnownRiverData("norte");
+    void shouldReturnUnknownRiverDataForZoneWithoutSnapshot() {
+        RiverData river = zoneService.getLastKnownRiverData("norte");
 
-        assertTrue(rivers.isEmpty());
+        assertEquals(RiverStatus.UNKNOWN, river.status());
+        assertNull(river.dischargeCubicMetersPerSecond());
+    }
+
+    @Test
+    void shouldReturnUnknownRainDataForZoneWithoutSnapshot() {
+        RainData rain = zoneService.getLastKnownRainData("norte");
+
+        assertEquals(RainStatus.UNKNOWN, rain.status());
+        assertTrue(rain.stationNames().isEmpty());
     }
 
     @Test

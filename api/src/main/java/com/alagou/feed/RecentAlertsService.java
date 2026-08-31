@@ -5,6 +5,8 @@ import com.alagou.alert.dto.AlertResponse;
 import com.alagou.alert.service.AlertService;
 import com.alagou.civildefense.CivilDefenseRiskLevel;
 import com.alagou.civildefense.service.CivilDefenseNoticeService;
+import com.alagou.zone.RainData;
+import com.alagou.zone.RainWindow;
 import com.alagou.zone.RiverData;
 import com.alagou.zone.TideData;
 import com.alagou.zone.Zone;
@@ -86,8 +88,7 @@ public class RecentAlertsService {
     }
 
     private boolean hasClimaticData(ZoneData zoneData) {
-        boolean hasRivers = zoneData.rivers() != null && !zoneData.rivers().isEmpty();
-        return hasRivers || zoneData.tide() != null;
+        return zoneData.rain() != null || zoneData.river() != null || zoneData.tide() != null;
     }
 
     private RecentAlertResponse toClimaticAlert(ZoneData zoneData) {
@@ -143,18 +144,20 @@ public class RecentAlertsService {
     }
 
     private String climaticSummary(ZoneData zoneData) {
-        if (zoneData.rivers() != null) {
-            RiverData river = zoneData.rivers().stream()
-                    .filter(r -> r.level() != null)
-                    .findFirst()
-                    .orElse(null);
-            if (river != null) {
-                return "Rio " + river.stationName() + ": " + river.level() + "m";
+        RainData rain = zoneData.rain();
+        if (rain != null) {
+            RainWindow window = rain.last24Hours();
+            if (window != null && window.averageMm() != null) {
+                return "Chuva em 24h: " + Math.round(window.averageMm()) + "mm";
             }
         }
+        RiverData river = zoneData.river();
+        if (river != null && river.dischargeCubicMetersPerSecond() != null) {
+            return "Vazão do rio: " + river.dischargeCubicMetersPerSecond() + "m³/s";
+        }
         TideData tide = zoneData.tide();
-        if (tide != null && tide.currentLevel() != null) {
-            return "Maré: " + tide.currentLevel() + "m";
+        if (tide != null && tide.nearestExtremeHeightMeters() != null) {
+            return "Maré: " + tide.nearestExtremeHeightMeters() + "m";
         }
         return "Dados climáticos atualizados";
     }

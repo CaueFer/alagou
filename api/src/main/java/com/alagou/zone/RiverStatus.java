@@ -1,5 +1,5 @@
 package com.alagou.zone;
 
 public enum RiverStatus {
-    NORMAL, ATTENTION, ALERT, OVERFLOW, UNKNOWN
+    NORMAL, ATTENTION, ALERT, UNKNOWN
 }

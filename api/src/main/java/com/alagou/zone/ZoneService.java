@@ -69,14 +69,15 @@ public class ZoneService {
                     neighborhoods.add(neighborhood.asText());
                 }
 
-                List<String> riverStations = new ArrayList<>();
-                for (JsonNode station : properties.path("riverStations")) {
-                    riverStations.add(station.asText());
+                GeoPoint riverPoint = null;
+                JsonNode riverPointNode = properties.path("riverPoint");
+                if (riverPointNode.isArray() && riverPointNode.size() == 2) {
+                    riverPoint = new GeoPoint(riverPointNode.get(1).asDouble(), riverPointNode.get(0).asDouble());
                 }
 
                 boolean tideAffected = properties.path("tideAffected").asBoolean(false);
 
-                zones.add(new Zone(id, name, polygon, neighborhoods, riverStations, tideAffected));
+                zones.add(new Zone(id, name, polygon, neighborhoods, riverPoint, tideAffected));
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to load zones.json", e);
@@ -112,9 +113,21 @@ public class ZoneService {
         }
     }
 
-    public List<RiverData> getLastKnownRiverData(String zoneId) {
+    public RiverData getLastKnownRiverData(String zoneId) {
         ZoneData data = zoneDataMap.get(zoneId);
-        return data != null && data.rivers() != null ? data.rivers() : List.of();
+        if (data != null && data.river() != null) {
+            return data.river();
+        }
+        return new RiverData(null, null, RiverStatus.UNKNOWN, Instant.now());
+    }
+
+    public RainData getLastKnownRainData(String zoneId) {
+        ZoneData data = zoneDataMap.get(zoneId);
+        if (data != null && data.rain() != null) {
+            return data.rain();
+        }
+        return new RainData(RainWindow.of(null, null), RainWindow.of(null, null),
+                List.of(), RainStatus.UNKNOWN, Instant.now());
     }
 
     public CivilDefenseData getLastKnownCivilDefenseData(String zoneId) {
