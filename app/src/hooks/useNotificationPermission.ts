@@ -32,12 +32,13 @@ export function useNotificationPermission() {
     };
   }, []);
 
-  const request = useCallback(async () => {
+  const request = useCallback(async (): Promise<NotificationPermissionStatus> => {
     if (!("Notification" in window)) {
-      return;
+      return "unsupported";
     }
     const result = await window.Notification.requestPermission();
     setPermission(result);
+    return result;
   }, []);
 
   return { permission, request } as const;

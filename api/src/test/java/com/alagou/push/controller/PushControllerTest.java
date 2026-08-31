@@ -15,9 +15,12 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import com.alagou.push.PushSubscription;
 import com.alagou.push.config.PushProperties;
 import com.alagou.push.service.PushSubscriptionService;
+import com.alagou.security.ClientIpResolver;
 import com.alagou.security.RateLimitingFilter;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -138,7 +141,7 @@ class PushControllerTest {
 
     @Test
     void rateLimitRuleBlocksSubscriptionPostAfterThirtyRequestsPerIp() throws Exception {
-        RateLimitingFilter filter = new RateLimitingFilter(new ObjectMapper());
+        RateLimitingFilter filter = new RateLimitingFilter(new ObjectMapper(), new ClientIpResolver(List.of()));
         FilterChain chain = mock(FilterChain.class);
 
         for (int i = 0; i < 30; i++) {

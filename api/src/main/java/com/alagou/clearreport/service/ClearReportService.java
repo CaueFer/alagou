@@ -7,14 +7,16 @@ import com.alagou.clearreport.dao.ClearReportRepository;
 import com.alagou.clearreport.dto.ClearReportResponse;
 import com.alagou.exception.BusinessRuleException;
 import com.alagou.exception.ResourceNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
 @Service
 public class ClearReportService {
 
-    private static final long DEACTIVATION_THRESHOLD = 3;
+    private static final long DISTINCT_REPORTERS_THRESHOLD = 3;
 
     private final ClearReportRepository repository;
     private final AlertRepository alertRepository;
@@ -24,7 +26,8 @@ public class ClearReportService {
         this.alertRepository = alertRepository;
     }
 
-    public ClearReportResponse create(Long alertId, String username) {
+    @Transactional
+    public ClearReportResponse create(Long alertId, String username, String sourceIp) {
         Alert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new ResourceNotFoundException("Alert not found: " + alertId));
 
@@ -32,10 +35,17 @@ public class ClearReportService {
             throw new BusinessRuleException("User has already reported this alert as clear");
         }
 
-        ClearReport report = repository.save(new ClearReport(alertId, username, Instant.now()));
+        ClearReport report;
+        try {
+            report = repository.saveAndFlush(new ClearReport(alertId, username, sourceIp, Instant.now()));
+        } catch (DataIntegrityViolationException ex) {
+            throw new BusinessRuleException("User has already reported this alert as clear");
+        }
 
         boolean deactivated = false;
-        if (alert.isActive() && repository.countByAlertId(alertId) >= DEACTIVATION_THRESHOLD) {
+        if (alert.isActive()
+                && repository.countDistinctUsernameByAlertId(alertId) >= DISTINCT_REPORTERS_THRESHOLD
+                && repository.countDistinctSourceIpByAlertId(alertId) >= DISTINCT_REPORTERS_THRESHOLD) {
             alert.deactivate();
             alertRepository.save(alert);
             deactivated = true;

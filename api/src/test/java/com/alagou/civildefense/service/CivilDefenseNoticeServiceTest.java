@@ -139,12 +139,13 @@ class CivilDefenseNoticeServiceTest {
     void listsNoticesOrderedByPublishedAtDescending() {
         CivilDefenseNotice recent = new CivilDefenseNotice(1L, "Aviso recente", "resumo", "conteudo", "link", "thumb.jpg",
                 CivilDefenseRiskLevel.ATTENTION, Instant.now(), Instant.now());
-        when(repository.findAllByOrderByPublishedAtDesc()).thenReturn(List.of(recent));
+        when(repository.findAllByOrderByPublishedAtDesc(any(org.springframework.data.domain.Pageable.class)))
+                .thenReturn(List.of(recent));
 
         List<CivilDefenseNoticeResponse> result = service.listNotices();
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).title()).isEqualTo("Aviso recente");
-        verify(repository, times(1)).findAllByOrderByPublishedAtDesc();
+        verify(repository, times(1)).findAllByOrderByPublishedAtDesc(any(org.springframework.data.domain.Pageable.class));
     }
 }
