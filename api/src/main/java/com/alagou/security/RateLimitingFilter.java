@@ -36,7 +36,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             new RateLimitRule("GET", "/api/weather", 30, Duration.ofMinutes(1)),
             new RateLimitRule("POST", "/api/push/subscriptions", 30, Duration.ofHours(1)),
             new RateLimitRule("PUT", "/api/push/subscriptions", 30, Duration.ofHours(1)),
-            new RateLimitRule("DELETE", "/api/push/subscriptions", 30, Duration.ofHours(1))
+            new RateLimitRule("DELETE", "/api/push/subscriptions", 30, Duration.ofHours(1)),
+            new RateLimitRule("POST", "/api/presence/heartbeat", 60, Duration.ofMinutes(1))
     );
 
     private static final int GLOBAL_LIMIT = 300;

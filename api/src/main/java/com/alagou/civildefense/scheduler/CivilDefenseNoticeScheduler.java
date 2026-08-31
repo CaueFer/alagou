@@ -26,6 +26,7 @@ public class CivilDefenseNoticeScheduler {
             log.info("Civil defense notice ingestion completed");
         } catch (Exception e) {
             log.error("Failed to ingest civil defense notices", e);
+            throw new IllegalStateException("Failed to ingest civil defense notices", e);
         }
     }
 }
