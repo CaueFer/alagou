@@ -35,7 +35,7 @@ export function SettingsPage({
     >
       <FloatingBadge position="sticky">Perfil e Configurações</FloatingBadge>
 
-      <div className="flex flex-col gap-6 px-4 pt-4">
+      <div className="flex flex-col gap-8 px-4 pt-4">
         {isAuthenticated && user ? (
           <AccountSummary user={user} onLogout={onLogout} />
         ) : (

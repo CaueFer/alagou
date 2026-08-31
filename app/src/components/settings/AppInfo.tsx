@@ -21,11 +21,11 @@ const DATA_SOURCES = [
 
 export function AppInfo() {
   return (
-    <section className="flex flex-col gap-2">
+    <section className="flex flex-col gap-3">
       <h2 className="text-xs font-bold uppercase tracking-[0.05em] text-muted-foreground">Sobre o app</h2>
 
-      <div className="flex flex-col">
-        <div className="flex items-center justify-between gap-3 border-b border-border py-2">
+      <div className="flex flex-col [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+        <div className="flex items-center justify-between gap-3 border-b border-border py-3">
           <p className="text-sm font-medium">Versão</p>
           <p className="text-sm text-muted-foreground">{__APP_VERSION__}</p>
         </div>
