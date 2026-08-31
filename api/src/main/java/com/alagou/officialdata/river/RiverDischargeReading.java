@@ -1,10 +1,9 @@
-package com.alagou.zone;
+package com.alagou.officialdata.river;
 
 import java.time.Instant;
 
-public record RiverData(
+public record RiverDischargeReading(
         Double dischargeCubicMetersPerSecond,
         Double forecastPeakCubicMetersPerSecond,
-        RiverStatus status,
-        Instant lastUpdate
+        Instant observedAt
 ) {}

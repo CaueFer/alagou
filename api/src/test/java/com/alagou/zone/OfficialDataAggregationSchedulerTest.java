@@ -3,16 +3,17 @@ package com.alagou.zone;
 import com.alagou.civildefense.CivilDefenseNotice;
 import com.alagou.civildefense.CivilDefenseRiskLevel;
 import com.alagou.civildefense.dao.CivilDefenseNoticeRepository;
-import com.alagou.officialdata.river.AnaHidrowebClient;
-import com.alagou.officialdata.river.AnaStationThresholds;
-import com.alagou.officialdata.river.StationThresholds;
+import com.alagou.officialdata.rain.CemadenRainClient;
+import com.alagou.officialdata.rain.CemadenRainReading;
+import com.alagou.officialdata.rain.CemadenStation;
+import com.alagou.officialdata.rain.ForecastRainReading;
+import com.alagou.officialdata.rain.OpenMeteoRainClient;
+import com.alagou.officialdata.rain.RainThresholds;
+import com.alagou.officialdata.river.OpenMeteoFloodClient;
+import com.alagou.officialdata.river.RiverDischargeReading;
 import com.alagou.officialdata.tide.TideExtreme;
 import com.alagou.officialdata.tide.TideType;
 import com.alagou.officialdata.tide.WorldTidesClient;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,9 +29,12 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,14 +42,17 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OfficialDataAggregationSchedulerTest {
 
-    private static final String CACHOEIRA = "82274000";
-    private static final String CUBATAO = "82270060";
-
     @Mock
     private ZoneService zoneService;
 
     @Mock
-    private AnaHidrowebClient anaClient;
+    private CemadenRainClient cemadenClient;
+
+    @Mock
+    private OpenMeteoRainClient rainForecastClient;
+
+    @Mock
+    private OpenMeteoFloodClient floodClient;
 
     @Mock
     private WorldTidesClient tideClient;
@@ -53,233 +60,314 @@ class OfficialDataAggregationSchedulerTest {
     @Mock
     private CivilDefenseNoticeRepository civilDefenseRepository;
 
-    @Mock
-    private AnaStationThresholds stationThresholds;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
+    private RainThresholds rainThresholds;
     private OfficialDataAggregationScheduler scheduler;
 
     @BeforeEach
     void setUp() {
-        scheduler = new OfficialDataAggregationScheduler(
-                zoneService, anaClient, tideClient, civilDefenseRepository, stationThresholds);
-        lenient().when(stationThresholds.forStation(CACHOEIRA))
-                .thenReturn(new StationThresholds("Rio Cachoeira", 2.0, 2.8, 3.5));
-        lenient().when(stationThresholds.forStation(CUBATAO))
-                .thenReturn(new StationThresholds("Rio Cubatao", 3.0, 4.0, 5.0));
-        lenient().when(zoneService.getZones()).thenReturn(List.of(zone("central", true)));
+        rainThresholds = new RainThresholds();
+        rainThresholds.getLastHour().setAttention(10.0);
+        rainThresholds.getLastHour().setAlert(20.0);
+        rainThresholds.getLastHour().setCritical(30.0);
+        rainThresholds.getLast24Hours().setAttention(50.0);
+        rainThresholds.getLast24Hours().setAlert(80.0);
+        rainThresholds.getLast24Hours().setCritical(100.0);
+        rainThresholds.setStationRadiusKm(5.0);
+
+        scheduler = new OfficialDataAggregationScheduler(zoneService, cemadenClient, rainForecastClient,
+                floodClient, tideClient, civilDefenseRepository, rainThresholds);
+    }
+
+    private Zone zone(String id, double lat, double lng, boolean tideAffected) {
+        List<List<List<List<Double>>>> polygon = List.of(List.of(List.of(
+                List.of(lng, lat), List.of(lng, lat), List.of(lng, lat), List.of(lng, lat))));
+        return new Zone(id, id, polygon, List.of(), null, tideAffected);
+    }
+
+    private void withZones(Zone... zones) {
+        when(zoneService.getZones()).thenReturn(List.of(zones));
+    }
+
+    private void quietSources() {
+        lenient().doReturn(List.of()).when(cemadenClient).fetchCityReadings();
+        lenient().doThrow(new IllegalStateException("sem previsão"))
+                .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
+        lenient().doThrow(new IllegalStateException("sem vazão"))
+                .when(floodClient).fetchDischarge(anyDouble(), anyDouble());
+        lenient().when(civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(any()))
+                .thenReturn(List.of());
+        lenient().when(zoneService.getLastKnownRainData(anyString())).thenReturn(
+                new RainData(RainWindow.of(null, null), RainWindow.of(null, null), List.of(),
+                        RainStatus.UNKNOWN, Instant.now()));
+        lenient().when(zoneService.getLastKnownRiverData(anyString())).thenReturn(
+                new RiverData(null, null, RiverStatus.UNKNOWN, Instant.now()));
+        lenient().when(zoneService.getLastKnownCivilDefenseData(anyString())).thenReturn(
+                new CivilDefenseData(CivilDefenseRiskLevel.NONE, List.of(), Instant.now()));
+    }
+
+    private Map<String, ZoneData> runAggregation() {
+        scheduler.aggregateOfficialData();
+        ArgumentCaptor<ZoneData> captor = ArgumentCaptor.forClass(ZoneData.class);
+        verify(zoneService, atLeastOnce()).updateZoneData(captor.capture());
+        return captor.getAllValues().stream()
+                .collect(Collectors.toMap(ZoneData::zoneId, Function.identity(), (a, b) -> b));
+    }
+
+    private CemadenRainReading reading(String name, double lat, double lng, Double mm1h, Double mm24h) {
+        return new CemadenRainReading(new CemadenStation(name.hashCode(), name, lat, lng),
+                mm1h, mm1h, mm24h, Instant.now());
     }
 
     @Test
     void tideStatusIsUnknownBeforeTideRefreshRuns() {
-        scheduler.aggregateOfficialData();
+        withZones(zone("centro", -26.30, -48.84, true));
+        quietSources();
 
-        assertThat(captureZoneData().tide().status()).isEqualTo("UNKNOWN");
+        ZoneData centro = runAggregation().get("centro");
+
+        assertThat(centro.tide().status()).isEqualTo("UNKNOWN");
     }
 
     @Test
     void aggregationUsesNearestExtremeFromTheDailyRefresh() {
+        withZones(zone("centro", -26.30, -48.84, true));
+        quietSources();
         Instant now = Instant.now();
         when(tideClient.fetchExtremes(anyInt())).thenReturn(List.of(
-                new TideExtreme(now.plusSeconds(600), 1.42, TideType.HIGH),
-                new TideExtreme(now.plusSeconds(30_000), 0.21, TideType.LOW)
+                new TideExtreme(now.plusSeconds(600), 1.8, TideType.HIGH),
+                new TideExtreme(now.plusSeconds(40000), 0.3, TideType.LOW)
         ));
 
         scheduler.refreshTideData();
-        scheduler.aggregateOfficialData();
+        ZoneData centro = runAggregation().get("centro");
 
-        TideData tide = captureZoneData().tide();
-        assertThat(tide.status()).isEqualTo("HIGH_TIDE");
-        assertThat(tide.currentLevel()).isEqualTo(1.42);
+        assertThat(centro.tide().status()).isEqualTo("HIGH_TIDE");
+        assertThat(centro.tide().nearestExtremeHeightMeters()).isEqualTo(1.8);
     }
 
     @Test
     void refreshFailureKeepsLastKnownExtremes() {
+        withZones(zone("centro", -26.30, -48.84, true));
+        quietSources();
         Instant now = Instant.now();
         when(tideClient.fetchExtremes(anyInt()))
-                .thenReturn(List.of(new TideExtreme(now.plusSeconds(600), 1.42, TideType.HIGH)))
-                .thenThrow(new RuntimeException("worldtides down"));
+                .thenReturn(List.of(new TideExtreme(now.plusSeconds(600), 1.8, TideType.HIGH)))
+                .thenThrow(new IllegalStateException("WorldTides fora do ar"));
 
         scheduler.refreshTideData();
         scheduler.refreshTideData();
-        scheduler.aggregateOfficialData();
+        ZoneData centro = runAggregation().get("centro");
 
-        assertThat(captureZoneData().tide().currentLevel()).isEqualTo(1.42);
+        assertThat(centro.tide().nearestExtremeHeightMeters()).isEqualTo(1.8);
     }
 
     @Test
-    void zonesReceiveOnlyDeclaredRiverStations() throws Exception {
-        Zone centro = zone("centro", true, CACHOEIRA);
-        Zone oeste = zone("oeste", false);
-        when(zoneService.getZones()).thenReturn(List.of(centro, oeste));
-        stubRiverFetch(null, 2.5);
-        when(civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(any(Instant.class)))
-                .thenReturn(List.of());
+    void assignsRainStationOnlyToZonesWithinRadius() {
+        withZones(zone("centro", -26.30, -48.84, false), zone("oeste", -26.30, -48.99, false));
+        quietSources();
+        doReturn(List.of(
+                reading("Centro", -26.301, -48.841, 1.0, 4.0),
+                reading("Estrada Geral Salto I", -26.296, -48.988, 2.0, 8.0)
+        )).when(cemadenClient).fetchCityReadings();
 
-        scheduler.aggregateOfficialData();
+        Map<String, ZoneData> zones = runAggregation();
 
-        Map<String, ZoneData> byZone = capturedZones();
-        assertThat(byZone).containsOnlyKeys("centro", "oeste");
-
-        ZoneData centroData = byZone.get("centro");
-        assertThat(centroData.rivers()).extracting(RiverData::stationCode).containsExactly(CACHOEIRA);
-        assertThat(centroData.tide()).isNotNull();
-        assertThat(centroData.civilDefense().riskLevel()).isEqualTo(CivilDefenseRiskLevel.NONE);
-
-        ZoneData oesteData = byZone.get("oeste");
-        assertThat(oesteData.rivers()).isEmpty();
-        assertThat(oesteData.tide()).isNull();
+        assertThat(zones.get("centro").rain().stationNames()).containsExactly("Centro");
+        assertThat(zones.get("oeste").rain().stationNames()).containsExactly("Estrada Geral Salto I");
     }
 
     @Test
-    void classifiesRiverStatusAtEachThresholdAndNull() throws Exception {
-        Zone centro = zone("centro", true, CACHOEIRA);
-        when(zoneService.getZones()).thenReturn(List.of(centro));
-        when(civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(any(Instant.class)))
-                .thenReturn(List.of());
+    void assignsRainStationToEveryZoneWhoseCentroidIsWithinRadius() {
+        withZones(zone("centro", -26.300, -48.845, false), zone("distrito-industrial", -26.270, -48.845, false));
+        quietSources();
+        doReturn(List.of(
+                reading("Costa e Silva", -26.285, -48.845, 3.0, 12.0)
+        )).when(cemadenClient).fetchCityReadings();
 
-        assertThat(runSingleZone(centro, null).rivers().get(0).status()).isEqualTo(RiverStatus.UNKNOWN);
-        assertThat(runSingleZone(centro, 1.9).rivers().get(0).status()).isEqualTo(RiverStatus.NORMAL);
-        assertThat(runSingleZone(centro, 2.0).rivers().get(0).status()).isEqualTo(RiverStatus.ATTENTION);
-        assertThat(runSingleZone(centro, 2.8).rivers().get(0).status()).isEqualTo(RiverStatus.ALERT);
-        assertThat(runSingleZone(centro, 3.5).rivers().get(0).status()).isEqualTo(RiverStatus.OVERFLOW);
+        Map<String, ZoneData> zones = runAggregation();
+
+        assertThat(zones.get("centro").rain().stationNames()).containsExactly("Costa e Silva");
+        assertThat(zones.get("distrito-industrial").rain().stationNames()).containsExactly("Costa e Silva");
     }
 
     @Test
-    void marksDeclaredStationUnknownWhenReadingIsMissing() throws Exception {
-        Zone centro = zone("centro", true, CACHOEIRA);
-        when(zoneService.getZones()).thenReturn(List.of(centro));
-        when(civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(any(Instant.class)))
-                .thenReturn(List.of());
+    void fallsBackToNearestZoneWhenStationIsOutsideEveryRadius() {
+        withZones(zone("centro", -26.30, -48.84, false), zone("pirabeiraba", -26.18, -48.91, false));
+        quietSources();
+        doReturn(List.of(
+                reading("Pirabeiraba", -26.25, -48.90, 4.0, 16.0)
+        )).when(cemadenClient).fetchCityReadings();
 
-        ZoneData data = runSingleZone(centro, null);
+        Map<String, ZoneData> zones = runAggregation();
 
-        assertThat(data.rivers()).hasSize(1);
-        assertThat(data.rivers().get(0).level()).isNull();
-        assertThat(data.rivers().get(0).status()).isEqualTo(RiverStatus.UNKNOWN);
-        assertThat(data.rivers().get(0).stationCode()).isEqualTo(CACHOEIRA);
+        assertThat(zones.get("pirabeiraba").rain().stationNames()).containsExactly("Pirabeiraba");
+        assertThat(zones.get("centro").rain().stationNames()).isEmpty();
     }
 
     @Test
-    void computesOverallStatusAsWorstSource() throws Exception {
-        Zone centro = zone("centro", true, CACHOEIRA);
-        when(zoneService.getZones()).thenReturn(List.of(centro));
+    void averagesMeasuredAndForecastRain() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doReturn(List.of(
+                reading("Centro", -26.301, -48.841, 4.0, 40.0),
+                reading("Costa e Silva", -26.279, -48.865, 6.0, 60.0)
+        )).when(cemadenClient).fetchCityReadings();
+        doReturn(new ForecastRainReading(10.0, 30.0, Instant.now()))
+                .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
 
-        when(civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(any(Instant.class)))
-                .thenReturn(List.of(notice(CivilDefenseRiskLevel.ALERT)));
-        assertThat(runSingleZone(centro, 3.5).overallStatus()).isEqualTo(OverallStatus.CRITICAL);
-        assertThat(runSingleZone(centro, 2.8).overallStatus()).isEqualTo(OverallStatus.ALERT);
+        RainData rain = runAggregation().get("centro").rain();
 
-        when(civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(any(Instant.class)))
-                .thenReturn(List.of());
-        assertThat(runSingleZone(centro, 1.0).overallStatus()).isEqualTo(OverallStatus.NORMAL);
-        assertThat(runSingleZone(centro, null).overallStatus()).isEqualTo(OverallStatus.NORMAL);
-
-        when(civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(any(Instant.class)))
-                .thenReturn(List.of(notice(CivilDefenseRiskLevel.EMERGENCY)));
-        assertThat(runSingleZone(centro, 1.0).overallStatus()).isEqualTo(OverallStatus.CRITICAL);
+        assertThat(rain.lastHour().measuredMm()).isEqualTo(5.0);
+        assertThat(rain.lastHour().forecastMm()).isEqualTo(10.0);
+        assertThat(rain.lastHour().averageMm()).isEqualTo(7.5);
+        assertThat(rain.last24Hours().averageMm()).isEqualTo(40.0);
     }
 
     @Test
-    void overallStatusIsUnknownWhenEverySourceIsUnknownOrAbsent() throws Exception {
-        Zone oeste = zone("oeste", false);
-        when(zoneService.getZones()).thenReturn(List.of(oeste));
-        when(anaClient.authenticate()).thenThrow(new RuntimeException("ANA down"));
-        when(civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(any(Instant.class)))
-                .thenThrow(new RuntimeException("DB down"));
-        when(zoneService.getLastKnownRiverData("oeste")).thenReturn(List.of());
-        when(zoneService.getLastKnownCivilDefenseData("oeste")).thenReturn(null);
+    void averageFallsBackToTheSurvivingSourceWhenTheOtherIsMissing() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doReturn(List.of(
+                reading("Centro", -26.301, -48.841, null, null)
+        )).when(cemadenClient).fetchCityReadings();
+        doReturn(new ForecastRainReading(12.0, 55.0, Instant.now()))
+                .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
 
-        scheduler.aggregateOfficialData();
+        RainData rain = runAggregation().get("centro").rain();
 
-        ZoneData oesteData = capturedZones().get("oeste");
-        assertThat(oesteData.overallStatus()).isEqualTo(OverallStatus.UNKNOWN);
-        assertThat(oesteData.rivers()).isEmpty();
-        assertThat(oesteData.civilDefense()).isNull();
+        assertThat(rain.lastHour().measuredMm()).isNull();
+        assertThat(rain.lastHour().averageMm()).isEqualTo(12.0);
+        assertThat(rain.stationNames()).isEmpty();
     }
 
     @Test
-    void fallsBackPerZoneWhenRiverSourceFails() throws Exception {
-        Zone centro = zone("centro", true, CACHOEIRA);
-        Zone norte = zone("norte", true, CUBATAO);
-        when(zoneService.getZones()).thenReturn(List.of(centro, norte));
-        when(anaClient.authenticate()).thenThrow(new RuntimeException("ANA down"));
-        when(civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(any(Instant.class)))
-                .thenReturn(List.of());
-        when(zoneService.getLastKnownRiverData("centro"))
-                .thenReturn(List.of(new RiverData(CACHOEIRA, "Rio Cachoeira", 3.0, RiverStatus.ALERT, Instant.parse("2026-08-27T10:00:00Z"))));
-        when(zoneService.getLastKnownRiverData("norte"))
-                .thenReturn(List.of(new RiverData(CUBATAO, "Rio Cubatao", 1.0, RiverStatus.NORMAL, Instant.parse("2026-08-27T09:00:00Z"))));
+    void classifiesRainStatusAtEachThreshold() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
 
-        scheduler.aggregateOfficialData();
+        doReturn(new ForecastRainReading(5.0, 5.0, Instant.now()),
+                new ForecastRainReading(10.0, 5.0, Instant.now()),
+                new ForecastRainReading(20.0, 5.0, Instant.now()),
+                new ForecastRainReading(30.0, 5.0, Instant.now()))
+                .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
 
-        Map<String, ZoneData> byZone = capturedZones();
-        assertThat(byZone.get("centro").rivers()).hasSize(1);
-        assertThat(byZone.get("centro").rivers().get(0).level()).isEqualTo(3.0);
-        assertThat(byZone.get("centro").rivers().get(0).lastUpdate()).isEqualTo(Instant.parse("2026-08-27T10:00:00Z"));
-        assertThat(byZone.get("norte").rivers()).hasSize(1);
-        assertThat(byZone.get("norte").rivers().get(0).level()).isEqualTo(1.0);
-        assertThat(byZone.get("norte").rivers().get(0).lastUpdate()).isEqualTo(Instant.parse("2026-08-27T09:00:00Z"));
+        assertThat(runAggregation().get("centro").rain().status()).isEqualTo(RainStatus.NORMAL);
+        assertThat(runAggregation().get("centro").rain().status()).isEqualTo(RainStatus.ATTENTION);
+        assertThat(runAggregation().get("centro").rain().status()).isEqualTo(RainStatus.ALERT);
+        assertThat(runAggregation().get("centro").rain().status()).isEqualTo(RainStatus.CRITICAL);
     }
 
-    private ZoneData captureZoneData() {
-        ArgumentCaptor<ZoneData> captor = ArgumentCaptor.forClass(ZoneData.class);
-        verify(zoneService, atLeastOnce()).updateZoneData(captor.capture());
-        return captor.getValue();
+    @Test
+    void rainStatusTakesTheWorstOfBothWindows() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doReturn(new ForecastRainReading(1.0, 90.0, Instant.now()))
+                .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
+
+        assertThat(runAggregation().get("centro").rain().status()).isEqualTo(RainStatus.ALERT);
     }
 
-    private ZoneData runSingleZone(Zone zone, Double cachoeiraLevel) throws Exception {
-        stubRiverFetch(cachoeiraLevel, null);
-        scheduler.aggregateOfficialData();
-        List<ZoneData> captured = captureAll();
-        return captured.get(captured.size() - 1);
+    @Test
+    void classifiesRiverStatusFromTheForecastPeakRatio() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doReturn(new RiverDischargeReading(1.0, 3.5, Instant.now()))
+                .when(floodClient).fetchDischarge(anyDouble(), anyDouble());
+
+        RiverData river = runAggregation().get("centro").river();
+
+        assertThat(river.status()).isEqualTo(RiverStatus.ALERT);
+        assertThat(river.dischargeCubicMetersPerSecond()).isEqualTo(1.0);
+        assertThat(river.forecastPeakCubicMetersPerSecond()).isEqualTo(3.5);
     }
 
-    private List<ZoneData> captureAll() {
-        ArgumentCaptor<ZoneData> captor = ArgumentCaptor.forClass(ZoneData.class);
-        verify(zoneService, org.mockito.Mockito.atLeast(1)).updateZoneData(captor.capture());
-        return captor.getAllValues();
+    @Test
+    void riverStatusIsUnknownWithoutDischarge() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doReturn(new RiverDischargeReading(null, null, Instant.now()))
+                .when(floodClient).fetchDischarge(anyDouble(), anyDouble());
+
+        assertThat(runAggregation().get("centro").river().status()).isEqualTo(RiverStatus.UNKNOWN);
     }
 
-    private void stubRiverFetch(Double cachoeiraLevel, Double cubataoLevel) throws Exception {
-        lenient().when(anaClient.authenticate()).thenReturn("token");
-        lenient().when(anaClient.fetchLatestReadings(anyList(), any(String.class)))
-                .thenReturn(riverResponse(cachoeiraLevel, cubataoLevel));
+    @Test
+    void computesOverallStatusAsWorstSource() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doReturn(new ForecastRainReading(12.0, 5.0, Instant.now()))
+                .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
+        doReturn(List.of(notice(CivilDefenseRiskLevel.EMERGENCY)))
+                .when(civilDefenseRepository).findByPublishedAtAfterOrderByPublishedAtDesc(any());
+
+        assertThat(runAggregation().get("centro").overallStatus()).isEqualTo(OverallStatus.CRITICAL);
     }
 
-    private JsonNode riverResponse(Double cachoeiraLevel, Double cubataoLevel) {
-        ArrayNode items = objectMapper.createArrayNode();
-        items.add(stationItem(CACHOEIRA, "Rio Cachoeira", cachoeiraLevel));
-        items.add(stationItem(CUBATAO, "Rio Cubatao", cubataoLevel));
-        ObjectNode root = objectMapper.createObjectNode();
-        root.set("items", items);
-        return root;
+    @Test
+    void overallStatusIsUnknownWhenEverySourceIsUnknownOrAbsent() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+
+        assertThat(runAggregation().get("centro").overallStatus()).isEqualTo(OverallStatus.UNKNOWN);
     }
 
-    private ObjectNode stationItem(String code, String name, Double level) {
-        ObjectNode item = objectMapper.createObjectNode();
-        item.put("cod_estacao", code);
-        item.put("nom_estacao", name);
-        ArrayNode readings = item.putArray("sen_ult");
-        if (level != null) {
-            readings.addObject().put("vlr_obs", level);
-        }
-        item.put("data_ult", "2026-08-27T12:00:00Z");
-        return item;
+    @Test
+    void zoneWithoutAnyMeasurementIsNotReportedAsNormal() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doReturn(List.of()).when(civilDefenseRepository).findByPublishedAtAfterOrderByPublishedAtDesc(any());
+
+        ZoneData centro = runAggregation().get("centro");
+
+        assertThat(centro.civilDefense().riskLevel()).isEqualTo(CivilDefenseRiskLevel.NONE);
+        assertThat(centro.overallStatus()).isEqualTo(OverallStatus.UNKNOWN);
+    }
+
+    @Test
+    void civilDefenseStillEscalatesAZoneWithoutMeasurements() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doReturn(List.of(notice(CivilDefenseRiskLevel.ALERT)))
+                .when(civilDefenseRepository).findByPublishedAtAfterOrderByPublishedAtDesc(any());
+
+        assertThat(runAggregation().get("centro").overallStatus()).isEqualTo(OverallStatus.ALERT);
+    }
+
+    @Test
+    void reportsNormalOnceThereIsAMeasurement() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doReturn(new ForecastRainReading(0.0, 0.0, Instant.now()))
+                .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
+
+        assertThat(runAggregation().get("centro").overallStatus()).isEqualTo(OverallStatus.NORMAL);
+    }
+
+    @Test
+    void fallsBackPerZoneWhenRainSourcesFail() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doThrow(new IllegalStateException("CEMADEN fora do ar")).when(cemadenClient).fetchCityReadings();
+        doReturn(new RainData(RainWindow.of(3.0, 5.0), RainWindow.of(30.0, 50.0), List.of("Centro"),
+                RainStatus.ATTENTION, Instant.now()))
+                .when(zoneService).getLastKnownRainData("centro");
+
+        RainData rain = runAggregation().get("centro").rain();
+
+        assertThat(rain.status()).isEqualTo(RainStatus.ATTENTION);
+        assertThat(rain.stationNames()).containsExactly("Centro");
+    }
+
+    @Test
+    void doesNotAttachTideToZonesNotAffectedByIt() {
+        withZones(zone("oeste", -26.30, -48.99, false));
+        quietSources();
+
+        assertThat(runAggregation().get("oeste").tide()).isNull();
     }
 
     private CivilDefenseNotice notice(CivilDefenseRiskLevel riskLevel) {
         return new CivilDefenseNotice(1L, "Aviso", "resumo", "conteudo", "link", null,
                 riskLevel, Instant.now(), Instant.now());
-    }
-
-    private Zone zone(String id, boolean tideAffected, String... stations) {
-        return new Zone(id, id, List.of(List.of(List.of(List.of(0.0, 0.0)))), List.of(), List.of(stations), tideAffected);
-    }
-
-    private Map<String, ZoneData> capturedZones() {
-        return captureAll().stream()
-                .collect(Collectors.toMap(ZoneData::zoneId, Function.identity()));
     }
 }

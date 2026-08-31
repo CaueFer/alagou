@@ -34,7 +34,9 @@ class ZoneControllerTest {
                 "central",
                 "Zona Central",
                 polygon,
-                List.of(new RiverData("82274000", "Rio Cachoeira", 2.5, RiverStatus.ATTENTION, Instant.now())),
+                new RainData(RainWindow.of(4.0, 6.0), RainWindow.of(40.0, 60.0), List.of("Centro"),
+                        RainStatus.ATTENTION, Instant.now()),
+                new RiverData(0.47, 1.2, RiverStatus.NORMAL, Instant.now()),
                 new TideData(1.5, Instant.now(), "HIGH_TIDE"),
                 new CivilDefenseData(CivilDefenseRiskLevel.ALERT, List.of("Aviso"), Instant.now()),
                 OverallStatus.ALERT,
@@ -49,8 +51,10 @@ class ZoneControllerTest {
                 .andExpect(jsonPath("$[0].zoneName").value("Zona Central"))
                 .andExpect(jsonPath("$[0].polygon[0][0][0][0]").value(-48.8550))
                 .andExpect(jsonPath("$[0].polygon[0][0][0][1]").value(-26.2950))
-                .andExpect(jsonPath("$[0].rivers[0].stationCode").value("82274000"))
-                .andExpect(jsonPath("$[0].rivers[0].status").value("ATTENTION"))
+                .andExpect(jsonPath("$[0].rain.status").value("ATTENTION"))
+                .andExpect(jsonPath("$[0].rain.last24Hours.averageMm").value(50.0))
+                .andExpect(jsonPath("$[0].river.status").value("NORMAL"))
+                .andExpect(jsonPath("$[0].river.dischargeCubicMetersPerSecond").value(0.47))
                 .andExpect(jsonPath("$[0].tide.status").value("HIGH_TIDE"))
                 .andExpect(jsonPath("$[0].civilDefense.riskLevel").value("ALERT"))
                 .andExpect(jsonPath("$[0].overallStatus").value("ALERT"));
