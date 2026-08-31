@@ -1,4 +1,5 @@
 export type Severity = "MODERATE" | "SEVERE" | "CRITICAL";
+export type AlertType = "USER" | "CLIMATIC" | "CIVIL_DEFENSE";
 
 export interface AlertLocation {
   lat: number;
