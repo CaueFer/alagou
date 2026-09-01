@@ -1,5 +1,6 @@
 package com.alagou.repository;
 
+import com.alagou.domain.Role;
 import com.alagou.domain.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByGoogleId(String googleId);
 
     Optional<Usuario> findByEmail(String email);
+
+    long countByGoogleIdIsNotNull();
+
+    long countByPasswordHashIsNotNull();
+
+    long countByRole(Role role);
 }

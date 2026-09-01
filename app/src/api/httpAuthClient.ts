@@ -10,6 +10,7 @@ interface AuthApiResponse {
   email: string;
   name: string;
   pictureUrl: string | null;
+  role: "USER" | "ADMIN";
 }
 
 interface ErrorResponse {
@@ -23,7 +24,14 @@ function readSession(): AuthSession | null {
     return null;
   }
   try {
-    return JSON.parse(raw) as AuthSession;
+    const session = JSON.parse(raw) as AuthSession;
+    return {
+      ...session,
+      user: {
+        ...session.user,
+        role: session.user.role ?? "USER",
+      },
+    };
   } catch {
     return null;
   }
@@ -43,6 +51,7 @@ function toSession(data: AuthApiResponse): AuthSession {
     email: data.email,
     name: data.name,
     pictureUrl: data.pictureUrl ?? undefined,
+    role: data.role ?? "USER",
   };
   return { user, token: data.token };
 }

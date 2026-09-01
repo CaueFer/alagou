@@ -125,6 +125,7 @@ public class OfficialDataAggregationScheduler {
             }
         } catch (Exception e) {
             log.error("Failed to fetch rain data from CEMADEN", e);
+            throw new IllegalStateException("Failed to fetch rain data from CEMADEN", e);
         }
         return byZone;
     }
@@ -138,6 +139,7 @@ public class OfficialDataAggregationScheduler {
                 forecast = rainForecastClient.fetchRain(centroid.latitude(), centroid.longitude());
             } catch (Exception e) {
                 log.error("Failed to fetch rain forecast from Open-Meteo for zone {}", zone.id(), e);
+                throw new IllegalStateException("Failed to fetch rain forecast from Open-Meteo for zone " + zone.id(), e);
             }
         }
 
@@ -205,6 +207,7 @@ public class OfficialDataAggregationScheduler {
                 anySucceeded = true;
             } catch (Exception e) {
                 log.error("Failed to fetch river discharge from Open-Meteo Flood for zone {}", zone.id(), e);
+                throw new IllegalStateException("Failed to fetch river discharge from Open-Meteo Flood for zone " + zone.id(), e);
             }
         }
 
@@ -286,6 +289,7 @@ public class OfficialDataAggregationScheduler {
             }
         } catch (Exception e) {
             log.error("Failed to refresh tide forecast from WorldTides", e);
+            throw new IllegalStateException("Failed to refresh tide forecast from WorldTides", e);
         }
     }
 
@@ -331,7 +335,7 @@ public class OfficialDataAggregationScheduler {
             return new CivilDefenseData(riskLevel, recentAlerts, lastUpdate);
         } catch (Exception e) {
             log.error("Failed to fetch civil defense data", e);
-            return null;
+            throw new IllegalStateException("Failed to fetch civil defense data", e);
         }
     }
 

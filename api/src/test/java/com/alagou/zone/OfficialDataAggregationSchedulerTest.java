@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -96,9 +97,9 @@ class OfficialDataAggregationSchedulerTest {
 
     private void quietSources() {
         lenient().doReturn(List.of()).when(cemadenClient).fetchCityReadings();
-        lenient().doThrow(new IllegalStateException("sem previsão"))
+        lenient().doReturn(null)
                 .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
-        lenient().doThrow(new IllegalStateException("sem vazão"))
+        lenient().doReturn(new RiverDischargeReading(null, null, Instant.now()))
                 .when(floodClient).fetchDischarge(anyDouble(), anyDouble());
         lenient().when(civilDefenseRepository.findByPublishedAtAfterOrderByPublishedAtDesc(any()))
                 .thenReturn(List.of());
@@ -153,7 +154,7 @@ class OfficialDataAggregationSchedulerTest {
     }
 
     @Test
-    void refreshFailureKeepsLastKnownExtremes() {
+    void tideRefreshFailurePropagatesButKeepsLastKnownExtremes() {
         withZones(zone("centro", -26.30, -48.84, true));
         quietSources();
         Instant now = Instant.now();
@@ -162,7 +163,8 @@ class OfficialDataAggregationSchedulerTest {
                 .thenThrow(new IllegalStateException("WorldTides fora do ar"));
 
         scheduler.refreshTideData();
-        scheduler.refreshTideData();
+        assertThatThrownBy(() -> scheduler.refreshTideData())
+                .isInstanceOf(IllegalStateException.class);
         ZoneData centro = runAggregation().get("centro");
 
         assertThat(centro.tide().nearestExtremeHeightMeters()).isEqualTo(1.8);
@@ -351,18 +353,13 @@ class OfficialDataAggregationSchedulerTest {
     }
 
     @Test
-    void fallsBackPerZoneWhenRainSourcesFail() {
-        withZones(zone("centro", -26.30, -48.84, false));
+    void aggregationFailsWhenARainSourceIsDown() {
         quietSources();
         doThrow(new IllegalStateException("CEMADEN fora do ar")).when(cemadenClient).fetchCityReadings();
-        doReturn(new RainData(RainWindow.of(3.0, 5.0), RainWindow.of(30.0, 50.0), List.of("Centro"),
-                RainStatus.ATTENTION, Instant.now()))
-                .when(zoneService).getLastKnownRainData("centro");
 
-        RainData rain = runAggregation().get("centro").rain();
-
-        assertThat(rain.status()).isEqualTo(RainStatus.ATTENTION);
-        assertThat(rain.stationNames()).containsExactly("Centro");
+        assertThatThrownBy(() -> scheduler.aggregateOfficialData())
+                .isInstanceOf(IllegalStateException.class);
+        verify(zoneService, never()).updateZoneData(any());
     }
 
     @Test

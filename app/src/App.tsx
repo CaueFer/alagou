@@ -7,6 +7,7 @@ import { CamerasScreen } from "@/screens/CamerasScreen";
 import { CivilDefenseScreen } from "@/screens/CivilDefenseScreen";
 import { RecentAlertsScreen } from "@/screens/RecentAlertsScreen";
 import { ProfileScreen } from "@/screens/ProfileScreen";
+import { AdminScreen } from "@/screens/AdminScreen";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="defesa-civil" element={<CivilDefenseScreen />} />
             <Route path="alertas" element={<RecentAlertsScreen />} />
             <Route path="perfil" element={<ProfileScreen />} />
+            <Route path="admin" element={<AdminScreen />} />
           </Route>
         </Routes>
         <Toaster position="top-center" richColors />

@@ -57,7 +57,7 @@ class AuthServiceTest {
         when(usuarioRepository.findByEmail("citizen@example.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("password123")).thenReturn("hashed");
         when(usuarioRepository.save(any(Usuario.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(jwtTokenProvider.generateToken(any(), anyString())).thenReturn("token");
+        when(jwtTokenProvider.generateToken(any(), anyString(), any())).thenReturn("token");
 
         AuthResponse response = authService.register(request);
 
@@ -86,7 +86,7 @@ class AuthServiceTest {
         LoginRequest request = new LoginRequest("citizen@example.com", "password123");
         when(usuarioRepository.findByEmail("citizen@example.com")).thenReturn(Optional.of(usuario));
         when(passwordEncoder.matches("password123", "hashed")).thenReturn(true);
-        when(jwtTokenProvider.generateToken(any(), anyString())).thenReturn("token");
+        when(jwtTokenProvider.generateToken(any(), anyString(), any())).thenReturn("token");
 
         AuthResponse response = authService.login(request);
 
@@ -122,7 +122,7 @@ class AuthServiceTest {
         when(usuarioRepository.findByGoogleId("google-id")).thenReturn(Optional.empty());
         when(usuarioRepository.findByEmail("citizen@example.com")).thenReturn(Optional.of(existing));
         when(usuarioRepository.save(any(Usuario.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(jwtTokenProvider.generateToken(any(), anyString())).thenReturn("token");
+        when(jwtTokenProvider.generateToken(any(), anyString(), any())).thenReturn("token");
 
         authService.loginWithGoogle("id-token");
 

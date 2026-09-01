@@ -38,7 +38,7 @@ export function AuthForm({ onLogin, onRegister, onGoogleCredential, pending, err
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface-container-lowest p-4 shadow-[0_1px_3px_0_rgba(11,28,48,0.08)]">
+    <div className="flex flex-col gap-4">
       <SegmentedControl options={MODE_OPTIONS} value={mode} onValueChange={setMode} />
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
