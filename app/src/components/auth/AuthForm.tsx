@@ -88,10 +88,6 @@ export function AuthForm({ onLogin, onRegister, onGoogleCredential, pending, err
       </div>
 
       <GoogleSignInButton onCredential={handleGoogleCredential} disabled={pending} />
-
-      <p className="text-xs text-muted-foreground">
-        Login é opcional: você pode ver o mapa e criar relatos sem uma conta. Entrar permite acompanhar seus relatos.
-      </p>
     </div>
   );
 }

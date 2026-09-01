@@ -307,9 +307,10 @@ Interaction timing tokens (`motion.*`) keep every sheet, modal, and marker trans
 
 Soft but structured.
 
-* **Standard elements** (buttons, inputs, chips): `rounded.DEFAULT` (4px, `0.25rem`).
+* **Buttons**: `rounded.lg` (8px) — a light, deliberate softening; buttons are the most-tapped surface and read as friendlier without drifting from the utilitarian tone.
+* **Inputs, chips, segmented segments**: `rounded.DEFAULT` (4px, `0.25rem`).
 * **Information cards** (`AlertFeedCard`, `CameraCard`, `CivilDefenseCard`): `rounded.lg` (8px).
-* **Severity indicators / status chips / `RiskBadge`**: same 4px radius as buttons, for system-wide consistency.
+* **Severity indicators / status chips / `RiskBadge`**: 4px radius, matching inputs, for system-wide consistency.
 * **Map markers (`AlertMarker`)**: pin shape — sharp bottom point for precise geolocation, rounded top housing the severity icon and confirmation count. Size: `map-marker-size` (32px), scales up slightly on tap/selection.
 * **Bottom sheets**: `rounded.xl` (12px) on the top two corners only.
 
@@ -410,6 +411,10 @@ This reuse is intentional: never fork `AlertDetailSheet` or `CivilDefenseDetail`
 **`SettingsPage`**
 Three grouped sections: Notificações, Exibição, Sobre o app. No login, no synced data — everything here is local-device state persisted to `localStorage` / PWA storage.
 
+The first viewport is the identity zone: it fills `100dvh` (minus the bottom-nav clearance and header offset) and vertically centers its content, so the settings sections only come into view on scroll. When logged out that zone is a `label-caps` "Sua sessão" kicker over a bold "Anônimo" (leaning into anonymous-as-default) above `AuthForm`; when logged in it is `AccountSummary` with a "Conta" kicker, the name in bold, and a "Membro desde" ledger row with a tabular date.
+
+Below the fold, each settings section header is a plain sentence-case heading in the platform system-ui font (a deliberate contrast against the Inter body) sitting on a 1px `foreground` (ink) rule; rows are separated by 1px `outline-variant` hairlines (`divide-y`), no cards, no shadow. The content column is capped at `max-w-md` and centered, with a small page top padding. The screen header stays the shared `FloatingBadge` pill, like every other screen.
+
 **`NotificationSettings`**
 Permission-gated: shows an "Ativar notificações" banner if permission was never requested; a disabled-toggles + "ative nas configurações do sistema" banner if permission was denied; three enabled toggles if granted:
 * Alertas de cidadãos próximos — reveals `RadiusSelector` (1/3/5/10 km) when active.
@@ -461,10 +466,10 @@ Card de alerta com uma faixa superior de severidade, chips para tipo e estado, r
 Reusable controls used across the flows; defined once in the design so each screen does not re-specify interaction details.
 
 **`Switch`**
-Toggle control with a 24px-high track and a 20px thumb. Track is `primary` when checked and `outline-variant`/`border` when off; thumb is white with a subtle shadow. 150ms color/position transitions, 2px `primary` focus ring. Disabled state at 50% opacity. `role="switch"` with `aria-checked`.
+Toggle control with a 24px-high track and a 20px thumb. Track is `primary` when checked and `outline-variant`/`border` when off; thumb is white with a 1px `black/10` hairline border (no shadow — the app avoids shadows). 150ms color/position transitions, 2px `primary` focus ring. Disabled state at 50% opacity. `role="switch"` with `aria-checked`.
 
 **`SegmentedControl`**
-Single-select segmented control rendered as a row of equal-width buttons in a `muted` (`surface-container`) track with 4px radius. The selected segment is `background` with a subtle shadow; unselected segments are `on-surface-variant`. 2px `primary` focus ring on each segment. Used by `RadiusSelector` (1/3/5/10 km), `DisplaySettings` (map type, distance unit), and the login/register switch in `AuthForm`. The active segment is never color-only: it also changes fill and shadow.
+Single-select segmented control rendered as a row of equal-width buttons in a `muted` (`surface-container`) track with 4px radius. Every segment carries a 1px transparent border so switching causes no reflow; the selected segment turns its border to `foreground` (ink) over a `background` fill, unselected segments are `on-surface-variant` with a hover to `foreground`. No shadow. 2px `primary` inset focus ring on each segment. Used by `RadiusSelector` (1/3/5/10 km), `DisplaySettings` (map type, distance unit), and the login/register switch in `AuthForm`. The active segment is never color-only: it also changes fill and border.
 
 ---
 

@@ -40,8 +40,10 @@ export function SegmentedControl<T extends string | number>({
             disabled={disabled}
             onClick={() => onValueChange(option.value)}
             className={cn(
-              "flex-1 min-h-11 items-center justify-center rounded px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-              selected ? "bg-background shadow-sm" : "text-muted-foreground",
+              "flex-1 min-h-11 items-center justify-center rounded border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary",
+              selected
+                ? "border-foreground bg-background text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground",
             )}
           >
             {option.label}
