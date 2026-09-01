@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SettingsSection } from "@/components/settings/SettingsSection";
 import { SegmentedControl, type SegmentedOption } from "@/components/ui/segmented-control";
 import {
   getDistanceUnit,
@@ -34,24 +35,20 @@ export function DisplaySettings() {
   }
 
   return (
-    <section className="flex flex-col gap-3">
-      <h2 className="text-xs font-bold uppercase tracking-[0.05em] text-muted-foreground">Exibição</h2>
-
-      <div className="flex flex-col pl-3 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
-        <div className="flex flex-col gap-2 border-b border-border py-3">
-          <p className="text-sm font-medium">Tipo de mapa</p>
-          <SegmentedControl options={MAP_TYPE_OPTIONS} value={mapType} onValueChange={handleMapTypeChange} />
-        </div>
-
-        <div className="flex flex-col gap-2 py-3">
-          <p className="text-sm font-medium">Unidade de distância</p>
-          <SegmentedControl
-            options={DISTANCE_UNIT_OPTIONS}
-            value={distanceUnit}
-            onValueChange={handleDistanceUnitChange}
-          />
-        </div>
+    <SettingsSection title="Exibição">
+      <div className="flex flex-col gap-2 py-3.5">
+        <p className="text-sm font-medium">Tipo de mapa</p>
+        <SegmentedControl options={MAP_TYPE_OPTIONS} value={mapType} onValueChange={handleMapTypeChange} />
       </div>
-    </section>
+
+      <div className="flex flex-col gap-2 py-3.5">
+        <p className="text-sm font-medium">Unidade de distância</p>
+        <SegmentedControl
+          options={DISTANCE_UNIT_OPTIONS}
+          value={distanceUnit}
+          onValueChange={handleDistanceUnitChange}
+        />
+      </div>
+    </SettingsSection>
   );
 }
