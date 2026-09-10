@@ -1,4 +1,5 @@
 import { CloudSunIcon, getWeatherIcon } from "@/components/map/icons";
+import { FloatingIconButton } from "@/components/ui/floating-icon-button";
 import { useWeather } from "@/hooks/useWeather";
 import type { AlertLocation } from "@/types/alert";
 
@@ -11,9 +12,9 @@ export function WeatherButton({ location }: WeatherButtonProps) {
   const Icon = status === "ready" && weather ? getWeatherIcon(weather.weatherCode, weather.isDay) : CloudSunIcon;
 
   return (
-    <button
-      type="button"
-      className="absolute left-4 z-[500] flex h-14 w-14 items-center justify-center rounded-full border border-white/40 bg-white/80 shadow-lg backdrop-blur-md transition-colors hover:bg-white/90"
+    <FloatingIconButton
+      size="lg"
+      className="absolute left-4 z-[500]"
       style={{ bottom: "var(--bottom-nav-clearance)" }}
       aria-label={status === "ready" && weather ? `Condições climáticas: ${weather.condition}` : "Condições climáticas"}
     >
@@ -23,6 +24,6 @@ export function WeatherButton({ location }: WeatherButtonProps) {
           {status === "ready" && weather ? `${Math.round(weather.temperature)}°` : "--°"}
         </span>
       </span>
-    </button>
+    </FloatingIconButton>
   );
 }

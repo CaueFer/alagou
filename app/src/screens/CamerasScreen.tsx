@@ -5,6 +5,7 @@ import { CameraListDrawer } from "@/components/cameras/CameraListDrawer";
 import { CameraPlayer } from "@/components/cameras/CameraPlayer";
 import { Button } from "@/components/ui/button";
 import { FloatingBadge } from "@/components/ui/floating-badge";
+import { FloatingIconButton } from "@/components/ui/floating-icon-button";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { pickDefaultCamera, setLastSelectedCameraId } from "@/lib/cameraPreference";
 import type { Camera } from "@/types/camera";
@@ -46,7 +47,7 @@ export function CamerasScreen() {
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-gradient-to-tl from-primary-container/15 via-surface-container to-background">
+    <div className="relative h-full w-full overflow-hidden">
       <CameraPlayer
         camera={selectedCamera}
         loading={status === "loading"}
@@ -61,14 +62,13 @@ export function CamerasScreen() {
 
       <FloatingBadge>Câmeras em Tempo Real</FloatingBadge>
 
-      <button
-        type="button"
+      <FloatingIconButton
         onClick={() => setIsDrawerOpen(true)}
-        className="absolute top-4 left-4 z-[500] flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-white/70 shadow-lg backdrop-blur-md transition-colors hover:bg-white/90"
+        className="absolute top-4 left-4 z-[500]"
         aria-label="Selecionar câmera"
       >
         <ListVideo className="h-5 w-5 text-foreground" />
-      </button>
+      </FloatingIconButton>
 
       {status === "error" && (
         <div className="absolute inset-0 z-[600] flex flex-col items-center justify-center gap-3 bg-background/90 px-8 text-center backdrop-blur-sm">

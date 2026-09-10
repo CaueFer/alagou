@@ -9,7 +9,7 @@ import { SeverityLegend } from "@/components/map/SeverityLegend";
 import { WeatherButton } from "@/components/map/WeatherButton";
 import { ZoneLayer } from "@/components/map/ZoneLayer";
 import { ZonesToggleButton } from "@/components/map/ZonesToggleButton";
-import { Button } from "@/components/ui/button";
+import { FloatingIconButton } from "@/components/ui/floating-icon-button";
 import type { Alert, AlertLocation } from "@/types/alert";
 import type { Camera } from "@/types/camera";
 import type { Zone } from "@/types/zone";
@@ -74,15 +74,15 @@ export function MapView({
         </div>
       )}
 
-      <Button
-        size="icon"
+      <FloatingIconButton
+        size="lg"
         onClick={onCreateReport}
         aria-label="Reportar alagamento"
-        className="absolute right-4 z-[500] h-14 w-14 rounded-full border border-white/40 bg-white/80 text-foreground shadow-lg backdrop-blur-md transition-colors hover:bg-white/90"
+        className="absolute right-4 z-[500] text-foreground"
         style={{ bottom: "var(--bottom-nav-clearance)" }}
       >
         <Plus className="h-6 w-6" />
-      </Button>
+      </FloatingIconButton>
     </div>
   );
 }
