@@ -89,6 +89,32 @@ export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onE
         </div>
       )}
 
+      {status !== "error" && (
+        <div
+          className={cn(
+            "absolute left-3 flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold backdrop-blur-md",
+            fullscreen
+              ? "border-white/20 bg-black/50 text-white"
+              : "border-white/40 bg-white/70 text-foreground shadow-lg",
+          )}
+          style={
+            fullscreen ? { top: "calc(env(safe-area-inset-top) + 1rem)" } : { bottom: "var(--bottom-nav-clearance)" }
+          }
+        >
+          {status === "live" ? (
+            <>
+              <span className="h-2 w-2 rounded-full bg-destructive" aria-hidden="true" />
+              AO VIVO
+            </>
+          ) : (
+            <>
+              <span className="h-2 w-2 animate-pulse rounded-full bg-severity-moderate" aria-hidden="true" />
+              Reconectando
+            </>
+          )}
+        </div>
+      )}
+
       <div
         className={cn(
           "absolute inset-x-0 flex items-center gap-2 p-3",
