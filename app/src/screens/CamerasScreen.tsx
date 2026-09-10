@@ -9,7 +9,13 @@ import { FloatingBadge } from "@/components/ui/floating-badge";
 import { FloatingIconButton } from "@/components/ui/floating-icon-button";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { pickDefaultCamera, setLastSelectedCameraId } from "@/lib/cameraPreference";
+import { cn } from "@/lib/utils";
 import type { Camera } from "@/types/camera";
+
+const CONTROL_SURFACE = "border-white/60 bg-white/95 hover:bg-white transition-all duration-300 ease-in";
+const FLY_TOP_LEFT = "pointer-events-none -translate-x-24 -translate-y-16 -rotate-12 scale-50 opacity-0";
+const FLY_TOP_RIGHT = "pointer-events-none translate-x-24 -translate-y-16 rotate-12 scale-50 opacity-0";
+const FLY_BOTTOM_RIGHT = "pointer-events-none translate-x-24 translate-y-16 rotate-12 scale-50 opacity-0";
 
 type CamerasStatus = "loading" | "ready" | "error";
 
@@ -73,11 +79,18 @@ export function CamerasScreen() {
         </div>
       )}
 
-      <FloatingBadge className="border-white/60 bg-white/95 text-foreground">Câmeras em Tempo Real</FloatingBadge>
+      <FloatingBadge
+        className={cn(
+          "border-white/60 bg-white/95 text-foreground transition-all duration-300 ease-in",
+          isFullscreen && "-translate-y-20 opacity-0",
+        )}
+      >
+        Câmeras em Tempo Real
+      </FloatingBadge>
 
       <FloatingIconButton
         onClick={() => setIsDrawerOpen(true)}
-        className="absolute top-4 left-4 z-[500] border-white/60 bg-white/95 hover:bg-white"
+        className={cn("absolute top-4 left-4 z-[500]", CONTROL_SURFACE, isFullscreen && FLY_TOP_LEFT)}
         aria-label="Selecionar câmera"
       >
         <ListVideo className="h-5 w-5 text-foreground" />
@@ -86,17 +99,17 @@ export function CamerasScreen() {
       {selectedCamera && status === "ready" && (
         <FloatingIconButton
           onClick={handleLocateOnMap}
-          className="absolute top-4 right-4 z-[500] border-white/60 bg-white/95 hover:bg-white"
+          className={cn("absolute top-4 right-4 z-[500]", CONTROL_SURFACE, isFullscreen && FLY_TOP_RIGHT)}
           aria-label="Ver câmera no mapa"
         >
           <MapPin className="h-5 w-5 text-foreground" />
         </FloatingIconButton>
       )}
 
-      {selectedCamera && status === "ready" && !isFullscreen && (
+      {selectedCamera && status === "ready" && (
         <FloatingIconButton
           onClick={() => setIsFullscreen(true)}
-          className="absolute right-4 z-[500] border-white/60 bg-white/95 hover:bg-white"
+          className={cn("absolute right-4 z-[500]", CONTROL_SURFACE, isFullscreen && FLY_BOTTOM_RIGHT)}
           style={{ bottom: "calc(var(--bottom-nav-clearance) + 2.5rem)" }}
           aria-label="Tela cheia em paisagem"
         >
