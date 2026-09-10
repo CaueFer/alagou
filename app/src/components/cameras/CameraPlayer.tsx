@@ -23,11 +23,19 @@ interface CameraPlayerProps {
   camera: Camera | null;
   loading: boolean;
   fullscreen?: boolean;
+  autoLandscape?: boolean;
   onClose?: () => void;
   onError?: () => void;
 }
 
-export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onError }: CameraPlayerProps) {
+export function CameraPlayer({
+  camera,
+  loading,
+  fullscreen = false,
+  autoLandscape = false,
+  onClose,
+  onError,
+}: CameraPlayerProps) {
   const { videoRef, status, retry } = useHlsPlayer(camera?.streamUrl ?? "", camera !== null);
   const [spinOnce, setSpinOnce] = useState(false);
   const reloadSpinning = spinOnce || status === "connecting";
@@ -40,6 +48,14 @@ export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onE
   useEffect(() => {
     return () => unlockOrientation();
   }, []);
+
+  useEffect(() => {
+    if (!autoLandscape || !camera) {
+      return;
+    }
+    lockLandscape();
+    return () => unlockOrientation();
+  }, [autoLandscape, camera]);
 
   useEffect(() => {
     if (status === "error" && onError) {
