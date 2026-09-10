@@ -115,50 +115,53 @@ export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onE
         </div>
       )}
 
-      <div
-        className={cn(
-          "absolute inset-x-0 flex items-center gap-2 p-3",
-          fullscreen ? "top-0 justify-between" : "justify-center",
-        )}
-        style={
-          fullscreen
-            ? { paddingTop: "calc(env(safe-area-inset-top) + 1rem)" }
-            : { bottom: "var(--bottom-nav-clearance)" }
-        }
-      >
-        {fullscreen && onClose && (
+      {status !== "error" && !fullscreen && (
+        <div
+          className="absolute right-3 flex items-center gap-1.5 rounded-full border border-white/40 bg-white/70 px-2.5 py-1 text-xs font-semibold text-foreground shadow-lg backdrop-blur-md"
+          style={{ bottom: "var(--bottom-nav-clearance)" }}
+        >
+          <span className="max-w-[55vw] truncate">{camera.name}</span>
+          <button
+            type="button"
+            onClick={retry}
+            aria-label="Recarregar câmera"
+            className="-mr-0.5 shrink-0 text-foreground/70 transition-colors hover:text-foreground"
+          >
+            <RotateCw className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
+
+      {fullscreen && (
+        <div
+          className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 p-3"
+          style={{ paddingTop: "calc(env(safe-area-inset-top) + 1rem)" }}
+        >
+          {onClose && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/10 hover:text-white"
+              onClick={onClose}
+              aria-label="Fechar"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          )}
+          <span className="max-w-[60%] truncate rounded-full border border-white/20 bg-black/50 px-3 py-1 text-sm text-white backdrop-blur-md">
+            {camera.name}
+          </span>
           <Button
             variant="ghost"
             size="icon"
             className="text-white hover:bg-white/10 hover:text-white"
-            onClick={onClose}
-            aria-label="Fechar"
+            onClick={lockLandscape}
+            aria-label="Girar para paisagem"
           >
-            <X className="h-5 w-5" />
+            <RotateCw className="h-5 w-5" />
           </Button>
-        )}
-        <span
-          className={cn(
-            "max-w-[60%] truncate rounded-full border px-3 py-1 text-sm backdrop-blur-md",
-            fullscreen ? "border-white/20 bg-black/50 text-white" : "border-white/40 bg-white/70 text-foreground shadow-lg",
-          )}
-        >
-          {camera.name}
-        </span>
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            fullscreen
-              ? "text-white hover:bg-white/10 hover:text-white"
-              : "border border-white/40 bg-white/70 text-foreground shadow-lg backdrop-blur-md hover:bg-white/90",
-          )}
-          onClick={lockLandscape}
-          aria-label="Girar para paisagem"
-        >
-          <RotateCw className="h-5 w-5" />
-        </Button>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
