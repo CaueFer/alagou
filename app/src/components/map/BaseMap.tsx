@@ -3,7 +3,9 @@ import type { ReactNode } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { DEFAULT_MAP_ZOOM, JOINVILLE_CENTER } from "@/lib/constants";
+import "maplibre-gl/dist/maplibre-gl.css";
+import "@maplibre/maplibre-gl-leaflet";
+import { DEFAULT_MAP_ZOOM, JOINVILLE_CENTER, MAP_STYLE_LIGHT_URL } from "@/lib/constants";
 import type { AlertLocation } from "@/types/alert";
 
 interface BaseMapProps {
@@ -25,6 +27,20 @@ function MapClickHandler({ onMapClick }: { onMapClick: (location: AlertLocation)
   return null;
 }
 
+function VectorTileLayer({ styleUrl }: { styleUrl: string }) {
+  const map = useMap();
+
+  useEffect(() => {
+    const layer = L.maplibreGL({ style: styleUrl, attributionControl: false });
+    layer.addTo(map);
+    return () => {
+      layer.remove();
+    };
+  }, [map, styleUrl]);
+
+  return null;
+}
+
 import { useMapType } from "@/lib/settingsPreference";
 
 function CompactAttribution({ isSatellite }: { isSatellite: boolean }) {
@@ -37,7 +53,8 @@ function CompactAttribution({ isSatellite }: { isSatellite: boolean }) {
     } else {
       control
         .addAttribution('© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OSM</a>')
-        .addAttribution('© <a href="https://carto.com/attributions" target="_blank" rel="noopener">CartoDB</a>');
+        .addAttribution('© <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>')
+        .addAttribution('<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a>');
     }
     control.addTo(map);
     return () => {
@@ -73,11 +90,7 @@ export function BaseMap({
           maxZoom={19}
         />
       ) : (
-        <TileLayer
-          key="standard"
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-          maxZoom={19}
-        />
+        <VectorTileLayer key="standard" styleUrl={MAP_STYLE_LIGHT_URL} />
       )}
       <ZoomControlTopRight />
       <CompactAttribution isSatellite={isSatellite} />

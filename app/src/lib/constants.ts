@@ -39,3 +39,6 @@ function resolveApiBaseUrl(): string {
 
 export const API_BASE_URL = resolveApiBaseUrl();
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "";
+
+export const MAP_STYLE_LIGHT_URL =
+  import.meta.env.VITE_MAP_STYLE_LIGHT_URL ?? "https://tiles.openfreemap.org/styles/positron";
