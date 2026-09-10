@@ -33,6 +33,13 @@ public final class ScheduledJobCatalog {
                     "Busca os avisos oficiais mais recentes e atualiza o feed.",
                     "A cada 60 minutos",
                     Duration.ofHours(1)
+            ),
+            new ScheduledJobDescriptor(
+                    "PushOutboxRelay.relayPending",
+                    "Repasse de notificações push",
+                    "Publica os eventos de push pendentes no broker para fanout aos assinantes.",
+                    "A cada 5 segundos",
+                    Duration.ofSeconds(5)
             )
     );
 
