@@ -77,7 +77,7 @@ export function CamerasScreen() {
 
       <FloatingIconButton
         onClick={() => setIsDrawerOpen(true)}
-        className="absolute top-4 left-4 z-[500]"
+        className="absolute top-4 left-4 z-[500] border-white/60 bg-white/95 hover:bg-white"
         aria-label="Selecionar câmera"
       >
         <ListVideo className="h-5 w-5 text-foreground" />
@@ -86,7 +86,7 @@ export function CamerasScreen() {
       {selectedCamera && status === "ready" && (
         <FloatingIconButton
           onClick={handleLocateOnMap}
-          className="absolute top-4 right-4 z-[500]"
+          className="absolute top-4 right-4 z-[500] border-white/60 bg-white/95 hover:bg-white"
           aria-label="Ver câmera no mapa"
         >
           <MapPin className="h-5 w-5 text-foreground" />
@@ -96,7 +96,7 @@ export function CamerasScreen() {
       {selectedCamera && status === "ready" && !isFullscreen && (
         <FloatingIconButton
           onClick={() => setIsFullscreen(true)}
-          className="absolute right-4 z-[500]"
+          className="absolute right-4 z-[500] border-white/60 bg-white/95 hover:bg-white"
           style={{ bottom: "calc(var(--bottom-nav-clearance) + 2.5rem)" }}
           aria-label="Tela cheia em paisagem"
         >
