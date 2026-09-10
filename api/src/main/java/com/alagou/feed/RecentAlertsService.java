@@ -156,8 +156,8 @@ public class RecentAlertsService {
             return "Vazão do rio: " + river.dischargeCubicMetersPerSecond() + "m³/s";
         }
         TideData tide = zoneData.tide();
-        if (tide != null && tide.nearestExtremeHeightMeters() != null) {
-            return "Maré: " + tide.nearestExtremeHeightMeters() + "m";
+        if (tide != null && tide.currentHeightMeters() != null) {
+            return "Maré: " + tide.currentHeightMeters() + "m";
         }
         return "Dados climáticos atualizados";
     }

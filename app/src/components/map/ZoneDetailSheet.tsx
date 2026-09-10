@@ -131,9 +131,9 @@ export function ZoneDetailSheet({ zone, open, onOpenChange }: ZoneDetailSheetPro
                 <p className="text-sm font-medium text-foreground">
                   {TIDE_STATUS_LABEL[zone.tide.status]}
                 </p>
-                {zone.tide.nearestExtremeHeightMeters !== null && (
+                {zone.tide.currentHeightMeters !== null && (
                   <p className="text-sm text-muted-foreground">
-                    Nível: <span className="font-semibold text-foreground">{zone.tide.nearestExtremeHeightMeters} m</span>
+                    Nível: <span className="font-semibold text-foreground">{zone.tide.currentHeightMeters.toFixed(2)} m</span>
                   </p>
                 )}
               </div>

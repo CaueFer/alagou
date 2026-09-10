@@ -3,7 +3,7 @@ package com.alagou.zone;
 import java.time.Instant;
 
 public record TideData(
-        Double nearestExtremeHeightMeters,
+        Double currentHeightMeters,
         Instant lastUpdate,
         String status
 ) {}

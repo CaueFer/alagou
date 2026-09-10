@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.within;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -150,7 +151,7 @@ class OfficialDataAggregationSchedulerTest {
         ZoneData centro = runAggregation().get("centro");
 
         assertThat(centro.tide().status()).isEqualTo("HIGH_TIDE");
-        assertThat(centro.tide().nearestExtremeHeightMeters()).isEqualTo(1.8);
+        assertThat(centro.tide().currentHeightMeters()).isEqualTo(1.8);
     }
 
     @Test
@@ -167,7 +168,40 @@ class OfficialDataAggregationSchedulerTest {
                 .isInstanceOf(IllegalStateException.class);
         ZoneData centro = runAggregation().get("centro");
 
-        assertThat(centro.tide().nearestExtremeHeightMeters()).isEqualTo(1.8);
+        assertThat(centro.tide().currentHeightMeters()).isEqualTo(1.8);
+    }
+
+    @Test
+    void tideHeightIsInterpolatedBetweenSurroundingExtremes() {
+        withZones(zone("centro", -26.30, -48.84, true));
+        quietSources();
+        Instant now = Instant.now();
+        when(tideClient.fetchExtremes(anyInt())).thenReturn(List.of(
+                new TideExtreme(now.minusSeconds(3600), 0.3, TideType.LOW),
+                new TideExtreme(now.plusSeconds(3600), 1.8, TideType.HIGH)
+        ));
+
+        scheduler.refreshTideData();
+        ZoneData centro = runAggregation().get("centro");
+
+        assertThat(centro.tide().currentHeightMeters()).isEqualTo((0.3 + 1.8) / 2, within(0.01));
+    }
+
+    @Test
+    void tideHeightMatchesExtremeExactlyAtItsOwnInstant() {
+        withZones(zone("centro", -26.30, -48.84, true));
+        quietSources();
+        Instant now = Instant.now();
+        when(tideClient.fetchExtremes(anyInt())).thenReturn(List.of(
+                new TideExtreme(now.minusSeconds(3600), 0.3, TideType.LOW),
+                new TideExtreme(now, 1.8, TideType.HIGH),
+                new TideExtreme(now.plusSeconds(3600), 0.3, TideType.LOW)
+        ));
+
+        scheduler.refreshTideData();
+        ZoneData centro = runAggregation().get("centro");
+
+        assertThat(centro.tide().currentHeightMeters()).isEqualTo(1.8, within(0.01));
     }
 
     @Test
