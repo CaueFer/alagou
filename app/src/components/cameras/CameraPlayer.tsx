@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RotateCw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useHlsPlayer } from "@/hooks/useHlsPlayer";
@@ -29,6 +29,13 @@ interface CameraPlayerProps {
 
 export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onError }: CameraPlayerProps) {
   const { videoRef, status, retry } = useHlsPlayer(camera?.streamUrl ?? "", camera !== null);
+  const [spinOnce, setSpinOnce] = useState(false);
+  const reloadSpinning = spinOnce || status === "connecting";
+
+  function handleReload() {
+    setSpinOnce(true);
+    retry();
+  }
 
   useEffect(() => {
     return () => unlockOrientation();
@@ -123,11 +130,14 @@ export function CameraPlayer({ camera, loading, fullscreen = false, onClose, onE
           <span className="max-w-[55vw] truncate">{camera.name}</span>
           <button
             type="button"
-            onClick={retry}
+            onClick={handleReload}
             aria-label="Recarregar câmera"
-            className="-mr-0.5 shrink-0 text-foreground/70 transition-colors hover:text-foreground"
+            className="-mr-0.5 shrink-0 text-foreground/70 transition-colors hover:text-foreground active:scale-90"
           >
-            <RotateCw className="h-3.5 w-3.5" />
+            <RotateCw
+              className={cn("h-3.5 w-3.5", reloadSpinning && "animate-spin")}
+              onAnimationIteration={() => setSpinOnce(false)}
+            />
           </button>
         </div>
       )}
