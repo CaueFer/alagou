@@ -301,6 +301,8 @@ public class OfficialDataAggregationScheduler {
 
         Instant now = Instant.now();
         TideExtreme nearest = null;
+        TideExtreme previous = null;
+        TideExtreme next = null;
         double minDiff = Double.MAX_VALUE;
 
         for (TideExtreme extreme : extremes) {
@@ -309,10 +311,32 @@ public class OfficialDataAggregationScheduler {
                 minDiff = diff;
                 nearest = extreme;
             }
+            if (!extreme.dateTime().isAfter(now) && (previous == null || extreme.dateTime().isAfter(previous.dateTime()))) {
+                previous = extreme;
+            }
+            if (!extreme.dateTime().isBefore(now) && (next == null || extreme.dateTime().isBefore(next.dateTime()))) {
+                next = extreme;
+            }
         }
 
         String status = nearest != null && nearest.type() == TideType.HIGH ? "HIGH_TIDE" : "LOW_TIDE";
-        return new TideData(nearest != null ? nearest.heightMeters() : null, now, status);
+        Double currentHeight;
+        if (previous != null && next != null && !previous.dateTime().equals(next.dateTime())) {
+            currentHeight = interpolateHeight(previous, next, now);
+        } else {
+            // agora cai fora da janela de extremos buscada (borda do cache de 7 dias): sem um extremo
+            // de cada lado não dá pra interpolar, então aproxima pelo mais próximo no tempo
+            currentHeight = nearest != null ? nearest.heightMeters() : null;
+        }
+        return new TideData(currentHeight, now, status);
+    }
+
+    private static double interpolateHeight(TideExtreme previous, TideExtreme next, Instant now) {
+        double totalMillis = next.dateTime().toEpochMilli() - previous.dateTime().toEpochMilli();
+        double elapsedMillis = now.toEpochMilli() - previous.dateTime().toEpochMilli();
+        double fraction = elapsedMillis / totalMillis;
+        return previous.heightMeters()
+                + (next.heightMeters() - previous.heightMeters()) * (1 - Math.cos(Math.PI * fraction)) / 2;
     }
 
     private CivilDefenseData fetchCivilDefenseData() {

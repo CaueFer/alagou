@@ -28,7 +28,7 @@ export interface ZoneRiver {
 }
 
 export interface ZoneTide {
-  nearestExtremeHeightMeters: number | null;
+  currentHeightMeters: number | null;
   status: TideStatus;
   lastUpdate: string;
 }

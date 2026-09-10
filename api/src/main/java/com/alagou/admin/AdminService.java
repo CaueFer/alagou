@@ -46,6 +46,7 @@ public class AdminService {
     private final SchedulerExecutionTracker schedulerExecutionTracker;
     private final DataSource dataSource;
     private final String version;
+    private final boolean pushEnabled;
 
     public AdminService(
             UsuarioRepository usuarioRepository,
@@ -56,7 +57,8 @@ public class AdminService {
             PresenceService presenceService,
             SchedulerExecutionTracker schedulerExecutionTracker,
             DataSource dataSource,
-            @Value("${app.version:0.0.1-SNAPSHOT}") String version
+            @Value("${app.version:0.0.1-SNAPSHOT}") String version,
+            @Value("${app.push.enabled:false}") boolean pushEnabled
     ) {
         this.usuarioRepository = usuarioRepository;
         this.alertRepository = alertRepository;
@@ -67,6 +69,7 @@ public class AdminService {
         this.schedulerExecutionTracker = schedulerExecutionTracker;
         this.dataSource = dataSource;
         this.version = version;
+        this.pushEnabled = pushEnabled;
     }
 
     public AdminOverviewResponse overview() {
@@ -123,6 +126,9 @@ public class AdminService {
     public List<SchedulerStatusResponse> listSchedulers() {
         Instant now = Instant.now();
         return ScheduledJobCatalog.jobs().stream()
+                // o relay de push só existe (e só roda) quando app.push.enabled=true;
+                // sem esse filtro o painel mostraria "nunca rodou" para um job desligado de propósito
+                .filter(job -> pushEnabled || !job.id().equals("PushOutboxRelay.relayPending"))
                 .map(job -> {
                     SchedulerExecutionInfo info = schedulerExecutionTracker.getInfo(job.id());
                     String status = statusFor(job, info, now);
