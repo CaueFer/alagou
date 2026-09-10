@@ -10,6 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useReverseGeocode } from "@/hooks/useReverseGeocode";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { calculateDistanceMeters, formatDistance } from "@/lib/distance";
+import { useDistanceUnit } from "@/lib/settingsPreference";
 import { getSeverityInfo } from "@/lib/severity";
 import { formatTimeRemaining } from "@/lib/ttl";
 import type { Alert } from "@/types/alert";
@@ -34,7 +37,15 @@ export function AlertDetailSheet({
   pendingAction,
 }: AlertDetailSheetProps) {
   const { address, loading: loadingAddress } = useReverseGeocode(alert?.location ?? null);
+  const { position: userLocation } = useGeolocation(open);
+  const distanceUnit = useDistanceUnit();
   const [, forceTick] = useState(0);
+
+  const distanceMeters =
+    userLocation && alert?.location
+      ? calculateDistanceMeters(userLocation, alert.location)
+      : null;
+  const formattedDistance = distanceMeters !== null ? formatDistance(distanceMeters, distanceUnit) : null;
 
   useEffect(() => {
     if (!open) return;
@@ -66,6 +77,7 @@ export function AlertDetailSheet({
           <DrawerDescription>
             {alert.confirmationCount === 1 ? "1 confirmação" : `${alert.confirmationCount} confirmações`}
             {alert.username ? ` · relatado por ${alert.username}` : " · relatado anonimamente"}
+            {formattedDistance ? ` · a ${formattedDistance} de você` : ""}
           </DrawerDescription>
         </DrawerHeader>
 

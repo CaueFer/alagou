@@ -25,19 +25,25 @@ function MapClickHandler({ onMapClick }: { onMapClick: (location: AlertLocation)
   return null;
 }
 
-function CompactAttribution() {
+import { useMapType } from "@/lib/settingsPreference";
+
+function CompactAttribution({ isSatellite }: { isSatellite: boolean }) {
   const map = useMap();
 
   useEffect(() => {
-    const control = L.control
-      .attribution({ prefix: false, position: "bottomright" })
-      .addAttribution('© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OSM</a>')
-      .addAttribution('© <a href="https://carto.com/attributions" target="_blank" rel="noopener">CartoDB</a>')
-      .addTo(map);
+    const control = L.control.attribution({ prefix: false, position: "bottomright" });
+    if (isSatellite) {
+      control.addAttribution('© <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>');
+    } else {
+      control
+        .addAttribution('© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OSM</a>')
+        .addAttribution('© <a href="https://carto.com/attributions" target="_blank" rel="noopener">CartoDB</a>');
+    }
+    control.addTo(map);
     return () => {
       control.remove();
     };
-  }, [map]);
+  }, [map, isSatellite]);
 
   return null;
 }
@@ -49,6 +55,9 @@ export function BaseMap({
   onMapClick,
   className,
 }: BaseMapProps) {
+  const mapType = useMapType();
+  const isSatellite = mapType === "satellite";
+
   return (
     <MapContainer
       center={LatLngTuple(center)}
@@ -57,9 +66,21 @@ export function BaseMap({
       attributionControl={false}
       className={className}
     >
-      <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+      {isSatellite ? (
+        <TileLayer
+          key="satellite"
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          maxZoom={19}
+        />
+      ) : (
+        <TileLayer
+          key="standard"
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          maxZoom={19}
+        />
+      )}
       <ZoomControlTopRight />
-      <CompactAttribution />
+      <CompactAttribution isSatellite={isSatellite} />
       {onMapClick && <MapClickHandler onMapClick={onMapClick} />}
       {children}
     </MapContainer>
