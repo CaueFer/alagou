@@ -118,7 +118,7 @@ export function CameraPlayer({
             "absolute left-3 flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold backdrop-blur-md",
             fullscreen
               ? "border-white/20 bg-black/50 text-white"
-              : "border-white/40 bg-white/70 text-foreground shadow-lg",
+              : "border-white/60 bg-white/95 text-foreground shadow-lg",
           )}
           style={
             fullscreen ? { top: "calc(env(safe-area-inset-top) + 1rem)" } : { bottom: "var(--bottom-nav-clearance)" }
@@ -140,7 +140,7 @@ export function CameraPlayer({
 
       {status !== "error" && !fullscreen && (
         <div
-          className="absolute right-3 flex items-center gap-1.5 rounded-full border border-white/40 bg-white/70 px-2.5 py-1 text-xs font-semibold text-foreground shadow-lg backdrop-blur-md"
+          className="absolute right-3 flex items-center gap-1.5 rounded-full border border-white/60 bg-white/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-lg backdrop-blur-md"
           style={{ bottom: "var(--bottom-nav-clearance)" }}
         >
           <span className="max-w-[55vw] truncate">{camera.name}</span>

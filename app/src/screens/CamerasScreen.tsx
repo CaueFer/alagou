@@ -73,7 +73,7 @@ export function CamerasScreen() {
         </div>
       )}
 
-      <FloatingBadge>Câmeras em Tempo Real</FloatingBadge>
+      <FloatingBadge className="border-white/60 bg-white/95 text-foreground">Câmeras em Tempo Real</FloatingBadge>
 
       <FloatingIconButton
         onClick={() => setIsDrawerOpen(true)}
