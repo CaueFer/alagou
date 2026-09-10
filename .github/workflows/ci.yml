@@ -1,0 +1,83 @@
+# CI pipeline — runs on every pull request targeting `main`.
+#
+# v1.0 scope:
+#   - backend  (api/): compile + run all unit tests
+#   - frontend (app/): production build (tsc + vite)
+#
+# To make it block merges, mark the "CI passed" check as required in
+# GitHub → Settings → Branches → Branch protection rules for `main`.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  merge_group:
+
+# Cancel superseded runs on the same PR / branch.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (compile + unit tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Compile
+        run: mvn -B -ntp clean compile
+
+      - name: Unit tests
+        run: mvn -B -ntp test
+
+  frontend:
+    name: Frontend (build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+  # Single stable status check to require in branch protection.
+  ci-passed:
+    name: CI passed
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    if: always()
+    steps:
+      - name: Verify all jobs passed
+        run: |
+          if echo "${{ join(needs.*.result, ',') }}" | grep -qE 'failure|cancelled'; then
+            echo "One or more CI jobs did not pass."
+            exit 1
+          fi
+          echo "All CI jobs passed."
