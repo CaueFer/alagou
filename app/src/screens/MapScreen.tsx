@@ -24,7 +24,10 @@ export function MapScreen() {
   const { zones, status: zonesStatus } = useZones();
 
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
-  const [isCreatingReport, setIsCreatingReport] = useState(false);
+  const [isCreatingReport, setIsCreatingReport] = useState(() => {
+    const state = routerLocation.state as { createReport?: boolean } | null;
+    return Boolean(state?.createReport);
+  });
   const [focusLocation, setFocusLocation] = useState<AlertLocation | null>(() => {
     const state = routerLocation.state as { focusLocation?: AlertLocation } | null;
     return state?.focusLocation ?? null;
@@ -33,6 +36,16 @@ export function MapScreen() {
   const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
   const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
   const [zonesVisible, setZonesVisibleState] = useState<boolean>(() => getZonesVisible());
+
+  useEffect(() => {
+    const state = routerLocation.state as { focusLocation?: AlertLocation; createReport?: boolean } | null;
+    if (state?.focusLocation) {
+      setFocusLocation(state.focusLocation);
+    }
+    if (state?.createReport) {
+      setIsCreatingReport(true);
+    }
+  }, [routerLocation.state]);
 
   const fetchCameras = useCallback(async () => {
     try {

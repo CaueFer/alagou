@@ -1,4 +1,14 @@
-import { AlertTriangle, CheckCircle2, Clock, LogOut, ShieldAlert, UserCircle } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  LogOut,
+  MapPin,
+  Plus,
+  ShieldAlert,
+  UserCircle,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAlerts } from "@/hooks/useAlerts";
@@ -12,6 +22,7 @@ interface AccountSummaryProps {
 }
 
 export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
+  const navigate = useNavigate();
   const { alerts } = useAlerts();
 
   const userNameLower = (user.name ?? "").trim().toLowerCase();
@@ -56,9 +67,20 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
         </div>
 
         {myAlerts.length === 0 ? (
-          <p className="text-xs text-muted-foreground">
-            Você não possui relatos de alagamento ativos no momento.
-          </p>
+          <div className="flex flex-col gap-3 py-1">
+            <p className="text-xs text-muted-foreground">
+              Você não possui relatos de alagamento ativos no momento.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-fit gap-1.5 text-xs"
+              onClick={() => navigate("/", { state: { createReport: true } })}
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Criar relato no mapa
+            </Button>
+          </div>
         ) : (
           <div className="flex flex-col gap-2 pt-1">
             {myAlerts.map((alert) => {
@@ -66,7 +88,7 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
               return (
                 <div
                   key={alert.id}
-                  className="flex flex-col gap-2 rounded-xl border border-border/80 bg-muted/40 p-3"
+                  className="flex flex-col gap-2.5 rounded-xl border border-border/80 bg-muted/40 p-3"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span
@@ -82,15 +104,26 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-status-safe" />
-                      {alert.confirmationCount} confirmações
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <ShieldAlert className="h-3.5 w-3.5 text-muted-foreground" />
-                      {alert.clearReportCount} pista limpa
-                    </span>
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-status-safe" />
+                        {alert.confirmationCount} confirmações
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <ShieldAlert className="h-3.5 w-3.5 text-muted-foreground" />
+                        {alert.clearReportCount} pista limpa
+                      </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
+                      onClick={() => navigate("/", { state: { focusLocation: alert.location } })}
+                    >
+                      <MapPin className="h-3 w-3" />
+                      Ver
+                    </Button>
                   </div>
                 </div>
               );
