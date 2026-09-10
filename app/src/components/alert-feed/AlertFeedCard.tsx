@@ -1,16 +1,26 @@
 import { getAlertTypeInfo } from "@/lib/alertType";
+import { calculateDistanceMeters, formatDistance } from "@/lib/distance";
 import { formatRelativeTime } from "@/lib/time";
+import { useDistanceUnit } from "@/lib/settingsPreference";
 import { cn } from "@/lib/utils";
+import type { AlertLocation } from "@/types/alert";
 import type { RecentAlert } from "@/types/recentAlert";
 
 interface AlertFeedCardProps {
   alert: RecentAlert;
+  userLocation: AlertLocation | null;
   onClick: () => void;
 }
 
-export function AlertFeedCard({ alert, onClick }: AlertFeedCardProps) {
+export function AlertFeedCard({ alert, userLocation, onClick }: AlertFeedCardProps) {
   const info = getAlertTypeInfo(alert.type);
   const Icon = info.icon;
+  const distanceUnit = useDistanceUnit();
+
+  const distanceLabel =
+    alert.type === "USER" && userLocation && alert.lat !== null && alert.lng !== null
+      ? `a ${formatDistance(calculateDistanceMeters(userLocation, { lat: alert.lat, lng: alert.lng }), distanceUnit)}`
+      : null;
 
   return (
     <button
@@ -32,7 +42,10 @@ export function AlertFeedCard({ alert, onClick }: AlertFeedCardProps) {
           <span className="shrink-0 text-xs text-muted-foreground">{formatRelativeTime(alert.emittedAt)}</span>
         </div>
         <p className="truncate text-sm font-semibold text-foreground">{alert.locationLabel}</p>
-        <p className="truncate text-sm text-muted-foreground">{alert.summary}</p>
+        <p className="truncate text-sm text-muted-foreground">
+          {alert.summary}
+          {distanceLabel && <span className="ml-1 text-foreground/70">{"·"} {distanceLabel}</span>}
+        </p>
       </div>
     </button>
   );
