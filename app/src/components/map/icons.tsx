@@ -88,6 +88,25 @@ export function StormIcon({ className }: IconProps) {
   );
 }
 
+export function getWeatherIconColor(weatherCode: number | null, isDay: boolean) {
+  if (weatherCode === null) {
+    return isDay ? "text-amber-500" : "text-slate-400";
+  }
+  if (weatherCode === 0 || (weatherCode >= 1 && weatherCode <= 2)) {
+    return isDay ? "text-amber-500" : "text-slate-300";
+  }
+  if (weatherCode === 3 || weatherCode === 45 || weatherCode === 48) {
+    return "text-slate-400";
+  }
+  if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
+    return "text-sky-500";
+  }
+  if (weatherCode >= 95 && weatherCode <= 99) {
+    return "text-violet-500";
+  }
+  return "text-slate-400";
+}
+
 export function getWeatherIcon(weatherCode: number | null, isDay: boolean) {
   if (weatherCode === null) {
     return isDay ? CloudSunIcon : CloudMoonIcon;

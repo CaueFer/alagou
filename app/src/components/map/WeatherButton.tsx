@@ -1,6 +1,7 @@
-import { CloudSunIcon, getWeatherIcon } from "@/components/map/icons";
-import { FloatingIconButton } from "@/components/ui/floating-icon-button";
+import { CloudSunIcon, getWeatherIcon, getWeatherIconColor } from "@/components/map/icons";
+import { glassSurfaceClass } from "@/components/ui/floating-icon-button";
 import { useWeather } from "@/hooks/useWeather";
+import { cn } from "@/lib/utils";
 import type { AlertLocation } from "@/types/alert";
 
 interface WeatherButtonProps {
@@ -9,21 +10,28 @@ interface WeatherButtonProps {
 
 export function WeatherButton({ location }: WeatherButtonProps) {
   const { weather, status } = useWeather(location);
-  const Icon = status === "ready" && weather ? getWeatherIcon(weather.weatherCode, weather.isDay) : CloudSunIcon;
+  const ready = status === "ready" && weather !== null;
+  const Icon = ready ? getWeatherIcon(weather.weatherCode, weather.isDay) : CloudSunIcon;
+  const iconColor = ready ? getWeatherIconColor(weather.weatherCode, weather.isDay) : "text-muted-foreground";
 
   return (
-    <FloatingIconButton
-      size="lg"
-      className="absolute left-4 z-[500]"
+    <div
+      role="status"
+      aria-label={
+        ready
+          ? `Clima: ${weather.condition}, ${Math.round(weather.temperature)} graus`
+          : "Clima indisponível"
+      }
+      className={cn(
+        "absolute left-4 z-[500] flex h-9 items-center gap-1.5 rounded-full pl-2 pr-3",
+        glassSurfaceClass,
+      )}
       style={{ bottom: "var(--bottom-nav-clearance)" }}
-      aria-label={status === "ready" && weather ? `Condições climáticas: ${weather.condition}` : "Condições climáticas"}
     >
-      <span className="relative flex items-center justify-center">
-        <Icon className="absolute -left-2 -top-2 h-6 w-6 text-foreground/55 -rotate-20" />
-        <span className="relative top-1 left-1 text-lg font-bold leading-none text-foreground">
-          {status === "ready" && weather ? `${Math.round(weather.temperature)}°` : "--°"}
-        </span>
+      <Icon className={cn("h-[18px] w-[18px] shrink-0", iconColor)} />
+      <span className="text-sm font-semibold leading-none tracking-tight tabular-nums text-foreground">
+        {ready ? `${Math.round(weather.temperature)}°` : "--°"}
       </span>
-    </FloatingIconButton>
+    </div>
   );
 }
