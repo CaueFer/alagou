@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { MapView } from "@/components/map/MapView";
 import { AlertDetailSheet } from "@/components/alert-detail/AlertDetailSheet";
@@ -16,6 +17,7 @@ import type { Camera } from "@/types/camera";
 import type { Zone } from "@/types/zone";
 
 export function MapScreen() {
+  const routerLocation = useLocation();
   const { alerts, status, updateAlert, removeAlert, addAlert } = useAlerts();
   const { confirm, reportClear, pendingAction } = useConfirmation();
   const { position } = useGeolocation(true);
@@ -23,7 +25,10 @@ export function MapScreen() {
 
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [isCreatingReport, setIsCreatingReport] = useState(false);
-  const [focusLocation, setFocusLocation] = useState<AlertLocation | null>(null);
+  const [focusLocation, setFocusLocation] = useState<AlertLocation | null>(() => {
+    const state = routerLocation.state as { focusLocation?: AlertLocation } | null;
+    return state?.focusLocation ?? null;
+  });
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
   const [selectedZone, setSelectedZone] = useState<Zone | null>(null);

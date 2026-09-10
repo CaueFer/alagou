@@ -20,8 +20,7 @@ interface SettingsPageProps {
   onAdminClick: () => void;
 }
 
-const heroClass =
-  "flex min-h-[calc(100dvh-var(--bottom-nav-clearance)-4.5rem)] flex-col justify-center gap-6";
+const heroClass = "flex flex-col gap-6";
 
 export function SettingsPage({
   user,
@@ -41,7 +40,7 @@ export function SettingsPage({
     >
       <FloatingBadge position="sticky">Perfil e Configurações</FloatingBadge>
 
-      <div className="mx-auto flex w-full max-w-md flex-col gap-10 px-4 pt-6">
+      <div className="mx-auto flex w-full max-w-md flex-col gap-8 px-4 pt-4">
         {isAuthenticated && user ? (
           <div className={heroClass}>
             <AccountSummary user={user} onLogout={onLogout} />

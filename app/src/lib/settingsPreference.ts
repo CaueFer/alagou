@@ -1,3 +1,5 @@
+import { useSyncExternalStore } from "react";
+
 export type NotificationRadiusKm = 1 | 3 | 5 | 10;
 export type MapType = "standard" | "satellite";
 export type DistanceUnit = "km" | "m";
@@ -55,6 +57,20 @@ export function getMapType(): MapType {
 
 export function setMapType(mapType: MapType): void {
   localStorage.setItem(MAP_TYPE_KEY, mapType);
+  window.dispatchEvent(new Event("alagou:map-type-change"));
+}
+
+function subscribeMapType(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener("alagou:map-type-change", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("alagou:map-type-change", callback);
+  };
+}
+
+export function useMapType(): MapType {
+  return useSyncExternalStore(subscribeMapType, getMapType, () => "standard");
 }
 
 export function getDistanceUnit(): DistanceUnit {
@@ -63,4 +79,18 @@ export function getDistanceUnit(): DistanceUnit {
 
 export function setDistanceUnit(unit: DistanceUnit): void {
   localStorage.setItem(DISTANCE_UNIT_KEY, unit);
+  window.dispatchEvent(new Event("alagou:distance-unit-change"));
 }
+
+function subscribeDistanceUnit(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener("alagou:distance-unit-change", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("alagou:distance-unit-change", callback);
+  };
+}
+
+export function useDistanceUnit(): DistanceUnit {
+  return useSyncExternalStore(subscribeDistanceUnit, getDistanceUnit, () => "km");
+}
