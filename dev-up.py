@@ -35,6 +35,13 @@ processes = []
 shutting_down = False
 
 
+def force_utf8_streams():
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(encoding="utf-8", errors="replace")
+
+
 def log(tag, message):
     print("[{}] {}".format(tag, message), flush=True)
 
@@ -178,6 +185,7 @@ def handle_sigint(signum, frame):
 
 
 def main():
+    force_utf8_streams()
     signal.signal(signal.SIGINT, handle_sigint)
 
     ensure_env_file()
