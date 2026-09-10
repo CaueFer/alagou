@@ -95,7 +95,10 @@ export function CameraPlayer({
 
   return (
     <div
-      className={cn("relative h-full w-full overflow-hidden", fullscreen && "fixed inset-0 z-[1100] bg-black")}
+      className={cn(
+        "relative h-full w-full overflow-hidden",
+        fullscreen && "fixed inset-0 z-[1100] bg-black animate-[camera-fullscreen-in_320ms_ease-out]",
+      )}
     >
       <video ref={videoRef} className="h-full w-full object-contain" playsInline />
 
