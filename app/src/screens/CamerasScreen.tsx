@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ListVideo, MapPin, RefreshCw } from "lucide-react";
+import { Expand, ListVideo, MapPin, RefreshCw } from "lucide-react";
 import { cameraClient } from "@/api";
 import { CameraListDrawer } from "@/components/cameras/CameraListDrawer";
 import { CameraPlayer } from "@/components/cameras/CameraPlayer";
@@ -19,6 +19,7 @@ export function CamerasScreen() {
   const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
   const [unavailableIds, setUnavailableIds] = useState<Set<string>>(new Set());
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const isOnline = useOnlineStatus();
   const navigate = useNavigate();
 
@@ -56,10 +57,13 @@ export function CamerasScreen() {
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden bg-black">
       <CameraPlayer
         camera={selectedCamera}
         loading={status === "loading"}
+        fullscreen={isFullscreen}
+        autoLandscape={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
         onError={() => selectedCamera && markUnavailable(selectedCamera.id)}
       />
 
@@ -86,6 +90,17 @@ export function CamerasScreen() {
           aria-label="Ver câmera no mapa"
         >
           <MapPin className="h-5 w-5 text-foreground" />
+        </FloatingIconButton>
+      )}
+
+      {selectedCamera && status === "ready" && !isFullscreen && (
+        <FloatingIconButton
+          onClick={() => setIsFullscreen(true)}
+          className="absolute right-4 z-[500]"
+          style={{ bottom: "calc(var(--bottom-nav-clearance) + 2.5rem)" }}
+          aria-label="Tela cheia em paisagem"
+        >
+          <Expand className="h-5 w-5 text-foreground" />
         </FloatingIconButton>
       )}
 
