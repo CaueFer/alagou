@@ -1,9 +1,10 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { glassSurfaceClass } from "@/components/ui/floating-icon-button";
 import { cn } from "@/lib/utils";
 
 const floatingBadgeVariants = cva(
-  "pointer-events-none top-4 rounded-2xl border border-white/40 bg-white/70 px-4 py-2 text-sm font-medium text-muted-foreground shadow-lg backdrop-blur-md",
+  cn("pointer-events-none top-4 rounded-2xl px-4 py-2 text-sm font-medium text-muted-foreground", glassSurfaceClass),
   {
     variants: {
       position: {
