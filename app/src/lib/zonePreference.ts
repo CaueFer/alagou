@@ -1,7 +1,7 @@
 const ZONES_VISIBLE_STORAGE_KEY = "alagou.zones.visible";
 
 export function getZonesVisible(): boolean {
-  return localStorage.getItem(ZONES_VISIBLE_STORAGE_KEY) !== "false";
+  return localStorage.getItem(ZONES_VISIBLE_STORAGE_KEY) === "true";
 }
 
 export function setZonesVisible(visible: boolean): void {
