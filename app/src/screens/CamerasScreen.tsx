@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { ListVideo, RefreshCw } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ListVideo, MapPin, RefreshCw } from "lucide-react";
 import { cameraClient } from "@/api";
 import { CameraListDrawer } from "@/components/cameras/CameraListDrawer";
 import { CameraPlayer } from "@/components/cameras/CameraPlayer";
@@ -19,6 +20,7 @@ export function CamerasScreen() {
   const [unavailableIds, setUnavailableIds] = useState<Set<string>>(new Set());
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const isOnline = useOnlineStatus();
+  const navigate = useNavigate();
 
   const fetchCameras = useCallback(async () => {
     try {
@@ -46,6 +48,13 @@ export function CamerasScreen() {
     setIsDrawerOpen(false);
   }
 
+  function handleLocateOnMap() {
+    if (!selectedCamera) {
+      return;
+    }
+    navigate("/", { state: { focusLocation: { lat: selectedCamera.lat, lng: selectedCamera.lng } } });
+  }
+
   return (
     <div className="relative h-full w-full overflow-hidden">
       <CameraPlayer
@@ -69,6 +78,16 @@ export function CamerasScreen() {
       >
         <ListVideo className="h-5 w-5 text-foreground" />
       </FloatingIconButton>
+
+      {selectedCamera && status === "ready" && (
+        <FloatingIconButton
+          onClick={handleLocateOnMap}
+          className="absolute top-4 right-4 z-[500]"
+          aria-label="Ver câmera no mapa"
+        >
+          <MapPin className="h-5 w-5 text-foreground" />
+        </FloatingIconButton>
+      )}
 
       {status === "error" && (
         <div className="absolute inset-0 z-[600] flex flex-col items-center justify-center gap-3 bg-background/90 px-8 text-center backdrop-blur-sm">

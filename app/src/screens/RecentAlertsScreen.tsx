@@ -7,6 +7,7 @@ import { ClimaticDetailModal } from "@/components/alert-feed/ClimaticDetailModal
 import { Button } from "@/components/ui/button";
 import { FloatingBadge } from "@/components/ui/floating-badge";
 import { useConfirmation } from "@/hooks/useConfirmation";
+import { useGeolocation } from "@/hooks/useGeolocation";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useRecentAlerts } from "@/hooks/useRecentAlerts";
 import { ALERT_TYPE_ORDER } from "@/lib/alertType";
@@ -16,6 +17,7 @@ import type { ClimaticZoneSnapshot, RecentAlert, RecentAlertType } from "@/types
 
 export function RecentAlertsScreen() {
   const { alerts, status, refetch } = useRecentAlerts();
+  const { position: userLocation } = useGeolocation(true);
   const { confirm, reportClear, pendingAction } = useConfirmation();
   const { containerRef, pullDistance, refreshing, isDragging, threshold, handlers } = usePullToRefresh<HTMLDivElement>({
     onRefresh: refetch,
@@ -104,6 +106,7 @@ export function RecentAlertsScreen() {
             alerts={alerts}
             loading={status === "loading"}
             selectedTypes={selectedTypes}
+            userLocation={userLocation}
             onSelect={handleSelect}
           />
         )}

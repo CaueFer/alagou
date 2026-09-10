@@ -1,5 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 import { AlertFeedCard } from "@/components/alert-feed/AlertFeedCard";
+import type { AlertLocation } from "@/types/alert";
 import type { RecentAlert, RecentAlertType } from "@/types/recentAlert";
 
 const SKELETON_ROWS = 3;
@@ -8,10 +9,11 @@ interface AlertFeedProps {
   alerts: RecentAlert[];
   loading: boolean;
   selectedTypes: ReadonlySet<RecentAlertType>;
+  userLocation: AlertLocation | null;
   onSelect: (alert: RecentAlert) => void;
 }
 
-export function AlertFeed({ alerts, loading, selectedTypes, onSelect }: AlertFeedProps) {
+export function AlertFeed({ alerts, loading, selectedTypes, userLocation, onSelect }: AlertFeedProps) {
   if (loading) {
     return (
       <div className="flex flex-col gap-3 py-2">
@@ -48,7 +50,12 @@ export function AlertFeed({ alerts, loading, selectedTypes, onSelect }: AlertFee
   return (
     <div className="flex flex-col gap-3 py-2">
       {visible.map((alert) => (
-        <AlertFeedCard key={alert.id} alert={alert} onClick={() => onSelect(alert)} />
+        <AlertFeedCard
+          key={alert.id}
+          alert={alert}
+          userLocation={userLocation}
+          onClick={() => onSelect(alert)}
+        />
       ))}
     </div>
   );

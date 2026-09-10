@@ -3,6 +3,7 @@ import { AuthForm } from "@/components/auth/AuthForm";
 import { AppInfo } from "@/components/settings/AppInfo";
 import { DisplaySettings } from "@/components/settings/DisplaySettings";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
+import { PwaInstallCard } from "@/components/settings/PwaInstallCard";
 import { Button } from "@/components/ui/button";
 import { FloatingBadge } from "@/components/ui/floating-badge";
 import type { AuthStatus } from "@/hooks/useAuth";
@@ -75,6 +76,7 @@ export function SettingsPage({
           </div>
         )}
 
+        <PwaInstallCard />
         <NotificationSettings />
         <DisplaySettings />
         <AppInfo />
