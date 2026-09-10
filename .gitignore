@@ -7,3 +7,4 @@ api/target/
 todo.md
 app/node_modules/
 app/dist/
+__pycache__/
