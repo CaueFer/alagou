@@ -1,5 +1,6 @@
 package com.alagou.officialdata.civildefense;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -18,7 +19,8 @@ public class CivilDefenseNewsClient {
     private final RestClient restClient;
     private final String baseUrl;
 
-    public CivilDefenseNewsClient(RestClient.Builder builder, @Value("${app.officialdata.joinville.base-url}") String baseUrl) {
+    public CivilDefenseNewsClient(@Qualifier("civilDefenseNewsRestClientBuilder") RestClient.Builder builder,
+                                   @Value("${app.officialdata.joinville.base-url}") String baseUrl) {
         this.restClient = builder
                 .defaultHeader("User-Agent", "Mozilla/5.0 (compatible; AlagouApp/1.0)")
                 .build();
