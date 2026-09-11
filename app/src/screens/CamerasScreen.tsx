@@ -63,7 +63,7 @@ export function CamerasScreen() {
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-black">
+    <div className="relative h-full w-full overflow-hidden bg-gradient-to-b from-white via-black to-white">
       <CameraPlayer
         camera={selectedCamera}
         loading={status === "loading"}
