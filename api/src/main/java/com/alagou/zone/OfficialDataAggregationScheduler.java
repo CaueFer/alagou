@@ -148,11 +148,11 @@ public class OfficialDataAggregationScheduler {
         }
 
         RainWindow lastHour = RainWindow.of(
-                average(measured.stream().map(CemadenRainReading::accumulated1hMm).toList()),
+                worst(measured.stream().map(CemadenRainReading::accumulated1hMm).toList()),
                 forecast != null ? forecast.accumulated1hMm() : null
         );
         RainWindow last24Hours = RainWindow.of(
-                average(measured.stream().map(CemadenRainReading::accumulated24hMm).toList()),
+                worst(measured.stream().map(CemadenRainReading::accumulated24hMm).toList()),
                 forecast != null ? forecast.accumulated24hMm() : null
         );
         List<String> stationNames = measured.stream()
@@ -280,16 +280,18 @@ public class OfficialDataAggregationScheduler {
         return 6371.0 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    private Double average(List<Double> values) {
-        double total = 0;
-        int count = 0;
+    // Uma zona pode ter mais de um pluviômetro do CEMADEN atribuído (station-radius-km=5.0 pode
+    // cobrir mais de um centroide). Fazer média entre as estações diluiria uma chuva forte real e
+    // localizada em uma delas até parecer normal, no mesmo padrão "pior vence" usado em
+    // classifyWindow entre medido e previsto
+    private Double worst(List<Double> values) {
+        Double worst = null;
         for (Double value : values) {
-            if (value != null) {
-                total += value;
-                count++;
+            if (value != null && (worst == null || value > worst)) {
+                worst = value;
             }
         }
-        return count == 0 ? null : total / count;
+        return worst;
     }
 
     @Scheduled(initialDelay = 0, fixedRate = 1, timeUnit = TimeUnit.DAYS)
