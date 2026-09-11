@@ -1,5 +1,6 @@
 dev-docs/*
 !dev-docs/RFC_Alagou (1).pdf
+.idea/
 CLAUDE.md
 AGENTS.md
 .env
