@@ -9,7 +9,7 @@ const floatingBadgeVariants = cva(
     variants: {
       position: {
         absolute: "absolute left-1/2 z-[500] w-max -translate-x-1/2",
-        sticky: "sticky z-10 mx-auto w-fit",
+        sticky: "sticky z-10 mx-auto mb-4 w-fit",
       },
     },
     defaultVariants: {
