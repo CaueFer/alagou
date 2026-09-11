@@ -311,6 +311,22 @@ class OfficialDataAggregationSchedulerTest {
     }
 
     @Test
+    void measuredRainAloneCanTriggerAlertEvenWhenTheForecastDoesNot() {
+        withZones(zone("centro", -26.30, -48.84, false));
+        quietSources();
+        doReturn(List.of(
+                reading("Centro", -26.301, -48.841, 25.0, 25.0)
+        )).when(cemadenClient).fetchCityReadings();
+        doReturn(new ForecastRainReading(1.0, 1.0, Instant.now()))
+                .when(rainForecastClient).fetchRain(anyDouble(), anyDouble());
+
+        RainData rain = runAggregation().get("centro").rain();
+
+        assertThat(rain.lastHour().averageMm()).isEqualTo(13.0);
+        assertThat(rain.status()).isEqualTo(RainStatus.ALERT);
+    }
+
+    @Test
     void classifiesRiverStatusFromTheForecastPeakRatio() {
         withZones(zone("centro", -26.30, -48.84, false));
         quietSources();

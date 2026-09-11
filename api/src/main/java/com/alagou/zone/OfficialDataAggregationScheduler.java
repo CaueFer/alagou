@@ -171,14 +171,27 @@ public class OfficialDataAggregationScheduler {
         return rainRank(fromLastHour) >= rainRank(fromLast24Hours) ? fromLastHour : fromLast24Hours;
     }
 
+    // O CEMADEN mede chuva de verdade no pluviômetro; a Open-Meteo modela chuva em grade e pode não
+    // captar um evento convectivo localizado. Classificar pela média das duas fontes (RainWindow.averageMm,
+    // mantido só para exibição) diluía uma leitura medida real perto do limiar até parecer normal, então a
+    // classificação usa o pior status entre as duas fontes, no mesmo padrão "pior vence" já usado entre
+    // lastHour e last24Hours logo acima
     private RainStatus classifyWindow(RainWindow window, RainThresholds.Window thresholds) {
-        if (window == null || window.averageMm() == null || thresholds == null
+        if (window == null || thresholds == null
                 || thresholds.getAttention() == null || thresholds.getAlert() == null
                 || thresholds.getCritical() == null) {
             return RainStatus.UNKNOWN;
         }
 
-        double value = window.averageMm();
+        RainStatus fromMeasured = classifyValue(window.measuredMm(), thresholds);
+        RainStatus fromForecast = classifyValue(window.forecastMm(), thresholds);
+        return rainRank(fromMeasured) >= rainRank(fromForecast) ? fromMeasured : fromForecast;
+    }
+
+    private RainStatus classifyValue(Double value, RainThresholds.Window thresholds) {
+        if (value == null) {
+            return RainStatus.UNKNOWN;
+        }
         if (value >= thresholds.getCritical()) return RainStatus.CRITICAL;
         if (value >= thresholds.getAlert()) return RainStatus.ALERT;
         if (value >= thresholds.getAttention()) return RainStatus.ATTENTION;
