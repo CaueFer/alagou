@@ -58,7 +58,7 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-surface-container-lowest p-4 shadow-sm">
+      <div className="flex flex-col gap-2.5 rounded-2xl bg-muted/60 p-4">
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Meus relatos ativos</span>
           <Badge variant="outline" className="tabular-nums">
@@ -88,7 +88,7 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
               return (
                 <div
                   key={alert.id}
-                  className="flex flex-col gap-2.5 rounded-xl border border-border/80 bg-muted/40 p-3"
+                  className="flex flex-col gap-2.5 rounded-xl border border-outline-variant/50 bg-surface-container-lowest p-3"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span

@@ -1,4 +1,4 @@
-import { Bug, Code2, ExternalLink } from "lucide-react";
+import { Bug, Code2, ExternalLink, Info } from "lucide-react";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { Button } from "@/components/ui/button";
 
@@ -22,7 +22,7 @@ const DATA_SOURCES = [
 
 export function AppInfo() {
   return (
-    <SettingsSection title="Sobre o app">
+    <SettingsSection title="Sobre o app" icon={<Info className="h-3.5 w-3.5" aria-hidden="true" />}>
       <div className="flex min-h-14 items-center justify-between gap-4 py-3.5">
         <p className="text-sm font-medium">Versão</p>
         <p className="text-sm text-muted-foreground tabular-nums">{__APP_VERSION__}</p>

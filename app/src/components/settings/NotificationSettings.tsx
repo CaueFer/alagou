@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BellOff } from "lucide-react";
+import { Bell, BellOff } from "lucide-react";
 import { toast } from "sonner";
 import { RadiusSelector } from "@/components/settings/RadiusSelector";
 import { SettingsSection } from "@/components/settings/SettingsSection";
@@ -101,7 +101,7 @@ export function NotificationSettings() {
   }
 
   return (
-    <SettingsSection title="Notificações">
+    <SettingsSection title="Notificações" icon={<Bell className="h-3.5 w-3.5" aria-hidden="true" />}>
       {permission === "default" && (
         <div className="flex flex-col gap-3 py-3.5">
           <div className="flex flex-col gap-0.5">
