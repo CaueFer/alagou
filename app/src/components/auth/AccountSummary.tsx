@@ -104,8 +104,8 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between gap-2 pt-1">
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 pt-1">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <CheckCircle2 className="h-3.5 w-3.5 text-status-safe" />
                         {alert.confirmationCount} confirmações
@@ -118,7 +118,7 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
+                      className="ml-auto h-7 shrink-0 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
                       onClick={() => navigate("/", { state: { focusLocation: alert.location } })}
                     >
                       <MapPin className="h-3 w-3" />
