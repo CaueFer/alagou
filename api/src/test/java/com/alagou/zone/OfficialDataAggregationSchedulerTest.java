@@ -248,7 +248,7 @@ class OfficialDataAggregationSchedulerTest {
     }
 
     @Test
-    void averagesMeasuredAndForecastRain() {
+    void usesWorstStationAsMeasuredRainAndAveragesItWithForecast() {
         withZones(zone("centro", -26.30, -48.84, false));
         quietSources();
         doReturn(List.of(
@@ -260,10 +260,11 @@ class OfficialDataAggregationSchedulerTest {
 
         RainData rain = runAggregation().get("centro").rain();
 
-        assertThat(rain.lastHour().measuredMm()).isEqualTo(5.0);
+        assertThat(rain.lastHour().measuredMm()).isEqualTo(6.0);
         assertThat(rain.lastHour().forecastMm()).isEqualTo(10.0);
-        assertThat(rain.lastHour().averageMm()).isEqualTo(7.5);
-        assertThat(rain.last24Hours().averageMm()).isEqualTo(40.0);
+        assertThat(rain.lastHour().averageMm()).isEqualTo(8.0);
+        assertThat(rain.last24Hours().measuredMm()).isEqualTo(60.0);
+        assertThat(rain.last24Hours().averageMm()).isEqualTo(45.0);
     }
 
     @Test
