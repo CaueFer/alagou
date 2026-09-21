@@ -1,5 +1,5 @@
 import type { AlertType, Severity } from "@/types/alert";
-import type { AdminAlert, AdminOverview, ApiStatus, SchedulerStatus } from "@/types/admin";
+import type { AdminAlert, AdminOverview, AlertTimelinePoint, ApiStatus, SchedulerStatus } from "@/types/admin";
 
 export interface AlertQuery {
   active?: boolean;
@@ -12,6 +12,7 @@ export interface AlertQuery {
 export interface AdminClient {
   getOverview(): Promise<AdminOverview>;
   listAlerts(query?: AlertQuery): Promise<AdminAlert[]>;
+  getAlertTimeline(days: number): Promise<AlertTimelinePoint[]>;
   listSchedulers(): Promise<SchedulerStatus[]>;
   getStatus(): Promise<ApiStatus>;
 }

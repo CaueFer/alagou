@@ -17,13 +17,19 @@ import { Button } from "@/components/ui/button";
 import { FloatingBadge } from "@/components/ui/floating-badge";
 import { AdminAlertCard } from "@/components/admin/AdminAlertCard";
 import { AdminAlertFilters } from "@/components/admin/AdminAlertFilters";
+import { AlertChartsSection } from "@/components/admin/AlertChartsSection";
 import { ApiStatusSection } from "@/components/admin/ApiStatusSection";
 import { SchedulerStatusList } from "@/components/admin/SchedulerStatusList";
 import { StatsCard } from "@/components/admin/StatsCard";
 import { useAuth } from "@/hooks/useAuth";
-import { getAlertTypeInfo } from "@/lib/alertType";
 import { cn } from "@/lib/utils";
-import { useAdminAlerts, useAdminOverview, useApiStatus, useSchedulerStatuses } from "@/hooks/useAdminData";
+import {
+  useAdminAlerts,
+  useAdminOverview,
+  useAlertTimeline,
+  useApiStatus,
+  useSchedulerStatuses,
+} from "@/hooks/useAdminData";
 import type { AlertType, Severity } from "@/types/alert";
 
 export function AdminScreen() {
@@ -35,12 +41,14 @@ export function AdminScreen() {
   const [type, setType] = useState<AlertType | "all">("all");
   const [severity, setSeverity] = useState<Severity | "all">("all");
   const [order, setOrder] = useState<"recent" | "old">("recent");
+  const [chartDays, setChartDays] = useState(7);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(() => new Date());
 
   const { overview, status: overviewStatus, refetch: refetchOverview } = useAdminOverview(isAdmin);
   const { apiStatus, status: apiStatusState, refetch: refetchApiStatus } = useApiStatus(isAdmin);
   const { schedulers, status: schedulerStatus, refetch: refetchSchedulers } = useSchedulerStatuses(isAdmin);
+  const { timeline, status: timelineStatus, refetch: refetchTimeline } = useAlertTimeline(chartDays, isAdmin);
   const alertFilters = useMemo(
     () => ({
       active: activeScope === "active" ? true : null,
@@ -63,32 +71,13 @@ export function AdminScreen() {
         refetchOverview(),
         refetchApiStatus(),
         refetchSchedulers(),
+        refetchTimeline(),
         refetchAlerts(),
       ]);
       setLastUpdated(new Date());
     } finally {
       setIsRefreshing(false);
     }
-  };
-
-  const formatAlertType = (value: string) => {
-    if (value === "USER" || value === "CLIMATIC" || value === "CIVIL_DEFENSE") {
-      return getAlertTypeInfo(value).label;
-    }
-    return value;
-  };
-
-  const formatSeverity = (value: string) => {
-    if (value === "MODERATE") {
-      return "Moderado";
-    }
-    if (value === "SEVERE") {
-      return "Grave";
-    }
-    if (value === "CRITICAL") {
-      return "Crítico";
-    }
-    return value;
   };
 
   if (!isAdmin) {
@@ -239,29 +228,15 @@ export function AdminScreen() {
           />
         </section>
 
+        <AlertChartsSection
+          timeline={timeline}
+          status={timelineStatus}
+          days={chartDays}
+          onDaysChange={setChartDays}
+          onRetry={refetchTimeline}
+        />
+
         <ApiStatusSection apiStatus={apiStatus} status={apiStatusState} />
-
-        <section className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-container-lowest p-4 shadow-sm">
-          <div className="flex flex-col gap-1">
-            <span className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Resumo por origem</span>
-            <h2 className="text-lg font-semibold text-foreground">Alertas por tipo e severidade</h2>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            {Object.entries(overview?.alertsByType ?? {}).map(([key, value]) => (
-              <div key={key} className="rounded-xl bg-muted p-3">
-                <div className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">{formatAlertType(key)}</div>
-                <div className="mt-1 text-base font-semibold text-foreground">{value}</div>
-              </div>
-            ))}
-            {Object.entries(overview?.alertsBySeverity ?? {}).map(([key, value]) => (
-              <div key={key} className="rounded-xl bg-muted p-3">
-                <div className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">{formatSeverity(key)}</div>
-                <div className="mt-1 text-base font-semibold text-foreground">{value}</div>
-              </div>
-            ))}
-          </div>
-        </section>
 
         <SchedulerStatusList schedulers={schedulers} status={schedulerStatus} />
 
