@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MonitorSmartphone } from "lucide-react";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { SegmentedControl, type SegmentedOption } from "@/components/ui/segmented-control";
 import {
@@ -35,7 +36,7 @@ export function DisplaySettings() {
   }
 
   return (
-    <SettingsSection title="Exibição">
+    <SettingsSection title="Exibição" icon={<MonitorSmartphone className="h-3.5 w-3.5" aria-hidden="true" />}>
       <div className="flex flex-col gap-2 py-3.5">
         <p className="text-sm font-medium">Tipo de mapa</p>
         <SegmentedControl options={MAP_TYPE_OPTIONS} value={mapType} onValueChange={handleMapTypeChange} />

@@ -11,7 +11,7 @@ export function PwaInstallCard() {
   }
 
   return (
-    <SettingsSection title="Instalar o app">
+    <SettingsSection title="Instalar o app" icon={<Download className="h-3.5 w-3.5" aria-hidden="true" />}>
       {state === "installable" ? (
         <div className="flex flex-col gap-3 py-3.5">
           <div className="flex flex-col gap-0.5">
