@@ -25,6 +25,9 @@ public interface AlertRepository extends JpaRepository<Alert, Long>, JpaSpecific
     @Query("select a.severity, count(a) from Alert a group by a.severity")
     List<Object[]> countAlertsBySeverity();
 
+    @Query("select a.creationDate, a.severity, a.type from Alert a where a.creationDate >= :from")
+    List<Object[]> findTimelineRowsSince(@Param("from") Instant from);
+
     @Query(value = """
             SELECT EXISTS (
                 SELECT 1 FROM alert a

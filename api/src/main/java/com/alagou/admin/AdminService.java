@@ -2,6 +2,7 @@ package com.alagou.admin;
 
 import com.alagou.admin.dto.AdminAlertResponse;
 import com.alagou.admin.dto.AdminOverviewResponse;
+import com.alagou.admin.dto.AlertTimelinePointResponse;
 import com.alagou.admin.dto.ApiStatusResponse;
 import com.alagou.admin.dto.SchedulerStatusResponse;
 import com.alagou.admin.scheduler.ScheduledJobCatalog;
@@ -27,6 +28,9 @@ import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +40,9 @@ public class AdminService {
 
     private static final int DEFAULT_LIMIT = 50;
     private static final int MAX_LIMIT = 200;
+    private static final int DEFAULT_TIMELINE_DAYS = 7;
+    private static final int MAX_TIMELINE_DAYS = 90;
+    private static final ZoneId REPORTING_ZONE = ZoneId.of("America/Sao_Paulo");
 
     private final UsuarioRepository usuarioRepository;
     private final AlertRepository alertRepository;
@@ -120,6 +127,34 @@ public class AdminService {
         return alertRepository.findAll(specification, PageRequest.of(0, safeLimit, sort))
                 .stream()
                 .map(this::toAdminAlertResponse)
+                .toList();
+    }
+
+    public List<AlertTimelinePointResponse> alertTimeline(Integer days) {
+        return alertTimeline(days, Instant.now());
+    }
+
+    List<AlertTimelinePointResponse> alertTimeline(Integer days, Instant now) {
+        int safeDays = days == null ? DEFAULT_TIMELINE_DAYS : Math.min(Math.max(days, 1), MAX_TIMELINE_DAYS);
+        LocalDate lastDay = now.atZone(REPORTING_ZONE).toLocalDate();
+        LocalDate firstDay = lastDay.minusDays(safeDays - 1L);
+
+        Map<LocalDate, DayCounts> countsByDay = new LinkedHashMap<>();
+        for (int offset = 0; offset < safeDays; offset++) {
+            countsByDay.put(firstDay.plusDays(offset), new DayCounts());
+        }
+
+        Instant from = firstDay.atStartOfDay(REPORTING_ZONE).toInstant();
+        for (Object[] row : alertRepository.findTimelineRowsSince(from)) {
+            LocalDate day = ((Instant) row[0]).atZone(REPORTING_ZONE).toLocalDate();
+            DayCounts counts = countsByDay.get(day);
+            if (counts != null) {
+                counts.add((Severity) row[1], (AlertType) row[2]);
+            }
+        }
+
+        return countsByDay.entrySet().stream()
+                .map(entry -> entry.getValue().toResponse(entry.getKey()))
                 .toList();
     }
 
@@ -231,5 +266,33 @@ public class AdminService {
         }
 
         return "OK";
+    }
+
+    private static final class DayCounts {
+        private final Map<Severity, Long> bySeverity = new EnumMap<>(Severity.class);
+        private final Map<AlertType, Long> byType = new EnumMap<>(AlertType.class);
+
+        private DayCounts() {
+            for (Severity severity : Severity.values()) {
+                bySeverity.put(severity, 0L);
+            }
+            for (AlertType type : AlertType.values()) {
+                byType.put(type, 0L);
+            }
+        }
+
+        private void add(Severity severity, AlertType type) {
+            bySeverity.merge(severity, 1L, Long::sum);
+            byType.merge(type, 1L, Long::sum);
+        }
+
+        private AlertTimelinePointResponse toResponse(LocalDate date) {
+            Map<String, Long> severityCounts = new LinkedHashMap<>();
+            bySeverity.forEach((severity, count) -> severityCounts.put(severity.name(), count));
+            Map<String, Long> typeCounts = new LinkedHashMap<>();
+            byType.forEach((type, count) -> typeCounts.put(type.name(), count));
+            long total = bySeverity.values().stream().mapToLong(Long::longValue).sum();
+            return new AlertTimelinePointResponse(date, total, severityCounts, typeCounts);
+        }
     }
 }
