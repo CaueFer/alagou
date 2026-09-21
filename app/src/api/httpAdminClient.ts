@@ -1,7 +1,7 @@
 import { httpAuthClient } from "@/api/httpAuthClient";
 import type { AdminClient, AlertQuery } from "@/api/adminClient";
 import { API_BASE_URL } from "@/lib/constants";
-import type { AdminOverview, ApiStatus, SchedulerStatus } from "@/types/admin";
+import type { AdminOverview, AlertTimelinePoint, ApiStatus, SchedulerStatus } from "@/types/admin";
 import type { AlertType, Severity } from "@/types/alert";
 
 interface ErrorResponse {
@@ -99,6 +99,10 @@ export const httpAdminClient: AdminClient = {
       expirationDate: item.expirationDate,
       creationDate: item.creationDate,
     }));
+  },
+
+  async getAlertTimeline(days: number) {
+    return requestJson<AlertTimelinePoint[]>(`/api/admin/alerts/timeline?days=${days}`);
   },
 
   async listSchedulers() {

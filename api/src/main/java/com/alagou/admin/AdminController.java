@@ -2,6 +2,7 @@ package com.alagou.admin;
 
 import com.alagou.admin.dto.AdminAlertResponse;
 import com.alagou.admin.dto.AdminOverviewResponse;
+import com.alagou.admin.dto.AlertTimelinePointResponse;
 import com.alagou.admin.dto.ApiStatusResponse;
 import com.alagou.admin.dto.SchedulerStatusResponse;
 import com.alagou.alert.AlertType;
@@ -37,6 +38,13 @@ public class AdminController {
             @RequestParam(required = false, defaultValue = "50") Integer limit
     ) {
         return adminService.listAlerts(active, type, severity, order, limit);
+    }
+
+    @GetMapping("/alerts/timeline")
+    public List<AlertTimelinePointResponse> alertTimeline(
+            @RequestParam(required = false, defaultValue = "7") Integer days
+    ) {
+        return adminService.alertTimeline(days);
     }
 
     @GetMapping("/schedulers")
