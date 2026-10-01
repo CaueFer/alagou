@@ -37,13 +37,14 @@ public class WebPushSender {
         this.pushService = pushService;
     }
 
-    public PushSendResult send(PushSubscription subscription, String payloadJson) {
+    public PushSendResult send(PushSubscription subscription, String payloadJson, int ttlSeconds) {
         try {
             Notification notification = new Notification(
                     subscription.getEndpoint(),
                     subscription.getP256dh(),
                     subscription.getAuth(),
-                    payloadJson.getBytes(StandardCharsets.UTF_8));
+                    payloadJson.getBytes(StandardCharsets.UTF_8),
+                    ttlSeconds);
             // The library defaults to the legacy aesgcm encoding, which Safari/iOS rejects outright.
             HttpResponse response = pushService.send(notification, Encoding.AES128GCM);
             int status = response.getStatusLine().getStatusCode();

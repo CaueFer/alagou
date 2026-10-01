@@ -2,6 +2,8 @@ package com.alagou.push.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import com.alagou.push.PushCategory;
+
 @ConfigurationProperties("app.push")
 public class PushProperties {
 
@@ -15,6 +17,7 @@ public class PushProperties {
     private int maxAttempts = 5;
     private int sendConcurrency = 8;
     private int outboxClaimSize = 50;
+    private Ttl ttl = new Ttl();
 
     public boolean isEnabled() { return enabled; }
     public void setEnabled(boolean enabled) { this.enabled = enabled; }
@@ -36,6 +39,29 @@ public class PushProperties {
     public void setSendConcurrency(int sendConcurrency) { this.sendConcurrency = sendConcurrency; }
     public int getOutboxClaimSize() { return outboxClaimSize; }
     public void setOutboxClaimSize(int outboxClaimSize) { this.outboxClaimSize = outboxClaimSize; }
+    public Ttl getTtl() { return ttl; }
+    public void setTtl(Ttl ttl) { this.ttl = ttl; }
+
+    public static class Ttl {
+        private int nearbySeconds = 10800;
+        private int climaticSeconds = 3600;
+        private int civilDefenseSeconds = 86400;
+
+        public int getNearbySeconds() { return nearbySeconds; }
+        public void setNearbySeconds(int nearbySeconds) { this.nearbySeconds = nearbySeconds; }
+        public int getClimaticSeconds() { return climaticSeconds; }
+        public void setClimaticSeconds(int climaticSeconds) { this.climaticSeconds = climaticSeconds; }
+        public int getCivilDefenseSeconds() { return civilDefenseSeconds; }
+        public void setCivilDefenseSeconds(int civilDefenseSeconds) { this.civilDefenseSeconds = civilDefenseSeconds; }
+
+        public int forCategory(PushCategory category) {
+            return switch (category) {
+                case NEARBY -> nearbySeconds;
+                case CLIMATIC -> climaticSeconds;
+                case CIVIL_DEFENSE -> civilDefenseSeconds;
+            };
+        }
+    }
 
     public static class Vapid {
         private String publicKey;

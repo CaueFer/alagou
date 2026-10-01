@@ -51,6 +51,7 @@ public class PushSendListener {
     @RabbitListener(queues = PushRabbitConfig.SEND_QUEUE, containerFactory = PushRabbitConfig.SEND_LISTENER_FACTORY)
     public void onBatch(PushSendBatch batch) {
         String payloadJson = serialize(batch);
+        int ttlSeconds = properties.getTtl().forCategory(batch.payload().category());
         LocalDate today = LocalDate.now(ZoneOffset.UTC);
         boolean anyTransient = false;
 
@@ -70,7 +71,7 @@ public class PushSendListener {
                 continue;
             }
 
-            PushSendResult result = webPushSender.send(subscription, payloadJson);
+            PushSendResult result = webPushSender.send(subscription, payloadJson, ttlSeconds);
             switch (result) {
                 case GONE -> {
                     subscriptionRepository.delete(subscription);
