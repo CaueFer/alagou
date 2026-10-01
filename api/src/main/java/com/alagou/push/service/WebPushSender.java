@@ -8,6 +8,7 @@ import org.apache.http.HttpResponse;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import com.alagou.push.PushSendResult;
 import com.alagou.push.PushSubscription;
 import com.alagou.push.config.PushProperties;
 
+import nl.martijndwars.webpush.Encoding;
 import nl.martijndwars.webpush.Notification;
 import nl.martijndwars.webpush.PushService;
 
@@ -26,6 +28,7 @@ public class WebPushSender {
 
     private final PushService pushService;
 
+    @Autowired
     public WebPushSender(PushProperties properties) {
         this(buildPushService(properties));
     }
@@ -41,7 +44,8 @@ public class WebPushSender {
                     subscription.getP256dh(),
                     subscription.getAuth(),
                     payloadJson.getBytes(StandardCharsets.UTF_8));
-            HttpResponse response = pushService.send(notification);
+            // The library defaults to the legacy aesgcm encoding, which Safari/iOS rejects outright.
+            HttpResponse response = pushService.send(notification, Encoding.AES128GCM);
             int status = response.getStatusLine().getStatusCode();
             return classify(status);
         } catch (Exception e) {

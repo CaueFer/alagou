@@ -81,6 +81,19 @@ export function AlertDetailSheet({
           </DrawerDescription>
         </DrawerHeader>
 
+        {alert.photoUrls.length > 0 && (
+          <div className="flex gap-2 overflow-x-auto px-4 pb-2">
+            {alert.photoUrls.map((url) => (
+              <img
+                key={url}
+                src={url}
+                alt="Foto do alagamento"
+                className="h-28 w-28 shrink-0 rounded-lg border border-border object-cover"
+              />
+            ))}
+          </div>
+        )}
+
         <DrawerFooter>
           <Button onClick={() => onConfirm(alert.id)} disabled={isBusy}>
             {pendingAction === "confirm" ? "Confirmando..." : "Confirmar"}

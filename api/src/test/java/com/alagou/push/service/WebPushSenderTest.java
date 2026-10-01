@@ -20,13 +20,16 @@ import com.alagou.push.PushSendResult;
 import com.alagou.push.PushSubscription;
 
 import nl.martijndwars.webpush.Base64Encoder;
+import nl.martijndwars.webpush.Encoding;
 import nl.martijndwars.webpush.Notification;
 import nl.martijndwars.webpush.PushService;
 import nl.martijndwars.webpush.Utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class WebPushSenderTest {
@@ -52,37 +55,46 @@ class WebPushSenderTest {
 
     @Test
     void mapsGoneStatusToGone() throws Exception {
-        when(pushService.send(any(Notification.class))).thenReturn(response(410));
+        when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(410));
 
         assertThat(sender.send(subscription, "{}")).isEqualTo(PushSendResult.GONE);
     }
 
     @Test
     void mapsNotFoundStatusToGone() throws Exception {
-        when(pushService.send(any(Notification.class))).thenReturn(response(404));
+        when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(404));
 
         assertThat(sender.send(subscription, "{}")).isEqualTo(PushSendResult.GONE);
     }
 
     @Test
     void mapsServerErrorToTransientFailure() throws Exception {
-        when(pushService.send(any(Notification.class))).thenReturn(response(503));
+        when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(503));
 
         assertThat(sender.send(subscription, "{}")).isEqualTo(PushSendResult.TRANSIENT_FAILURE);
     }
 
     @Test
     void mapsSuccessStatusToSuccess() throws Exception {
-        when(pushService.send(any(Notification.class))).thenReturn(response(201));
+        when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(201));
 
         assertThat(sender.send(subscription, "{}")).isEqualTo(PushSendResult.SUCCESS);
     }
 
     @Test
     void mapsThrownExceptionToTransientFailure() throws Exception {
-        when(pushService.send(any(Notification.class))).thenThrow(new java.io.IOException("timeout"));
+        when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenThrow(new java.io.IOException("timeout"));
 
         assertThat(sender.send(subscription, "{}")).isEqualTo(PushSendResult.TRANSIENT_FAILURE);
+    }
+
+    @Test
+    void sendsWithAes128GcmEncoding() throws Exception {
+        when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(201));
+
+        sender.send(subscription, "{}");
+
+        verify(pushService).send(any(Notification.class), eq(Encoding.AES128GCM));
     }
 
     private static HttpResponse response(int status) {

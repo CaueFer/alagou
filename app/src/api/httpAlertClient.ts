@@ -1,9 +1,12 @@
 import type { Alert, ClearReportResult, NewAlertInput, Severity } from "@/types/alert";
 import type { AlertClient } from "@/api/alertClient";
+import { httpAuthClient } from "@/api/httpAuthClient";
 import { API_BASE_URL } from "@/lib/constants";
 import { getDeviceUsername } from "@/lib/deviceIdentity";
 
 const ANONYMOUS_USERNAME = "Anônimo";
+const USERNAME_MAX_LENGTH = 40;
+const USERNAME_DISALLOWED = /[^\p{L}\p{N} _-]/gu;
 
 export interface AlertApiResponse {
   id: number;
@@ -44,6 +47,21 @@ export function toAlert(data: AlertApiResponse): Alert {
     expiresAt: data.expirationDate,
     photoUrls: data.photoUrls.map((path) => `${API_BASE_URL}${path}`),
   };
+}
+
+function sanitizeUsername(value: string): string | null {
+  const cleaned = value
+    .replace(USERNAME_DISALLOWED, " ")
+    .replace(/\s+/g, " ")
+    .slice(0, USERNAME_MAX_LENGTH)
+    .trim();
+  return cleaned.length > 0 ? cleaned : null;
+}
+
+function reportUsername(): string {
+  const accountName = httpAuthClient.getSession()?.user.name;
+  const sanitized = accountName ? sanitizeUsername(accountName) : null;
+  return sanitized ?? getDeviceUsername();
 }
 
 async function parseError(response: Response): Promise<never> {
@@ -91,7 +109,7 @@ export const httpAlertClient: AlertClient = {
   },
 
   async confirm(id: string) {
-    const username = getDeviceUsername();
+    const username = reportUsername();
     const response = await fetch(
       `${API_BASE_URL}/api/alerts/${id}/confirmations?username=${encodeURIComponent(username)}`,
       { method: "POST" },
@@ -103,7 +121,7 @@ export const httpAlertClient: AlertClient = {
   },
 
   async reportClear(id: string): Promise<ClearReportResult> {
-    const username = getDeviceUsername();
+    const username = reportUsername();
     const response = await fetch(
       `${API_BASE_URL}/api/alerts/${id}/clear-reports?username=${encodeURIComponent(username)}`,
       { method: "POST" },
