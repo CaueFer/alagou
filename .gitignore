@@ -5,6 +5,7 @@ CLAUDE.md
 AGENTS.md
 .env
 api/target/
+api/uploads/
 todo.md
 app/node_modules/
 app/dist/
