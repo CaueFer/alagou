@@ -435,13 +435,26 @@ App version, GitHub repository link, credits, list of external data sources (Pre
 Tela restrita para contas administradoras, acessada a partir de `SettingsPage` e da rota escondida `/admin`. A finalidade é operacional: leitura rápida de números, estado atual da API e diagnóstico dos jobs automáticos.
 
 **`AdminScreen`**
-Painel em rolagem vertical com quatro blocos principais:
+Painel em rolagem vertical com cinco blocos principais:
 * hero/banner no topo com fundo `primary-container` em degradê sutil, título forte e contagens-chave;
 * grade compacta de KPIs em cards brancos para contas, alertas e fontes oficiais;
+* `AlertChartsSection`: filtro de período (7, 14 ou 30 dias) seguido dos gráficos de alertas, todos derivados da mesma série diária para que os números sempre concordem;
 * seção de status da API em card próprio, com destaque para banco, versão e uptime;
 * listas de schedulers e alertas com filtros, mantendo leitura imediata em mobile.
 
 O hero é a assinatura visual da tela: um bloco mais escuro que o restante do app, com alto contraste e informação concentrada, para marcar o contexto de operação sem abandonar o sistema de cores do restante do produto.
+
+**`AlertChartsSection`**
+Cabeçalho "Gráficos" com um `SegmentedControl` de período (7 / 14 / 30 dias) em uma única linha acima dos gráficos; o filtro escopa todos eles. Estados: esqueleto na primeira carga, erro com "Tentar novamente", vazio com o tom calmo do app ("Nenhum alerta nos últimos N dias. Joinville está tranquila.") e, ao trocar o período, o gráfico anterior fica em opacidade reduzida até a nova série chegar (sem esqueleto nem salto de layout). Os dados vêm de `GET /api/admin/alerts/timeline`, nunca da lista paginada de alertas, que tem teto de 200 itens.
+
+**`ChartCard`**
+Contêiner de gráfico: `figure` com o mesmo card de `StatsCard` (`rounded-2xl`, borda, `shadow-sm`), rótulo `label-caps`, título e o botão "Ver tabela" / "Ver gráfico" no canto. Todo gráfico tem a tabela equivalente, que é a alternativa acessível e também cobre o contraste baixo do amarelo de severidade.
+
+**`DailyAlertsChart`**
+Colunas empilhadas por dia, uma cor por severidade usando exatamente os tokens `severity-moderate` / `severity-severe` / `severity-critical` (Moderado na base, Crítico no topo). Colunas com no máximo 24px, 4px de raio apenas na ponta de dados do segmento do topo, 2px de espaço entre segmentos, linha-base e grade em hairline sólido. Eixo Y com três marcas em números redondos, rótulo direto apenas no dia de pico, legenda sempre presente com o total do período por severidade. Cada coluna é o alvo de toque (largura total do slot, altura total do gráfico) e abre um tooltip com data, total e a contagem por severidade; o teclado mostra o mesmo tooltip via foco.
+
+**`AlertsByTypeChart`**
+Barras horizontais por origem (Cidadãos, Climático, Defesa Civil) nas cores `alert-user` / `alert-climatic` / `alert-civil-defense`, sempre com ícone e rótulo de texto ao lado, valor na ponta da barra e tooltip com a parcela do total.
 
 **`StatsCard`**
 Card de KPI com label em caixa alta, valor numérico dominante e descrição curta. Usa superfície clara, borda leve e sombra discreta para manter o foco no dado. Os valores devem usar `tabular-nums` quando numéricos.

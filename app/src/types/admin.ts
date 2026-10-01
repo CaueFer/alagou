@@ -29,6 +29,13 @@ export interface AdminAlert {
   creationDate: string;
 }
 
+export interface AlertTimelinePoint {
+  date: string;
+  total: number;
+  bySeverity: Record<Severity, number>;
+  byType: Record<AlertType, number>;
+}
+
 export interface SchedulerStatus {
   id: string;
   name: string;

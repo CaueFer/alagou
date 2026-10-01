@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { adminClient } from "@/api";
-import type { AdminAlert, AdminOverview, ApiStatus, SchedulerStatus } from "@/types/admin";
+import type { AdminAlert, AdminOverview, AlertTimelinePoint, ApiStatus, SchedulerStatus } from "@/types/admin";
 import type { AlertType, Severity } from "@/types/alert";
 
 const POLL_INTERVAL_MS = 30_000;
@@ -75,6 +75,32 @@ export function useAdminAlerts(filters: AdminAlertFilters, enabled = true) {
   }, [enabled, fetchAlerts]);
 
   return { alerts, status, refetch: fetchAlerts } as const;
+}
+
+export function useAlertTimeline(days: number, enabled = true) {
+  const [timeline, setTimeline] = useState<AlertTimelinePoint[]>([]);
+  const [status, setStatus] = useState<AdminDataStatus>("loading");
+
+  const fetchTimeline = useCallback(async () => {
+    try {
+      const data = await adminClient.getAlertTimeline(days);
+      setTimeline(data);
+      setStatus("ready");
+    } catch {
+      setStatus("error");
+    }
+  }, [days]);
+
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+    fetchTimeline();
+    const interval = window.setInterval(fetchTimeline, POLL_INTERVAL_MS);
+    return () => window.clearInterval(interval);
+  }, [enabled, fetchTimeline]);
+
+  return { timeline, status, refetch: fetchTimeline } as const;
 }
 
 export function useSchedulerStatuses(enabled = true) {
