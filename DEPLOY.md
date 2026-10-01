@@ -82,3 +82,13 @@ O roteamento SPA (por exemplo `/admin`) é resolvido pelo `app/public/_redirects
 * **Horas grátis do Render**: são 750 h por mês, o suficiente para um serviço ligado 24/7. Não crie um segundo serviço free na mesma conta.
 * **Push notifications**: desligadas (`PUSH_ENABLED=false`), porque exigem RabbitMQ. Para ligar, usar um broker gratuito (ex.: CloudAMQP) e preencher as variáveis `RABBITMQ_*` e `VAPID_*`.
 * **IP real do cliente**: `TRUSTED_PROXIES` confia nas faixas privadas, onde ficam os proxies do Render, para que o rate limit seja aplicado por usuário e não de forma global.
+
+---
+
+## Estado atual da produção
+
+* Front: https://alagou.pages.dev (Cloudflare Pages, projeto `alagou`, deploy automático a cada push na `main`).
+* API: https://alagou-api.onrender.com (Render, blueprint `alagou`, serviço `alagou-api`).
+* Banco: Supabase, projeto `alagou` (ref `hiubmvwkmthfsxlqrhiu`, us-east-1), conectado pelo session pooler `aws-0-us-east-1.pooler.supabase.com`. A Data API do Supabase está desligada, porque a API Spring acessa o banco direto e a Data API exporia as tabelas publicamente.
+* Keep-alive: variável `API_URL` do repositório já configurada.
+* O blueprint do Render foi criado a partir da URL pública do repositório, então **não há deploy automático da API**. Para publicar mudanças do `api/`, use **Manual Deploy > Deploy latest commit** no serviço `alagou-api`, ou conecte a conta `CaueFer` do GitHub ao Render para ativar o auto-deploy.
