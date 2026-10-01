@@ -28,7 +28,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -66,6 +68,24 @@ class PushSendListenerTest {
     }
 
     @Test
+    void sendsEachCategoryWithItsOwnTtl() {
+        when(deliveryRepository.existsBySubscriptionIdAndDedupKey(any(), any())).thenReturn(false);
+        when(subscriptionRepository.findById(1L)).thenReturn(Optional.of(subscription()));
+        when(webPushSender.send(any(PushSubscription.class), anyString(), anyInt())).thenReturn(PushSendResult.SUCCESS);
+
+        listener.onBatch(batch(1L));
+        verify(webPushSender).send(any(PushSubscription.class), anyString(), eq(3600));
+
+        listener.onBatch(new PushSendBatch("user-alert:1", List.of(1L),
+                new PushPayload("t", "b", "/", "user-alert:1", PushCategory.NEARBY)));
+        verify(webPushSender).send(any(PushSubscription.class), anyString(), eq(10800));
+
+        listener.onBatch(new PushSendBatch("civil-defense:1", List.of(1L),
+                new PushPayload("t", "b", "/", "civil-defense:1", PushCategory.CIVIL_DEFENSE)));
+        verify(webPushSender).send(any(PushSubscription.class), anyString(), eq(86400));
+    }
+
+    @Test
     void skipsSubscriptionAlreadyDeliveredForDedupKey() {
         when(deliveryRepository.existsBySubscriptionIdAndDedupKey(1L, "climatic:centro:ALERT:1")).thenReturn(true);
 
@@ -92,7 +112,7 @@ class PushSendListenerTest {
     void deletesSubscriptionWhenWebPushReportsGone() {
         PushSubscription subscription = subscription();
         when(subscriptionRepository.findById(3L)).thenReturn(Optional.of(subscription));
-        when(webPushSender.send(any(PushSubscription.class), anyString())).thenReturn(PushSendResult.GONE);
+        when(webPushSender.send(any(PushSubscription.class), anyString(), anyInt())).thenReturn(PushSendResult.GONE);
 
         listener.onBatch(batch(3L));
 
@@ -104,7 +124,7 @@ class PushSendListenerTest {
     void recordsDeliveryAndIncrementsCounterOnSuccess() {
         PushSubscription subscription = subscription();
         when(subscriptionRepository.findById(4L)).thenReturn(Optional.of(subscription));
-        when(webPushSender.send(any(PushSubscription.class), anyString())).thenReturn(PushSendResult.SUCCESS);
+        when(webPushSender.send(any(PushSubscription.class), anyString(), anyInt())).thenReturn(PushSendResult.SUCCESS);
 
         listener.onBatch(batch(4L));
 
@@ -117,7 +137,7 @@ class PushSendListenerTest {
     void rethrowsWhenAnyDeliveryFailsTransiently() {
         PushSubscription subscription = subscription();
         when(subscriptionRepository.findById(5L)).thenReturn(Optional.of(subscription));
-        when(webPushSender.send(any(PushSubscription.class), anyString())).thenReturn(PushSendResult.TRANSIENT_FAILURE);
+        when(webPushSender.send(any(PushSubscription.class), anyString(), anyInt())).thenReturn(PushSendResult.TRANSIENT_FAILURE);
 
         assertThatThrownBy(() -> listener.onBatch(batch(5L)))
                 .isInstanceOf(PushTransientException.class);

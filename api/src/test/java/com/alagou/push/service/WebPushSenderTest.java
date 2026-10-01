@@ -15,6 +15,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import com.alagou.push.PushSendResult;
 import com.alagou.push.PushSubscription;
@@ -57,44 +58,55 @@ class WebPushSenderTest {
     void mapsGoneStatusToGone() throws Exception {
         when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(410));
 
-        assertThat(sender.send(subscription, "{}")).isEqualTo(PushSendResult.GONE);
+        assertThat(sender.send(subscription, "{}", 10800)).isEqualTo(PushSendResult.GONE);
     }
 
     @Test
     void mapsNotFoundStatusToGone() throws Exception {
         when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(404));
 
-        assertThat(sender.send(subscription, "{}")).isEqualTo(PushSendResult.GONE);
+        assertThat(sender.send(subscription, "{}", 10800)).isEqualTo(PushSendResult.GONE);
     }
 
     @Test
     void mapsServerErrorToTransientFailure() throws Exception {
         when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(503));
 
-        assertThat(sender.send(subscription, "{}")).isEqualTo(PushSendResult.TRANSIENT_FAILURE);
+        assertThat(sender.send(subscription, "{}", 10800)).isEqualTo(PushSendResult.TRANSIENT_FAILURE);
     }
 
     @Test
     void mapsSuccessStatusToSuccess() throws Exception {
         when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(201));
 
-        assertThat(sender.send(subscription, "{}")).isEqualTo(PushSendResult.SUCCESS);
+        assertThat(sender.send(subscription, "{}", 10800)).isEqualTo(PushSendResult.SUCCESS);
     }
 
     @Test
     void mapsThrownExceptionToTransientFailure() throws Exception {
         when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenThrow(new java.io.IOException("timeout"));
 
-        assertThat(sender.send(subscription, "{}")).isEqualTo(PushSendResult.TRANSIENT_FAILURE);
+        assertThat(sender.send(subscription, "{}", 10800)).isEqualTo(PushSendResult.TRANSIENT_FAILURE);
     }
 
     @Test
     void sendsWithAes128GcmEncoding() throws Exception {
         when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(201));
 
-        sender.send(subscription, "{}");
+        sender.send(subscription, "{}", 10800);
 
         verify(pushService).send(any(Notification.class), eq(Encoding.AES128GCM));
+    }
+
+    @Test
+    void sendsNotificationWithGivenTtl() throws Exception {
+        when(pushService.send(any(Notification.class), eq(Encoding.AES128GCM))).thenReturn(response(201));
+        ArgumentCaptor<Notification> captor = ArgumentCaptor.forClass(Notification.class);
+
+        sender.send(subscription, "{}", 3600);
+
+        verify(pushService).send(captor.capture(), eq(Encoding.AES128GCM));
+        assertThat(captor.getValue().getTTL()).isEqualTo(3600);
     }
 
     private static HttpResponse response(int status) {
