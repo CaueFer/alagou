@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { USERNAME_MAX_LENGTH, filterUsernameInput } from "@/lib/username";
 
 interface NameStepProps {
   username: string;
@@ -15,8 +16,8 @@ export function NameStep({ username, onChangeUsername }: NameStepProps) {
         id="username"
         placeholder="Anônimo"
         value={username}
-        onChange={(event) => onChangeUsername(event.target.value)}
-        maxLength={40}
+        onChange={(event) => onChangeUsername(filterUsernameInput(event.target.value))}
+        maxLength={USERNAME_MAX_LENGTH}
       />
       <p className="text-sm text-muted-foreground">
         Se deixado em branco, o relato será exibido como "Anônimo".

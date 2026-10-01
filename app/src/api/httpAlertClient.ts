@@ -3,10 +3,9 @@ import type { AlertClient } from "@/api/alertClient";
 import { httpAuthClient } from "@/api/httpAuthClient";
 import { API_BASE_URL } from "@/lib/constants";
 import { getDeviceUsername } from "@/lib/deviceIdentity";
+import { sanitizeAccountName } from "@/lib/username";
 
 const ANONYMOUS_USERNAME = "Anônimo";
-const USERNAME_MAX_LENGTH = 40;
-const USERNAME_DISALLOWED = /[^\p{L}\p{N} _-]/gu;
 
 export interface AlertApiResponse {
   id: number;
@@ -49,18 +48,9 @@ export function toAlert(data: AlertApiResponse): Alert {
   };
 }
 
-function sanitizeUsername(value: string): string | null {
-  const cleaned = value
-    .replace(USERNAME_DISALLOWED, " ")
-    .replace(/\s+/g, " ")
-    .slice(0, USERNAME_MAX_LENGTH)
-    .trim();
-  return cleaned.length > 0 ? cleaned : null;
-}
-
 function reportUsername(): string {
   const accountName = httpAuthClient.getSession()?.user.name;
-  const sanitized = accountName ? sanitizeUsername(accountName) : null;
+  const sanitized = accountName ? sanitizeAccountName(accountName) : null;
   return sanitized ?? getDeviceUsername();
 }
 
