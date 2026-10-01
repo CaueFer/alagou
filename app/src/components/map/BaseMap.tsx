@@ -5,8 +5,13 @@ import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "@maplibre/maplibre-gl-leaflet";
+import { setWorkerUrl } from "maplibre-gl";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import { DEFAULT_MAP_ZOOM, JOINVILLE_CENTER, MAP_STYLE_LIGHT_URL } from "@/lib/constants";
 import type { AlertLocation } from "@/types/alert";
+
+// maplibre-gl v6 resolves its worker via a runtime-computed URL that Vite cannot see, so production builds ship without it.
+setWorkerUrl(maplibreWorkerUrl);
 
 interface BaseMapProps {
   center?: AlertLocation;
