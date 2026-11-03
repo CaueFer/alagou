@@ -239,6 +239,7 @@ Every place severity or alert type appears in the flows, it is paired with a lab
 Inter exclusively, tuned for **glanceability** — extracting a data point in under a second while walking or driving.
 
 * **Headlines** (`headline-lg`, `title-md`): tighter letter-spacing, heavier weight, anchor each screen's top section (e.g. "Alertas Recentes", "Defesa Civil").
+* **Screen title** (`ScreenHeader`): Inter 32px bold, line-height tight, `-0.02em` tracking, `on-surface`, left-aligned, followed by one supporting sentence at `body-lg` in `on-surface-variant`. This is the large type moment of every list screen; it replaces the small centered `FloatingBadge` pill on list screens.
 * **Numeric data** (`numeric-data`, tabular figures via `tnum`): TTL countdowns ("Expira em 12 min"), confirmation counts ("3 confirmações"), notification badge counts. Tabular figures keep these aligned when they update live on the map.
 * **Labels** (`label-caps`): severity badge text, chip labels ("Cidadãos", "Climático", "Defesa Civil"), section headers in `SettingsPage`.
 * **Body** (`body-lg` for primary reading text, `body-sm` for secondary/truncated lines): aviso summaries, feed card summaries, form field text.
@@ -267,7 +268,9 @@ Present on every screen per `dev-docs/fluxos/index.md`. Fixed height `bottom-nav
 | 4 | Alertas | hand-drawn bell | none (MVP) |
 | 5 | Perfil | hand-drawn user | none |
 
-Icons are custom SVG with hand-drawn aesthetic (`strokeWidth="1.8"`, rounded caps/joins) for a friendly, approachable feel. Active tab uses `primary` (black) for icon + label; inactive uses `on-surface-variant`. The Defesa Civil badge uses `severity-critical` red with white numeral, `label-caps`-scale digits, positioned top-right of the icon, minimum tap target still 48px including the badge overlap.
+Icons are `lucide-react` at 22px with `strokeWidth={2}`. Labels are 12px semibold (`text-xs font-semibold`, line-height 1), never smaller: the earlier 10px medium labels were hard to read outdoors. Active tab uses `primary` (black) for icon + label on a sliding black pill (`h-14`, `rounded-xl`); inactive uses `on-surface-variant`, hovering to `on-surface`.
+
+The bar is a solid white `surface-container-lowest` card (`rounded-2xl`, 1px `outline-variant/60` border, `0 4px 16px rgba(11,28,48,0.12)` shadow). It is deliberately not translucent and has no backdrop blur: content scrolling underneath bled through and made the icons and labels look soft. The pill's `translateX` and width are rounded to whole pixels for the same reason, since fractional offsets blur its edges. Each tab has a 2px `primary` focus ring. The Defesa Civil badge uses `severity-critical` red with white numeral, `label-caps`-scale digits, positioned top-right of the icon, minimum tap target still 48px including the badge overlap.
 
 ---
 
@@ -298,6 +301,8 @@ Interaction timing tokens (`motion.*`) keep every sheet, modal, and marker trans
 * **Modals** (`NewReportModal`, `CameraPlayer`): fade + slight scale-in, `duration-standard`.
 * **Map marker lifecycle**: a new `AlertMarker` drops in with a short bounce (`duration-fast` then settle); a marker removed by TTL expiry or by reaching 3 "Pista Limpa" reports fades out over `duration-standard` rather than disappearing instantly, so the user registers the change instead of losing track of the map.
 * **Chip toggles** (`AlertTypeFilter`): instant color/opacity change on tap, `duration-fast`, no layout shift — list items fade out/in rather than reflowing abruptly.
+* **List entrance** (`.rise-in` in `src/index.css`): list items rise 20px and fade in over 420ms (`cubic-bezier(0.22, 1, 0.36, 1)`), staggered 70ms per item through the `--rise-index` custom property, capped at index 6 so long lists never wait. Disabled under `prefers-reduced-motion`. Used by `CivilDefenseList` and `AlertFeed`. For a fixed set of children (the `SettingsPage` column), put `.rise-in-stagger` on the parent instead: it staggers its direct children by `nth-child` without per-item props.
+* **Press feedback**: tappable cards scale to 0.99 and chips to 0.95 on `:active`.
 * **Skeleton loaders**: used on first load for `CameraList`, `CivilDefenseList`, `AlertFeed` — a subtle shimmer, not a spinner, since these are list-shaped waits. `MapView`'s initial load uses a centered spinner instead, since there is no list shape to skeleton.
 * **Micro-feedback**: action buttons ("Confirmar", "Pista Limpa", "Reportar") disable and show an inline progress indicator while their request is in flight — never a full-screen blocking spinner for these, per Fluxo 1.1's "Carregando ação" state.
 
@@ -309,8 +314,8 @@ Soft but structured.
 
 * **Buttons**: `rounded.lg` (8px) — a light, deliberate softening; buttons are the most-tapped surface and read as friendlier without drifting from the utilitarian tone.
 * **Inputs, chips, segmented segments**: `rounded.DEFAULT` (4px, `0.25rem`).
-* **Information cards** (`AlertFeedCard`, `CameraCard`, `CivilDefenseCard`): `rounded.lg` (8px).
-* **Severity indicators / status chips / `RiskBadge`**: 4px radius, matching inputs, for system-wide consistency.
+* **Information cards** (`AlertFeedCard`, `CameraCard`): `rounded.lg` (8px). `CivilDefenseCard` uses `rounded-2xl`, the same card language as `SettingsSection`, because it carries a full-width photo.
+* **Severity indicators / status chips**: 4px radius, matching inputs, for system-wide consistency. Exception: `RiskBadge` and filter chips (`FilterChip`) are fully round (`rounded.full`) pills.
 * **Map markers (`AlertMarker`)**: pin shape — sharp bottom point for precise geolocation, rounded top housing the severity icon and confirmation count. Size: `map-marker-size` (32px), scales up slightly on tap/selection.
 * **Bottom sheets**: `rounded.xl` (12px) on the top two corners only.
 
@@ -378,11 +383,17 @@ Top banner, `offline-banner` background, "Você está offline — câmeras indis
 **`CivilDefenseList`**
 Reverse-chronological list, skeleton on load. Empty state: illustration + "Nenhum aviso ativo no momento. Joinville está segura." using `status-safe` accent. Error state: retry button, cached data shown underneath if available.
 
+**Screen layout**
+Top to bottom: `ScreenHeader` ("Defesa Civil" / "Avisos oficiais e níveis de risco para Joinville.") scrolling with the page, then `RiskLevelFilter` in a sticky bar on `background`, then the list. The list has 16px side margins and 16px between cards.
+
+**`RiskLevelFilter`**
+Three `FilterChip`s (Emergência, Alerta, Atenção) with the level's dot and its notice count in tabular figures. The chips share the row width (`flex-auto`, centered content, 13px text, 4px gaps) and never overflow the screen; they fit on one line from 360px wide and wrap to a second line only on narrower screens. No horizontal scrolling. Active chips match `RiskBadge`: white `surface-container-lowest` background, 1px `outline-variant` gray border, label in the level's `on-*-container` color with the solid colored dot. Inactive chips keep the white background with an `on-surface-variant` label and a gray dot, so the state change is the color of the text and dot.
+
 **`CivilDefenseCard`**
-List row, `list-row-min-height` (64px). Leading `RiskBadge`, title, timestamp, first line of body truncated (`body-sm`).
+A real link (`<a target="_blank">`) to the official notice, not a button with `window.open`. Card: `rounded-2xl`, 1px `outline-variant/50` border, `surface-container-lowest`, `elevation.level-1`, stepping to `elevation.level-2` on hover. Content order: the thumbnail first, full card width at 16:9 (slow 1.05 zoom on hover); then a 16px-padded body with `RiskBadge` on the left and the relative time plus an external-link icon on the right (`body-sm`, `on-surface-variant`); then the notice title as an `h2` at 18px medium, `on-surface`, never truncated. Cards without a thumbnail show only the body. `CivilDefenseCardSkeleton` mirrors this exact shape.
 
 **`RiskBadge`**
-Reusable badge component, three states mapped 1:1 to the severity scale (`severity-moderate` = Atenção, `severity-severe` = Alerta, `severity-critical` = Emergência). Same visual spec as the map's severity chip — this is the same token set, different label set.
+Reusable badge component, three states mapped 1:1 to the severity scale (`severity-moderate` = Atenção, `severity-severe` = Alerta, `severity-critical` = Emergência). Pill (`rounded.full`), 14px semibold in sentence case ("Atenção", never "ATENÇÃO"), white `surface-container-lowest` background with a 1px `outline-variant` gray border, label text in the level's `on-*-container` color and a leading 8px dot in the solid severity color. The dark `on-*-container` tone is used for text because the solid yellow of `severity-moderate` is not legible on white. Same token set as the map's severity chip, different label set.
 
 **`CivilDefenseDetail`**
 Full screen or expanded sheet. Title, `RiskBadge`, timestamp, issuing body ("Defesa Civil de Joinville"), full body text, geographic scope when available, instructions to the population when present. Back navigation via button or swipe.
@@ -395,11 +406,27 @@ Numeric badge on the "Defesa Civil" tab (see Bottom navigation above), shown whe
 **`AlertTypeLegend`**
 Fixed (non-scrolling) row directly below the "Alertas Recentes" headline, three chips using `alert-crowdsource` / `alert-climatic` / `alert-civil-defense` with labels "Cidadãos" / "Climático" / "Defesa Civil". Purely informative, not interactive — stays pinned while the list below scrolls.
 
+**Screen layout**
+Same skeleton as Defesa Civil: `ScreenHeader` ("Alertas Recentes" / "Relatos de cidadãos, chuva e avisos oficiais.") scrolling with the page, `AlertTypeFilter` in a sticky bar on `background`, then the list with 16px side margins and 12px between cards. List items enter with `.rise-in`.
+
 **`AlertTypeFilter`**
-Row of three toggleable chips directly below the legend, same three colors, default all-active. Toggling removes/restores that type from `AlertFeed` instantly (`duration-fast`, list items fade rather than jump-reflow). If all three are deactivated, show inline message "Selecione ao menos um tipo de alerta." in place of the list.
+Row of three toggleable `FilterChip`s, same three colors, default all-active. Each chip carries the type's dot and its alert count in tabular figures. Same chip styling and row behavior as `RiskLevelFilter` (white background, gray border, label in the type's `on-*-container` color when active): chips share the width, one line from 360px, wrap below that, never overflow. Toggling removes/restores that type from `AlertFeed` instantly (`duration-fast`, list items fade rather than jump-reflow). If all three are deactivated, show inline message "Selecione ao menos um tipo de alerta." in place of the list.
 
 **`AlertFeed`** / **`AlertFeedCard`**
-Reverse-chronological list. Each card: colored left border (6px, matching its type token — same "severity bar" pattern as Alert Cards described in the base component spec), type icon, type label, location, relative timestamp ("Há 5 minutos" or absolute "14h32"), one-line truncated summary. Tap behavior branches by type:
+Reverse-chronological list. Each card uses the same card language as `CivilDefenseCard`: `rounded-2xl`, 1px `outline-variant/50` border, `elevation.level-1` stepping to `level-2` on hover, 16px padding, 0.99 scale on press. Background is a very light diagonal tint that starts at the bottom-right corner, under the corner icon, and fades toward the top-left: the type's `-container` color at 20% opacity fading into `surface-container-lowest` by the middle of the card (`bg-linear-to-tl from-*-container/20 to-surface-container-lowest to-50%`, from `gradientFromClass` in `lib/alertType.ts`). Keep it this faint and keep it away from the top: the title row must always sit on plain white for contrast.
+
+Content, top to bottom:
+* Corner icon: the type icon is a background element, not a content element. 80px (`h-20 w-20`), `strokeWidth={2.25}`, solid type color (`accentTextClass`) at 25% opacity, positioned at `-right-4 -bottom-4` so its bottom-right quarter is cut off by the card edge (`overflow-hidden` on the card) and the rest sits inside, like a sticker pasted on the corner. It stacks behind the content (`isolate` on the card, `-z-10` on the icon) and is `aria-hidden`. Every main alert card uses this treatment.
+* No visible type label: the corner icon, its color and the tint identify the type. The label stays as screen-reader-only text before the location.
+* First row: the location at 16px bold, truncated, and the relative timestamp on the right (`body-sm`, "Agora mesmo", "Há 5 minutos"). Text runs over the corner icon; the Defesa Civil title and badge keep a 48px right padding (`pr-12`) so they do not sit on it.
+* A detail block that depends on the type. Metrics sit in a `rounded-xl` panel on `surface-container-lowest/40` (translucent so the corner icon shows through) with two equal columns read left to right, stopping 56px short of the right edge (`mr-14`) to leave the corner icon clear, each a 13px `on-surface-variant` label over a 14px semibold tabular value:
+  * Climático: "Últimas 24h" and "Última hora" (average rain in mm, pt-BR decimals). Missing readings show "Sem leitura".
+  * Cidadãos: an "Expira em 34 min" line, then "Severidade" (severity dot plus label) and "Confirmações".
+  * Never more than two metrics per card.
+  * Defesa Civil: the notice title clamped to two lines, then its `RiskBadge`.
+  * Any type without its detail payload falls back to the one-line `summary`.
+
+Tap behavior branches by type:
 * Crowdsource → opens `AlertDetailSheet` (reused from Fluxo 1, same "Confirmar"/"Pista Limpa" actions).
 * Climático → opens an informative modal with sensor/source data and, when available, a link to the official source.
 * Defesa Civil grave → navigates to `CivilDefenseDetail` (reused from Fluxo 3).
@@ -409,11 +436,11 @@ This reuse is intentional: never fork `AlertDetailSheet` or `CivilDefenseDetail`
 ### Fluxo 5 — Perfil e Configurações
 
 **`SettingsPage`**
-Identity zone (`AccountSummary` or the logged-out "Sua sessão" block) followed by grouped sections rendered via `SettingsSection`: Instalar o app (when installable), Notificações, Exibição, Sobre o app. No login, no synced data — everything here is local-device state persisted to `localStorage` / PWA storage.
+Identity zone (`AccountSummary` when logged in, or the compact logged-out "Sua sessão" card) followed by grouped sections rendered via `SettingsSection`, in this order: Notificações, Exibição, Instalar o app (when installable), Sobre o app. Settings the user is most likely to change come first. No synced data: everything here is local-device state persisted to `localStorage` / PWA storage.
 
-The identity zone and every `SettingsSection` share the same card language as the rest of the app (`CivilDefenseCard`, `CameraCard`): `rounded-2xl`, 1px `outline-variant/50` border, `surface-container-lowest` background, `elevation.level-1`-style shadow. This replaces the earlier hairline-only treatment — cards give each group a visible boundary instead of relying on full-width 1px rules, matching the "Level 1 — Inlay" pattern from Elevation & Depth. When logged out, the identity card leads with a circular `UserCircle` glyph next to the `label-caps` "Sua sessão" kicker over a bold "Anônimo", above `AuthForm`; when logged in it is `AccountSummary` (avatar/initial, name, "Membro desde" row, a `bg-muted` "Meus relatos ativos" panel), with an inset `bg-muted` admin-access row (icon + "Abrir" button) appended for `role = ADMIN` accounts.
+The identity zone and every `SettingsSection` share the same card language as the rest of the app (`CivilDefenseCard`, `CameraCard`): `rounded-2xl`, 1px `outline-variant/50` border, `surface-container-lowest` background, `elevation.level-1`-style shadow. When logged out, the identity card is compact: a circular `UserCircle` glyph, a small sentence-case "Sua sessão" line (`body-sm`, `on-surface-variant`) over a bold "Anônimo" and one sentence, then a single full-width secondary button "Entrar ou criar conta" that opens `AuthSheet`. The login form never sits inline on the page. When logged in it is `AccountSummary` (avatar/initial, a sentence-case "Conta" line over the name, a "Membro desde" row on a `bg-muted` inset, a `bg-muted` panel titled "Meus relatos ativos" at 16px semibold), with an inset `bg-muted` admin-access row (icon + "Abrir" button) appended for `role = ADMIN` accounts.
 
-Each `SettingsSection` header pairs a small `lucide` icon with the `label-caps` title inside the card's own padding (no page-width rule); rows inside a section keep 1px `outline-variant/50` hairlines (`divide-y`) but now scoped to the card's interior, not the full content column. The content column is capped at `max-w-md` and centered, with a small page top padding and a `gap-4` rhythm between cards. The screen header stays the shared `FloatingBadge` pill, like every other screen.
+Each `SettingsSection` header pairs a 16px `lucide` icon in `on-surface-variant` with the title at 16px semibold, sentence case, `on-surface` (never `label-caps`), inside the card's own padding. Rows are separated by space only (`gap-1`), never by hairlines (`divide-y` was removed). Every row title is 16px medium (`text-base font-medium`) with its explanation at `body-sm` in `on-surface-variant`, and the control (switch, segmented control or button) on the right or below. Only one solid black (`primary`) button is shown on the page at a time, "Ativar notificações"; every other action ("Entrar ou criar conta", "Instalar app", "Reportar um problema", "Abrir") uses the `secondary` variant. The content column is capped at `max-w-md` and centered, with a `gap-4` rhythm between cards. The screen opens with `ScreenHeader` ("Perfil" / "Sua conta e as preferências deste aparelho."), aligned to the same `max-w-md` column. The cards enter in sequence through `.rise-in-stagger` on the column (70ms steps, capped at the fifth card).
 
 **`NotificationSettings`**
 Permission-gated: shows an "Ativar notificações" banner if permission was never requested; a disabled-toggles + "ative nas configurações do sistema" banner if permission was denied; three enabled toggles if granted:
@@ -428,7 +455,13 @@ Inline segmented control, four options (1/3/5/10 km), appears/collapses under it
 Map type selector (Padrão / Satélite, controls the MapCN tile layer) and a distance unit toggle (km / m).
 
 **`AppInfo`**
-App version, GitHub repository link, credits, list of external data sources (Prefeitura de Joinville, CEMADEN, Defesa Civil), and a "Reportar um problema" button linking to the GitHub issue form.
+Four compact rows, no long lists inline: "Versão" with the version in tabular figures; "Código-fonte no GitHub" (external link); "Fontes de dados" (chevron) which opens `DataSourcesSheet`; and a full-width secondary "Reportar um problema" button linking to the GitHub issue form. Link rows are full-bleed tap targets (min 48px) with a `rounded-xl` `bg-muted` hover.
+
+**`DataSourcesSheet`**
+Bottom sheet (`Drawer`) titled "Fontes de dados", with the project credit as its description, listing every external source (CEMADEN, Open-Meteo, WorldTides, Defesa Civil de Joinville, Prefeitura de Joinville, OpenStreetMap, Esri World Imagery) as a link row: name at 16px medium, one-line description at `body-sm`, external-link icon on the right. Rows separated by space, not hairlines.
+
+**`AuthSheet`**
+Bottom sheet (`Drawer`) titled "Entrar ou criar conta" ("Acompanhe seus relatos em qualquer aparelho.") that hosts `AuthForm` unchanged: the Entrar / Criar conta `SegmentedControl`, e-mail and password fields, the solid submit button, a plain centered "ou" (no rules around it) and the Google button. It closes only after a successful login, register or Google sign-in; on failure it stays open with the error message.
 
 ### Fluxo 6 — Administração e Observabilidade
 
@@ -478,11 +511,14 @@ Card de alerta com uma faixa superior de severidade, chips para tipo e estado, r
 
 Reusable controls used across the flows; defined once in the design so each screen does not re-specify interaction details.
 
+**`ScreenHeader`** (`components/layout/ScreenHeader.tsx`)
+Top of a list screen: `h1` title plus an optional one-line description (see Typography, "Screen title"). 16px side padding, top padding of `safe-area-inset-top + 28px`. Not sticky: the filters below it are what stays pinned. Adopted in Defesa Civil (Fluxo 3), Alertas Recentes (Fluxo 4) and Perfil (Fluxo 5), replacing the sticky `FloatingBadge`. `FloatingBadge` stays only where it floats over full-bleed media (map, camera player).
+
 **`Switch`**
 Toggle control with a 24px-high track and a 20px thumb. Track is `primary` when checked and `outline-variant`/`border` when off; thumb is white with a 1px `black/10` hairline border (no shadow — the app avoids shadows). 150ms color/position transitions, 2px `primary` focus ring. Disabled state at 50% opacity. `role="switch"` with `aria-checked`.
 
 **`SegmentedControl`**
-Single-select segmented control rendered as a row of equal-width buttons in a `muted` (`surface-container`) track with 4px radius. Every segment carries a 1px transparent border so switching causes no reflow; the selected segment turns its border to `foreground` (ink) over a `background` fill, unselected segments are `on-surface-variant` with a hover to `foreground`. No shadow. 2px `primary` inset focus ring on each segment. Used by `RadiusSelector` (1/3/5/10 km), `DisplaySettings` (map type, distance unit), and the login/register switch in `AuthForm`. The active segment is never color-only: it also changes fill and border.
+Single-select segmented control rendered as a row of equal-width pill segments (`rounded.full`, min 40px tall, 14px semibold) in a `muted` (`surface-container`) pill track with 4px padding and 4px gaps. The selected segment is a white `surface-container-lowest` pill with a 1px `outline-variant/60` ring and `on-surface` text; unselected segments are `on-surface-variant` with a hover to `on-surface`. No shadow, no reflow on change. 2px `primary` inset focus ring on each segment. Used by `RadiusSelector` (1/3/5/10 km), `DisplaySettings` (map type, distance unit), the login/register switch in `AuthForm`, and the admin filters. The active segment is never color-only: it also changes fill.
 
 ---
 
