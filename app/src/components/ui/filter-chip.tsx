@@ -24,7 +24,7 @@ function FilterChip({ active, activeClassName, indicatorClassName, className, ch
       {indicatorClassName !== undefined && (
         <span
           aria-hidden="true"
-          className={cn("h-2 w-2 rounded-full", active ? indicatorClassName : "bg-muted-foreground/40")}
+          className={cn("h-2 w-2 shrink-0 rounded-full", active ? indicatorClassName : "bg-muted-foreground/40")}
         />
       )}
       {children}

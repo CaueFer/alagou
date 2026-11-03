@@ -24,7 +24,7 @@ export function SegmentedControl<T extends string | number>({
     <div
       role="radiogroup"
       className={cn(
-        "flex rounded-md bg-muted p-1",
+        "flex gap-1 rounded-full bg-muted p-1",
         disabled && "pointer-events-none opacity-50",
         className,
       )}
@@ -40,10 +40,10 @@ export function SegmentedControl<T extends string | number>({
             disabled={disabled}
             onClick={() => onValueChange(option.value)}
             className={cn(
-              "flex-1 min-h-11 items-center justify-center rounded border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary",
+              "min-h-10 flex-1 items-center justify-center rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary",
               selected
-                ? "border-foreground bg-background text-foreground"
-                : "border-transparent text-muted-foreground hover:text-foreground",
+                ? "bg-surface-container-lowest text-foreground ring-1 ring-outline-variant/60"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {option.label}

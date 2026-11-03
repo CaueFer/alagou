@@ -39,7 +39,7 @@ export function BottomNav() {
     const measure = () => {
       const containerRect = container.getBoundingClientRect();
       const tabRect = activeTab.getBoundingClientRect();
-      setPill({ left: tabRect.left - containerRect.left, width: tabRect.width });
+      setPill({ left: Math.round(tabRect.left - containerRect.left), width: Math.round(tabRect.width) });
     };
 
     measure();
@@ -54,11 +54,11 @@ export function BottomNav() {
     >
       <div
         ref={containerRef}
-        className="relative mx-auto grid w-full max-w-sm grid-cols-5 gap-1 rounded-2xl border border-border bg-background/95 p-1.5 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/80"
+        className="relative mx-auto grid w-full max-w-sm grid-cols-5 gap-1 rounded-2xl border border-outline-variant/60 bg-surface-container-lowest p-1.5 shadow-[0_4px_16px_0_rgba(11,28,48,0.12)]"
       >
         {pill && (
           <div
-            className="absolute left-0 top-1.5 h-12 rounded-xl bg-primary transition-[transform,width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            className="absolute left-0 top-1.5 h-14 rounded-xl bg-primary transition-[transform,width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
             style={{ width: pill.width, transform: `translateX(${pill.left}px)` }}
           />
         )}
@@ -74,11 +74,12 @@ export function BottomNav() {
               to={tab.to}
               end={tab.end}
               className={cn(
-                "relative z-10 flex h-12 flex-col items-center justify-center gap-1 rounded-xl px-1 text-center text-[10px] font-medium leading-tight transition-colors duration-300",
+                "relative z-10 flex h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 text-center text-xs font-semibold leading-none transition-colors duration-300",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                 isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
               )}
             >
-              <Icon className="h-5 w-5 shrink-0" strokeWidth={2.25} />
+              <Icon className="h-[22px] w-[22px] shrink-0" strokeWidth={2} aria-hidden="true" />
               <span>{tab.label}</span>
             </NavLink>
           );
