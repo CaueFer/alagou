@@ -43,14 +43,14 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
           <UserCircle className="h-14 w-14 shrink-0 text-foreground" strokeWidth={1.25} />
         )}
         <div className="flex min-w-0 flex-col">
-          <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">Conta</span>
-          <span className="mt-0.5 truncate text-xl font-bold tracking-[-0.01em]">{user.name ?? user.email}</span>
+          <span className="text-sm text-muted-foreground">Conta</span>
+          <span className="truncate text-xl font-bold tracking-[-0.01em]">{user.name ?? user.email}</span>
           {user.name ? <span className="truncate text-sm text-muted-foreground">{user.email}</span> : null}
         </div>
       </div>
 
       {user.createdAt ? (
-        <div className="flex items-center justify-between gap-4 border-t border-border pt-3">
+        <div className="flex items-center justify-between gap-4 rounded-xl bg-muted/60 px-4 py-3">
           <span className="text-sm text-muted-foreground">Membro desde</span>
           <span className="text-sm font-medium tabular-nums">
             {new Date(user.createdAt).toLocaleDateString("pt-BR")}
@@ -60,7 +60,7 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
 
       <div className="flex flex-col gap-2.5 rounded-2xl bg-muted/60 p-4">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Meus relatos ativos</span>
+          <span className="text-base font-semibold text-foreground">Meus relatos ativos</span>
           <Badge variant="outline" className="tabular-nums">
             {myAlerts.length}
           </Badge>

@@ -40,7 +40,7 @@ function ToggleRow({ title, description, checked, onChange, disabled }: ToggleRo
         onClick={() => onChange(!checked)}
         className="flex flex-1 flex-col gap-0.5 text-left disabled:cursor-not-allowed"
       >
-        <span className="text-sm font-medium">{title}</span>
+        <span className="text-base font-medium">{title}</span>
         <span className="text-sm text-muted-foreground">{description}</span>
       </button>
       <Switch checked={checked} onCheckedChange={onChange} disabled={disabled} aria-label={title} />
@@ -105,7 +105,7 @@ export function NotificationSettings() {
       {permission === "default" && (
         <div className="flex flex-col gap-3 py-3.5">
           <div className="flex flex-col gap-0.5">
-            <p className="text-sm font-medium">Ativar notificações</p>
+            <p className="text-base font-medium">Ativar notificações</p>
             <p className="text-sm text-muted-foreground">
               Permita notificações para receber alertas de alagamento perto de você.
             </p>
@@ -121,7 +121,7 @@ export function NotificationSettings() {
         <div className="flex items-start gap-3 py-3.5">
           <BellOff className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" aria-hidden="true" />
           <div className="flex flex-col gap-0.5">
-            <p className="text-sm font-medium">Notificações indisponíveis</p>
+            <p className="text-base font-medium">Notificações indisponíveis</p>
             <p className="text-sm text-muted-foreground">
               Este dispositivo não oferece suporte a notificações.
             </p>
@@ -133,7 +133,7 @@ export function NotificationSettings() {
         <div className="flex items-start gap-3 py-3.5">
           <BellOff className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" aria-hidden="true" />
           <div className="flex flex-col gap-0.5">
-            <p className="text-sm font-medium">Notificações bloqueadas</p>
+            <p className="text-base font-medium">Notificações bloqueadas</p>
             <p className="text-sm text-muted-foreground">
               Ative as notificações do Alagou nas configurações do sistema para receber alertas.
             </p>
@@ -159,7 +159,7 @@ export function NotificationSettings() {
             >
               <div className="overflow-hidden">
                 <div className="flex flex-col gap-2 pb-3.5">
-                  <p className="text-xs font-medium text-muted-foreground">Raio de alerta</p>
+                  <p className="text-sm font-medium text-muted-foreground">Raio de alerta</p>
                   <RadiusSelector value={radius} onValueChange={handleRadiusChange} />
                 </div>
               </div>
