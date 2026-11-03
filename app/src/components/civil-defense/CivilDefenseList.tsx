@@ -1,5 +1,6 @@
-import { ShieldCheck } from "lucide-react";
+import { SearchX, ShieldCheck } from "lucide-react";
 import { CivilDefenseCard } from "@/components/civil-defense/CivilDefenseCard";
+import { CivilDefenseCardSkeleton } from "@/components/civil-defense/CivilDefenseCardSkeleton";
 import type { CivilDefenseNotice } from "@/types/civilDefense";
 
 const SKELETON_ROWS = 4;
@@ -7,15 +8,27 @@ const SKELETON_ROWS = 4;
 interface CivilDefenseListProps {
   notices: CivilDefenseNotice[];
   loading: boolean;
+  filtered: boolean;
 }
 
-export function CivilDefenseList({ notices, loading }: CivilDefenseListProps) {
+export function CivilDefenseList({ notices, loading, filtered }: CivilDefenseListProps) {
   if (loading) {
     return (
-      <div className="flex flex-col gap-3 p-4">
+      <div role="status" aria-label="Carregando avisos" className="flex flex-col gap-3 p-4">
         {Array.from({ length: SKELETON_ROWS }).map((_, index) => (
-          <div key={index} className="h-16 animate-pulse rounded-lg bg-muted" />
+          <CivilDefenseCardSkeleton key={index} withThumbnail={index % 2 === 0} />
         ))}
+      </div>
+    );
+  }
+
+  if (notices.length === 0 && filtered) {
+    return (
+      <div className="flex flex-col items-center gap-3 px-8 py-12 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+          <SearchX className="h-6 w-6 text-muted-foreground" strokeWidth={1.8} />
+        </div>
+        <p className="text-sm text-muted-foreground">Nenhum aviso para os filtros selecionados.</p>
       </div>
     );
   }
@@ -33,7 +46,7 @@ export function CivilDefenseList({ notices, loading }: CivilDefenseListProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-3 p-4 pt-1">
       {notices.map((notice) => (
         <CivilDefenseCard key={notice.id} notice={notice} />
       ))}

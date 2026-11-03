@@ -72,12 +72,12 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
               Você não possui relatos de alagamento ativos no momento.
             </p>
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
-              className="w-fit gap-1.5 text-xs"
+              className="w-fit"
               onClick={() => navigate("/", { state: { createReport: true } })}
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus className="h-4 w-4" aria-hidden="true" />
               Criar relato no mapa
             </Button>
           </div>
@@ -118,10 +118,10 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="ml-auto h-7 shrink-0 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
+                      className="ml-auto shrink-0"
                       onClick={() => navigate("/", { state: { focusLocation: alert.location } })}
                     >
-                      <MapPin className="h-3 w-3" />
+                      <MapPin className="h-4 w-4" aria-hidden="true" />
                       Ver
                     </Button>
                   </div>
@@ -133,7 +133,7 @@ export function AccountSummary({ user, onLogout }: AccountSummaryProps) {
       </div>
 
       <Button variant="outline" className="w-full" onClick={onLogout}>
-        <LogOut className="h-4 w-4" />
+        <LogOut className="h-4 w-4" aria-hidden="true" />
         Sair
       </Button>
     </div>

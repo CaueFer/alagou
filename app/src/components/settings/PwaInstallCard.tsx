@@ -20,7 +20,7 @@ export function PwaInstallCard() {
               Instale o Alagou para abrir mais rápido, usar em tela cheia e receber notificações de alagamento.
             </p>
           </div>
-          <Button type="button" onClick={() => void promptInstall()}>
+          <Button type="button" className="w-full" onClick={() => void promptInstall()}>
             <Download className="h-4 w-4" aria-hidden="true" />
             Instalar app
           </Button>

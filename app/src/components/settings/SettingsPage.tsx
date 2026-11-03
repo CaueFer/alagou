@@ -56,7 +56,7 @@ export function SettingsPage({
                     <span className="text-sm text-muted-foreground">Painel de observabilidade da API.</span>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" onClick={onAdminClick}>
+                <Button variant="secondary" size="sm" onClick={onAdminClick}>
                   Abrir
                 </Button>
               </div>
