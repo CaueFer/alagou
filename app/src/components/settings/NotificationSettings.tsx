@@ -110,7 +110,8 @@ export function NotificationSettings() {
               Permita notificações para receber alertas de alagamento perto de você.
             </p>
           </div>
-          <Button type="button" onClick={() => void handleRequest()}>
+          <Button type="button" className="w-full" onClick={() => void handleRequest()}>
+            <Bell className="h-4 w-4" aria-hidden="true" />
             Ativar notificações
           </Button>
         </div>

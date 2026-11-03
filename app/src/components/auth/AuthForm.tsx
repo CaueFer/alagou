@@ -75,8 +75,8 @@ export function AuthForm({ onLogin, onRegister, onGoogleCredential, pending, err
 
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-        <Button type="submit" size="lg" disabled={pending}>
-          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+        <Button type="submit" className="w-full" disabled={pending}>
+          {pending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
           {mode === "login" ? "Entrar" : "Criar conta"}
         </Button>
       </form>
