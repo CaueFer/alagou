@@ -1,4 +1,5 @@
 import { getRiskLevelInfo } from "@/lib/riskLevel";
+import { cn } from "@/lib/utils";
 import type { RiskLevel } from "@/types/civilDefense";
 
 interface RiskBadgeProps {
@@ -10,9 +11,12 @@ export function RiskBadge({ level }: RiskBadgeProps) {
 
   return (
     <span
-      className={`inline-flex w-28 items-center justify-center gap-1.5 whitespace-nowrap rounded px-2 py-1 text-[12px] font-bold uppercase leading-4 tracking-[0.05em] ${info.containerBgClass} ${info.containerTextClass}`}
+      className={cn(
+        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-outline-variant bg-surface-container-lowest px-2.5 py-1 text-sm font-semibold",
+        info.containerTextClass,
+      )}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${info.bgClass}`} aria-hidden="true" />
+      <span className={cn("h-2 w-2 rounded-full", info.bgClass)} aria-hidden="true" />
       {info.label}
     </span>
   );

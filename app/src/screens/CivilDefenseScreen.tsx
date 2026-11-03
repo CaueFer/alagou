@@ -3,8 +3,8 @@ import { RefreshCw } from "lucide-react";
 import { civilDefenseClient } from "@/api";
 import { CivilDefenseList } from "@/components/civil-defense/CivilDefenseList";
 import { RiskLevelFilter } from "@/components/civil-defense/RiskLevelFilter";
+import { ScreenHeader } from "@/components/layout/ScreenHeader";
 import { Button } from "@/components/ui/button";
-import { FloatingBadge } from "@/components/ui/floating-badge";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { RISK_LEVEL_ORDER } from "@/lib/riskLevel";
 import { cn } from "@/lib/utils";
@@ -83,20 +83,18 @@ export function CivilDefenseScreen() {
         />
       </div>
 
-      <div className="sticky top-0 z-10 bg-background/90 pt-4 backdrop-blur-md">
-        <FloatingBadge position="sticky" className="relative top-0 mb-1">
-          Defesa Civil
-        </FloatingBadge>
+      <ScreenHeader title="Defesa Civil" description="Avisos oficiais e níveis de risco para Joinville." />
+
+      <div className="sticky top-0 z-10 bg-background">
         <RiskLevelFilter selected={selectedLevels} counts={counts} onToggle={handleToggleLevel} />
       </div>
 
       <div>
-
         {status === "error" && (
           <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
-            <p className="text-sm text-muted-foreground">Não foi possível carregar os avisos</p>
-            <Button variant="outline" onClick={fetchNotices}>
-              <RefreshCw className="mr-2 h-4 w-4" />
+            <p className="text-base text-muted-foreground">Não foi possível carregar os avisos</p>
+            <Button variant="secondary" className="rounded-full" onClick={fetchNotices}>
+              <RefreshCw className="h-4 w-4" aria-hidden="true" />
               Tentar novamente
             </Button>
           </div>
