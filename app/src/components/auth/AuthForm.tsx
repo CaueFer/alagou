@@ -81,11 +81,7 @@ export function AuthForm({ onLogin, onRegister, onGoogleCredential, pending, err
         </Button>
       </form>
 
-      <div className="flex items-center gap-3">
-        <div className="h-px flex-1 bg-border" />
-        <span className="text-xs text-muted-foreground">ou</span>
-        <div className="h-px flex-1 bg-border" />
-      </div>
+      <p className="text-center text-sm text-muted-foreground">ou</p>
 
       <GoogleSignInButton onCredential={handleGoogleCredential} disabled={pending} />
     </div>

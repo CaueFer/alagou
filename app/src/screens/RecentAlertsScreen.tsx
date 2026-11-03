@@ -1,13 +1,12 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { AlertDetailSheet } from "@/components/alert-detail/AlertDetailSheet";
 import { AlertFeed } from "@/components/alert-feed/AlertFeed";
 import { AlertTypeFilter } from "@/components/alert-feed/AlertTypeFilter";
 import { ClimaticDetailModal } from "@/components/alert-feed/ClimaticDetailModal";
+import { ScreenHeader } from "@/components/layout/ScreenHeader";
 import { Button } from "@/components/ui/button";
-import { FloatingBadge } from "@/components/ui/floating-badge";
 import { useConfirmation } from "@/hooks/useConfirmation";
-import { useGeolocation } from "@/hooks/useGeolocation";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useRecentAlerts } from "@/hooks/useRecentAlerts";
 import { ALERT_TYPE_ORDER } from "@/lib/alertType";
@@ -17,13 +16,20 @@ import type { ClimaticZoneSnapshot, RecentAlert, RecentAlertType } from "@/types
 
 export function RecentAlertsScreen() {
   const { alerts, status, refetch } = useRecentAlerts();
-  const { position: userLocation } = useGeolocation(true);
   const { confirm, reportClear, pendingAction } = useConfirmation();
   const { containerRef, pullDistance, refreshing, isDragging, threshold, handlers } = usePullToRefresh<HTMLDivElement>({
     onRefresh: refetch,
   });
 
   const [selectedTypes, setSelectedTypes] = useState<Set<RecentAlertType>>(new Set(ALERT_TYPE_ORDER));
+  const counts = useMemo(() => {
+    const result: Record<RecentAlertType, number> = { USER: 0, CLIMATIC: 0, CIVIL_DEFENSE: 0 };
+    for (const alert of alerts) {
+      result[alert.type] += 1;
+    }
+    return result;
+  }, [alerts]);
+
   const [selectedUserAlert, setSelectedUserAlert] = useState<Alert | null>(null);
   const [selectedZone, setSelectedZone] = useState<ClimaticZoneSnapshot | null>(null);
 
@@ -86,16 +92,19 @@ export function RecentAlertsScreen() {
         />
       </div>
 
-      <FloatingBadge position="sticky">Alertas Recentes</FloatingBadge>
+      <ScreenHeader title="Alertas Recentes" description="Relatos de cidadãos, chuva e avisos oficiais." />
+
+      <div className="sticky top-0 z-10 bg-background">
+        <AlertTypeFilter selected={selectedTypes} counts={counts} onToggle={handleToggleType} />
+      </div>
 
       <div className="px-4">
-        <AlertTypeFilter selected={selectedTypes} onToggle={handleToggleType} />
 
         {status === "error" && (
           <div className="flex flex-col items-center gap-3 py-8 text-center">
-            <p className="text-sm text-muted-foreground">Não foi possível carregar os alertas</p>
-            <Button variant="outline" onClick={refetch}>
-              <RefreshCw className="mr-2 h-4 w-4" />
+            <p className="text-base text-muted-foreground">Não foi possível carregar os alertas</p>
+            <Button variant="secondary" className="rounded-full" onClick={refetch}>
+              <RefreshCw className="h-4 w-4" aria-hidden="true" />
               Atualizar
             </Button>
           </div>
@@ -106,7 +115,6 @@ export function RecentAlertsScreen() {
             alerts={alerts}
             loading={status === "loading"}
             selectedTypes={selectedTypes}
-            userLocation={userLocation}
             onSelect={handleSelect}
           />
         )}

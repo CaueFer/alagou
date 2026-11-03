@@ -11,15 +11,20 @@ interface RiskLevelFilterProps {
 
 export function RiskLevelFilter({ selected, counts, onToggle }: RiskLevelFilterProps) {
   return (
-    <div role="group" aria-label="Filtrar por nível de risco" className="flex flex-wrap gap-2 px-4 py-3">
+    <div
+      role="group"
+      aria-label="Filtrar por nível de risco"
+      className="flex flex-wrap gap-1 px-4 py-3"
+    >
       {RISK_LEVEL_ORDER.map((level) => {
         const info = getRiskLevelInfo(level);
         return (
           <FilterChip
             key={level}
             active={selected.has(level)}
-            activeClassName={cn(info.containerBgClass, info.containerTextClass)}
+            activeClassName={cn("border-outline-variant bg-surface-container-lowest", info.containerTextClass)}
             indicatorClassName={info.bgClass}
+            className="flex-auto justify-center gap-1 px-2 text-[13px] whitespace-nowrap active:scale-95"
             onClick={() => onToggle(level)}
           >
             {info.label}

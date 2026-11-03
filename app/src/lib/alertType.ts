@@ -10,6 +10,8 @@ interface AlertTypeInfo {
   containerBgClass: string;
   containerTextClass: string;
   borderClass: string;
+  accentTextClass: string;
+  gradientFromClass: string;
 }
 
 const ALERT_TYPE_INFO: Record<RecentAlertType, AlertTypeInfo> = {
@@ -21,6 +23,8 @@ const ALERT_TYPE_INFO: Record<RecentAlertType, AlertTypeInfo> = {
     containerBgClass: "bg-alert-user-container",
     containerTextClass: "text-on-alert-user-container",
     borderClass: "border-alert-user",
+    accentTextClass: "text-alert-user",
+    gradientFromClass: "from-alert-user-container/20",
   },
   CLIMATIC: {
     label: "Climático",
@@ -30,6 +34,8 @@ const ALERT_TYPE_INFO: Record<RecentAlertType, AlertTypeInfo> = {
     containerBgClass: "bg-alert-climatic-container",
     containerTextClass: "text-on-alert-climatic-container",
     borderClass: "border-alert-climatic",
+    accentTextClass: "text-alert-climatic",
+    gradientFromClass: "from-alert-climatic-container/20",
   },
   CIVIL_DEFENSE: {
     label: "Defesa Civil",
@@ -39,6 +45,8 @@ const ALERT_TYPE_INFO: Record<RecentAlertType, AlertTypeInfo> = {
     containerBgClass: "bg-alert-civil-defense-container",
     containerTextClass: "text-on-alert-civil-defense-container",
     borderClass: "border-alert-civil-defense",
+    accentTextClass: "text-alert-civil-defense",
+    gradientFromClass: "from-alert-civil-defense-container/20",
   },
 };
 

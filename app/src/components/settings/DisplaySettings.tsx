@@ -38,12 +38,12 @@ export function DisplaySettings() {
   return (
     <SettingsSection title="Exibição" icon={<MonitorSmartphone className="h-3.5 w-3.5" aria-hidden="true" />}>
       <div className="flex flex-col gap-2 py-3.5">
-        <p className="text-sm font-medium">Tipo de mapa</p>
+        <p className="text-base font-medium">Tipo de mapa</p>
         <SegmentedControl options={MAP_TYPE_OPTIONS} value={mapType} onValueChange={handleMapTypeChange} />
       </div>
 
       <div className="flex flex-col gap-2 py-3.5">
-        <p className="text-sm font-medium">Unidade de distância</p>
+        <p className="text-base font-medium">Unidade de distância</p>
         <SegmentedControl
           options={DISTANCE_UNIT_OPTIONS}
           value={distanceUnit}

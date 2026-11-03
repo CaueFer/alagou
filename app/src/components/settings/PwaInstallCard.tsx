@@ -15,12 +15,12 @@ export function PwaInstallCard() {
       {state === "installable" ? (
         <div className="flex flex-col gap-3 py-3.5">
           <div className="flex flex-col gap-0.5">
-            <p className="text-sm font-medium">Adicionar à tela inicial</p>
+            <p className="text-base font-medium">Adicionar à tela inicial</p>
             <p className="text-sm text-muted-foreground">
               Instale o Alagou para abrir mais rápido, usar em tela cheia e receber notificações de alagamento.
             </p>
           </div>
-          <Button type="button" className="w-full" onClick={() => void promptInstall()}>
+          <Button type="button" variant="secondary" className="w-full" onClick={() => void promptInstall()}>
             <Download className="h-4 w-4" aria-hidden="true" />
             Instalar app
           </Button>
@@ -29,7 +29,7 @@ export function PwaInstallCard() {
         <div className="flex items-start gap-3 py-3.5">
           <Share className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" aria-hidden="true" />
           <div className="flex flex-col gap-0.5">
-            <p className="text-sm font-medium">Adicionar à tela inicial</p>
+            <p className="text-base font-medium">Adicionar à tela inicial</p>
             <p className="text-sm text-muted-foreground">
               Toque em Compartilhar no Safari e escolha "Adicionar à Tela de Início" para instalar o Alagou e liberar as
               notificações.
