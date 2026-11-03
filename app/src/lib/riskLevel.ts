@@ -8,6 +8,8 @@ interface RiskLevelInfo {
   containerTextClass: string;
 }
 
+export const RISK_LEVEL_ORDER: RiskLevel[] = ["EMERGENCY", "ALERT", "ATTENTION"];
+
 const RISK_LEVEL_INFO: Record<RiskLevel, RiskLevelInfo> = {
   ATTENTION: {
     label: "Atenção",
