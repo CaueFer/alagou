@@ -1,6 +1,6 @@
+import type { CSSProperties } from "react";
 import { ShieldCheck } from "lucide-react";
 import { AlertFeedCard } from "@/components/alert-feed/AlertFeedCard";
-import type { AlertLocation } from "@/types/alert";
 import type { RecentAlert, RecentAlertType } from "@/types/recentAlert";
 
 const SKELETON_ROWS = 3;
@@ -9,11 +9,10 @@ interface AlertFeedProps {
   alerts: RecentAlert[];
   loading: boolean;
   selectedTypes: ReadonlySet<RecentAlertType>;
-  userLocation: AlertLocation | null;
   onSelect: (alert: RecentAlert) => void;
 }
 
-export function AlertFeed({ alerts, loading, selectedTypes, userLocation, onSelect }: AlertFeedProps) {
+export function AlertFeed({ alerts, loading, selectedTypes, onSelect }: AlertFeedProps) {
   if (loading) {
     return (
       <div className="flex flex-col gap-3 py-2">
@@ -27,7 +26,7 @@ export function AlertFeed({ alerts, loading, selectedTypes, userLocation, onSele
   if (selectedTypes.size === 0) {
     return (
       <div className="flex flex-col items-center gap-3 px-8 py-12 text-center">
-        <p className="text-sm text-muted-foreground">Selecione ao menos um tipo de alerta.</p>
+        <p className="text-base text-muted-foreground">Selecione ao menos um tipo de alerta.</p>
       </div>
     );
   }
@@ -42,21 +41,18 @@ export function AlertFeed({ alerts, loading, selectedTypes, userLocation, onSele
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-status-safe-container">
           <ShieldCheck className="h-6 w-6 text-status-safe" strokeWidth={1.8} />
         </div>
-        <p className="text-sm text-muted-foreground">Nenhum alerta recente. Joinville está tranquila no momento.</p>
+        <p className="text-base text-muted-foreground">Nenhum alerta recente. Joinville está tranquila no momento.</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-3 py-2">
-      {visible.map((alert) => (
-        <AlertFeedCard
-          key={alert.id}
-          alert={alert}
-          userLocation={userLocation}
-          onClick={() => onSelect(alert)}
-        />
+    <ul className="flex flex-col gap-3 pt-2 pb-4">
+      {visible.map((alert, index) => (
+        <li key={alert.id} className="rise-in" style={{ "--rise-index": Math.min(index, 6) } as CSSProperties}>
+          <AlertFeedCard alert={alert} onClick={() => onSelect(alert)} />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
