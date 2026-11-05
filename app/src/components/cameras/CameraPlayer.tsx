@@ -100,7 +100,7 @@ export function CameraPlayer({
         fullscreen && "fixed inset-0 z-[1100] bg-black animate-[camera-fullscreen-in_320ms_ease-out]",
       )}
     >
-      <video ref={videoRef} className="h-full w-full object-contain" playsInline />
+      <video ref={videoRef} className="h-full w-full object-contain" playsInline muted />
 
       {status === "connecting" && (
         <div className="absolute inset-0 flex items-center justify-center">
