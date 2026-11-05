@@ -347,6 +347,12 @@ Concentric gradient rings around each marker (10 rings with gradual opacity fall
 **Floating action button ("+")**
 Bottom-right, thumb zone, `fab-size` (56px), glassmorphism style (`bg-white/80 backdrop-blur-md border border-white/40`), `elevation.level-2`. Opens `NewReportModal`. `z-index.floating-fab`.
 
+**`LocateButton`**
+Directly above the "+" FAB, same size and glassmorphism style. Requests a fresh GPS position and centers the map on it; shows a spinner while locating. Failure surfaces as an error toast and leaves the map where it is.
+
+**`FarFromJoinvilleAlert`**
+Glassmorphism card below the top controls, shown when the user is more than 50 km from `JOINVILLE_CENTER`. Primary action "Ir para Joinville" flies the map to the city; both it and the close button dismiss the card, which returns only if `LocateButton` is used again while still far away.
+
 **Zoom controls**
 Bottom-left, glassmorphism styled, positioned above bottom nav clearance. Custom styling with rounded corners and subtle shadow.
 

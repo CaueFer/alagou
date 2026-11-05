@@ -3,6 +3,8 @@ import { BaseMap } from "@/components/map/BaseMap";
 import { AlertMarker } from "@/components/map/AlertMarker";
 import { AlertAreaCircle } from "@/components/map/AlertAreaCircle";
 import { CameraMarker } from "@/components/map/CameraMarker";
+import { FarFromJoinvilleAlert } from "@/components/map/FarFromJoinvilleAlert";
+import { LocateButton } from "@/components/map/LocateButton";
 import { RecenterMap } from "@/components/map/RecenterMap";
 import { AlertSummaryBar } from "@/components/map/AlertSummaryBar";
 import { SeverityLegend } from "@/components/map/SeverityLegend";
@@ -12,6 +14,7 @@ import { ZonesToggleButton } from "@/components/map/ZonesToggleButton";
 import { FloatingIconButton } from "@/components/ui/floating-icon-button";
 import type { Alert, AlertLocation } from "@/types/alert";
 import type { Camera } from "@/types/camera";
+import type { MapFocus } from "@/types/map";
 import type { Zone } from "@/types/zone";
 
 interface MapViewProps {
@@ -20,13 +23,18 @@ interface MapViewProps {
   zones: Zone[];
   zonesVisible: boolean;
   loading: boolean;
-  focusLocation: AlertLocation | null;
+  mapFocus: MapFocus | null;
   userLocation: AlertLocation | null;
+  locating: boolean;
+  showFarAlert: boolean;
   onSelectAlert: (id: string) => void;
   onSelectCamera: (camera: Camera) => void;
   onSelectZone: (zone: Zone) => void;
   onToggleZones: () => void;
   onCreateReport: () => void;
+  onLocateUser: () => void;
+  onGoToJoinville: () => void;
+  onDismissFarAlert: () => void;
 }
 
 export function MapView({
@@ -35,19 +43,24 @@ export function MapView({
   zones,
   zonesVisible,
   loading,
-  focusLocation,
+  mapFocus,
   userLocation,
+  locating,
+  showFarAlert,
   onSelectAlert,
   onSelectCamera,
   onSelectZone,
   onToggleZones,
   onCreateReport,
+  onLocateUser,
+  onGoToJoinville,
+  onDismissFarAlert,
 }: MapViewProps) {
   return (
     <div className="relative h-full w-full">
       <BaseMap className="h-full w-full">
-        {focusLocation ? (
-          <RecenterMap location={focusLocation} zoom={16} />
+        {mapFocus ? (
+          <RecenterMap key={mapFocus.requestId} location={mapFocus.location} zoom={mapFocus.zoom} />
         ) : (
           userLocation && <RecenterMap location={userLocation} />
         )}
@@ -63,6 +76,9 @@ export function MapView({
         ))}
       </BaseMap>
 
+      {showFarAlert && (
+        <FarFromJoinvilleAlert onGoToJoinville={onGoToJoinville} onDismiss={onDismissFarAlert} />
+      )}
       <AlertSummaryBar alerts={alerts} />
       <SeverityLegend />
       <WeatherButton location={userLocation} />
@@ -73,6 +89,8 @@ export function MapView({
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-border border-t-primary" />
         </div>
       )}
+
+      <LocateButton locating={locating} onLocate={onLocateUser} />
 
       <FloatingIconButton
         size="lg"

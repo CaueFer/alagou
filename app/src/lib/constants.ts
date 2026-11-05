@@ -1,7 +1,9 @@
 import type { AlertLocation } from "@/types/alert";
 
 export const JOINVILLE_CENTER: AlertLocation = { lat: -26.3044, lng: -48.8456 };
+export const JOINVILLE_PROXIMITY_RADIUS_METERS = 50_000;
 export const DEFAULT_MAP_ZOOM = 14;
+export const FOCUSED_MAP_ZOOM = 16;
 
 const DEFAULT_API_PORT = "8080";
 

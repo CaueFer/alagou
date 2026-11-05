@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { MapView } from "@/components/map/MapView";
@@ -11,16 +11,19 @@ import { useConfirmation } from "@/hooks/useConfirmation";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useZones } from "@/hooks/useZones";
 import { alertClient, cameraClient } from "@/api";
+import { DEFAULT_MAP_ZOOM, FOCUSED_MAP_ZOOM, JOINVILLE_CENTER } from "@/lib/constants";
+import { isFarFromJoinville } from "@/lib/geo";
 import { getZonesVisible, setZonesVisible } from "@/lib/zonePreference";
 import type { AlertLocation } from "@/types/alert";
 import type { Camera } from "@/types/camera";
+import type { MapFocus } from "@/types/map";
 import type { Zone } from "@/types/zone";
 
 export function MapScreen() {
   const routerLocation = useLocation();
   const { alerts, status, updateAlert, removeAlert, addAlert } = useAlerts();
   const { confirm, reportClear, pendingAction } = useConfirmation();
-  const { position } = useGeolocation(true);
+  const { position, loading: locating, refresh: refreshPosition } = useGeolocation(true);
   const { zones, status: zonesStatus } = useZones();
 
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
@@ -28,24 +31,28 @@ export function MapScreen() {
     const state = routerLocation.state as { createReport?: boolean } | null;
     return Boolean(state?.createReport);
   });
-  const [focusLocation, setFocusLocation] = useState<AlertLocation | null>(() => {
-    const state = routerLocation.state as { focusLocation?: AlertLocation } | null;
-    return state?.focusLocation ?? null;
-  });
+  const [mapFocus, setMapFocus] = useState<MapFocus | null>(null);
+  const lastFocusRequestId = useRef(0);
+  const [farAlertDismissed, setFarAlertDismissed] = useState(false);
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
   const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
   const [zonesVisible, setZonesVisibleState] = useState<boolean>(() => getZonesVisible());
 
+  const focusMap = useCallback((location: AlertLocation, zoom: number) => {
+    lastFocusRequestId.current += 1;
+    setMapFocus({ requestId: lastFocusRequestId.current, location, zoom });
+  }, []);
+
   useEffect(() => {
     const state = routerLocation.state as { focusLocation?: AlertLocation; createReport?: boolean } | null;
     if (state?.focusLocation) {
-      setFocusLocation(state.focusLocation);
+      focusMap(state.focusLocation, FOCUSED_MAP_ZOOM);
     }
     if (state?.createReport) {
       setIsCreatingReport(true);
     }
-  }, [routerLocation.state]);
+  }, [routerLocation.state, focusMap]);
 
   const fetchCameras = useCallback(async () => {
     try {
@@ -80,7 +87,23 @@ export function MapScreen() {
     });
   }
 
+  async function handleLocateUser() {
+    const location = await refreshPosition();
+    if (!location) {
+      toast.error("Não foi possível obter sua localização. Verifique a permissão de localização do dispositivo.");
+      return;
+    }
+    focusMap(location, FOCUSED_MAP_ZOOM);
+    setFarAlertDismissed(false);
+  }
+
+  function handleGoToJoinville() {
+    focusMap(JOINVILLE_CENTER, DEFAULT_MAP_ZOOM);
+    setFarAlertDismissed(true);
+  }
+
   const selectedAlert = alerts.find((alert) => alert.id === selectedAlertId) ?? null;
+  const showFarAlert = position !== null && isFarFromJoinville(position) && !farAlertDismissed;
 
   async function handleConfirm(id: string) {
     const updated = await confirm(id);
@@ -105,13 +128,18 @@ export function MapScreen() {
         zones={zones}
         zonesVisible={zonesVisible}
         loading={status === "loading"}
-        focusLocation={focusLocation}
+        mapFocus={mapFocus}
         userLocation={position}
+        locating={locating}
+        showFarAlert={showFarAlert}
         onSelectAlert={setSelectedAlertId}
         onSelectCamera={setSelectedCamera}
         onSelectZone={setSelectedZone}
         onToggleZones={handleToggleZones}
         onCreateReport={() => setIsCreatingReport(true)}
+        onLocateUser={handleLocateUser}
+        onGoToJoinville={handleGoToJoinville}
+        onDismissFarAlert={() => setFarAlertDismissed(true)}
       />
 
       <CameraPlayer
@@ -142,7 +170,7 @@ export function MapScreen() {
         onSubmit={(input) => alertClient.create(input)}
         onCreated={(alert) => {
           addAlert(alert);
-          setFocusLocation(alert.location);
+          focusMap(alert.location, FOCUSED_MAP_ZOOM);
           toast.success("Relato enviado com sucesso.");
         }}
       />
