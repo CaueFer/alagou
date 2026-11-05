@@ -176,7 +176,7 @@ export function AdminAlertCard({ alert }: AdminAlertCardProps) {
           onClick={() => setSelectedPhoto(null)}
         >
           <div
-            className="relative max-h-[85vh] max-w-lg overflow-hidden rounded-2xl bg-surface-container-lowest shadow-2xl"
+            className="relative max-h-[85dvh] max-w-lg overflow-hidden rounded-2xl bg-surface-container-lowest shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -187,7 +187,7 @@ export function AdminAlertCard({ alert }: AdminAlertCardProps) {
             >
               <X className="h-5 w-5" />
             </button>
-            <img src={selectedPhoto} alt="Foto ampliada do alagamento" className="max-h-[80vh] w-auto object-contain" />
+            <img src={selectedPhoto} alt="Foto ampliada do alagamento" className="max-h-[80dvh] w-auto object-contain" />
           </div>
         </div>
       ) : null}

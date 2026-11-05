@@ -63,6 +63,31 @@ body,
   height: 100%;
 }
 
+html {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.ios,
+html.ios body,
+html.ios #root {
+  height: var(--app-height, 100%);
+}
+
+html.ios {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+html.ios body {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -77,6 +102,9 @@ body {
   height: 100%;
   background: var(--color-muted);
   font-family: var(--font-sans);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 @keyframes alert-pulse {
@@ -119,6 +147,7 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
   border-radius: 12px !important;
   overflow: hidden;
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   background: rgba(255, 255, 255, 0.8) !important;
 }
