@@ -7,10 +7,9 @@ import { FarFromJoinvilleAlert } from "@/components/map/FarFromJoinvilleAlert";
 import { LocateButton } from "@/components/map/LocateButton";
 import { RecenterMap } from "@/components/map/RecenterMap";
 import { AlertSummaryBar } from "@/components/map/AlertSummaryBar";
-import { SeverityLegend } from "@/components/map/SeverityLegend";
+import { MapOptionsButton } from "@/components/map/MapOptionsButton";
 import { WeatherButton } from "@/components/map/WeatherButton";
 import { ZoneLayer } from "@/components/map/ZoneLayer";
-import { ZonesToggleButton } from "@/components/map/ZonesToggleButton";
 import { FloatingIconButton } from "@/components/ui/floating-icon-button";
 import type { Alert, AlertLocation } from "@/types/alert";
 import type { Camera } from "@/types/camera";
@@ -80,9 +79,8 @@ export function MapView({
         <FarFromJoinvilleAlert onGoToJoinville={onGoToJoinville} onDismiss={onDismissFarAlert} />
       )}
       <AlertSummaryBar alerts={alerts} />
-      <SeverityLegend />
       <WeatherButton location={userLocation} />
-      <ZonesToggleButton visible={zonesVisible} onToggle={onToggleZones} />
+      <MapOptionsButton zonesVisible={zonesVisible} onToggleZones={onToggleZones} />
 
       {loading && (
         <div className="pointer-events-none absolute inset-0 z-[500] flex items-center justify-center">
