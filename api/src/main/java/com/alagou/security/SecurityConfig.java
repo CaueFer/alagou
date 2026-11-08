@@ -1,6 +1,7 @@
 package com.alagou.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,7 @@ public class SecurityConfig {
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     private final ObjectMapper objectMapper;
     private final ClientIpResolver clientIpResolver;
+    private final MeterRegistry meterRegistry;
     private final List<String> allowedOrigins;
     private final boolean requireHttps;
 
@@ -37,6 +39,7 @@ public class SecurityConfig {
             RestAuthenticationEntryPoint restAuthenticationEntryPoint,
             ObjectMapper objectMapper,
             ClientIpResolver clientIpResolver,
+            MeterRegistry meterRegistry,
             @Value("${app.security.cors.allowed-origins}") List<String> allowedOrigins,
             @Value("${app.security.require-https:false}") boolean requireHttps
     ) {
@@ -44,6 +47,7 @@ public class SecurityConfig {
         this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
         this.objectMapper = objectMapper;
         this.clientIpResolver = clientIpResolver;
+        this.meterRegistry = meterRegistry;
         this.allowedOrigins = allowedOrigins;
         this.requireHttps = requireHttps;
     }
@@ -79,7 +83,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new RateLimitingFilter(objectMapper, clientIpResolver), JwtAuthenticationFilter.class);
+                .addFilterAfter(new RateLimitingFilter(objectMapper, clientIpResolver, meterRegistry), JwtAuthenticationFilter.class);
 
         if (requireHttps) {
             http.requiresChannel(channel -> channel.anyRequest().requiresSecure());

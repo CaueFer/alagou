@@ -7,6 +7,7 @@ import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.ConsumptionProbe;
 import io.github.bucket4j.Refill;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,10 +56,12 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             .build();
     private final ObjectMapper objectMapper;
     private final ClientIpResolver clientIpResolver;
+    private final MeterRegistry meterRegistry;
 
-    public RateLimitingFilter(ObjectMapper objectMapper, ClientIpResolver clientIpResolver) {
+    public RateLimitingFilter(ObjectMapper objectMapper, ClientIpResolver clientIpResolver, MeterRegistry meterRegistry) {
         this.objectMapper = objectMapper;
         this.clientIpResolver = clientIpResolver;
+        this.meterRegistry = meterRegistry;
     }
 
     @Override
@@ -91,8 +94,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         if (probe.isConsumed()) {
             filterChain.doFilter(request, response);
         } else {
-            log.warn("Rate limit exceeded {} {}",
-                    kv("method", request.getMethod()), kv("rule", rule != null ? rule.pathPattern() : "GLOBAL"));
+            String ruleName = rule != null ? rule.pathPattern() : "GLOBAL";
+            meterRegistry.counter("rate_limit.rejected", "rule", ruleName).increment();
+            log.debug("Rate limit exceeded {} {}", kv("method", request.getMethod()), kv("rule", ruleName));
             respondTooManyRequests(response, probe.getNanosToWaitForRefill());
         }
     }
