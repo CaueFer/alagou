@@ -7,15 +7,20 @@ import com.alagou.clearreport.dao.ClearReportRepository;
 import com.alagou.clearreport.dto.ClearReportResponse;
 import com.alagou.exception.BusinessRuleException;
 import com.alagou.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Service
 public class ClearReportService {
 
+    private static final Logger log = LoggerFactory.getLogger(ClearReportService.class);
     private static final long DISTINCT_REPORTERS_THRESHOLD = 3;
 
     private final ClearReportRepository repository;
@@ -50,6 +55,7 @@ public class ClearReportService {
             alertRepository.save(alert);
             deactivated = true;
         }
+        log.info("Clear report registered {} {}", kv("alertId", alertId), kv("deactivated", deactivated));
 
         return new ClearReportResponse(report.getId(), report.getAlertId(), report.getUsername(),
                 report.getCreatedAt(), deactivated);

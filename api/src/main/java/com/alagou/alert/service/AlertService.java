@@ -14,6 +14,8 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -26,9 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Service
 public class AlertService {
 
+    private static final Logger log = LoggerFactory.getLogger(AlertService.class);
     private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(), 4326);
     private static final double DUPLICATE_RADIUS_METERS = 100;
     private static final int MAX_RESULTS = 200;
@@ -77,6 +82,8 @@ public class AlertService {
         Point location = GEOMETRY_FACTORY.createPoint(new Coordinate(lng, lat));
         Alert alert = new Alert(type, username, severity, location, stored, now.plus(3, ChronoUnit.HOURS), now);
         Alert saved = repository.save(alert);
+        log.info("Alert created {} {} {} {}",
+                kv("alertId", saved.getId()), kv("type", type), kv("severity", severity), kv("photos", stored.size()));
 
         if (type == AlertType.USER && (severity == Severity.SEVERE || severity == Severity.CRITICAL)) {
             pushDispatchService.publishUserAlert(saved);

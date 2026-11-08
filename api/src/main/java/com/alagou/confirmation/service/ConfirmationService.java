@@ -7,6 +7,8 @@ import com.alagou.confirmation.dao.ConfirmationRepository;
 import com.alagou.confirmation.dto.ConfirmationResponse;
 import com.alagou.exception.BusinessRuleException;
 import com.alagou.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Service
 public class ConfirmationService {
 
+    private static final Logger log = LoggerFactory.getLogger(ConfirmationService.class);
     private static final long RENEWAL_MINUTES = 45;
 
     private final ConfirmationRepository repository;
@@ -48,6 +53,7 @@ public class ConfirmationService {
 
         alert.renewExpiration(Instant.now().plus(RENEWAL_MINUTES, ChronoUnit.MINUTES));
         alertRepository.save(alert);
+        log.info("Alert confirmed {} {}", kv("alertId", alertId), kv("expiresAt", alert.getExpirationDate()));
 
         return new ConfirmationResponse(confirmation.getId(), confirmation.getAlertId(), confirmation.getUsername(),
                 confirmation.getCreatedAt(), alert.getExpirationDate());

@@ -93,6 +93,7 @@ public class PushRabbitConfig {
         factory.setConcurrentConsumers(concurrency);
         factory.setMaxConcurrentConsumers(concurrency);
         factory.setDefaultRequeueRejected(false);
+        factory.setContainerCustomizer(container -> container.setObservationEnabled(true));
         factory.setAdviceChain(RetryInterceptorBuilder.stateless()
                 .maxAttempts(Math.max(1, properties.getMaxAttempts()))
                 .backOffOptions(1000, 2.0, 10000)

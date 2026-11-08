@@ -11,6 +11,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
@@ -22,8 +24,11 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 public class RateLimitingFilter extends OncePerRequestFilter {
 
+    private static final Logger log = LoggerFactory.getLogger(RateLimitingFilter.class);
     private static final int TOO_MANY_REQUESTS = 429;
 
     private static final List<RateLimitRule> RULES = List.of(
@@ -86,6 +91,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         if (probe.isConsumed()) {
             filterChain.doFilter(request, response);
         } else {
+            log.warn("Rate limit exceeded {} {}",
+                    kv("method", request.getMethod()), kv("rule", rule != null ? rule.pathPattern() : "GLOBAL"));
             respondTooManyRequests(response, probe.getNanosToWaitForRefill());
         }
     }
