@@ -32,7 +32,7 @@
                 level = %level
             </labels>
             <message>
-                <pattern>%logger{36} - %msg%n%ex</pattern>
+                <pattern>traceId=%X{traceId:-} spanId=%X{spanId:-} %logger{36} - %msg%n%ex</pattern>
             </message>
             <batch>
                 <timeoutMs>10000</timeoutMs>
