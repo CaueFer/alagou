@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
-import { RotateCw, X } from "lucide-react";
+import { Expand, RotateCw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useHlsPlayer } from "@/hooks/useHlsPlayer";
 import { cn } from "@/lib/utils";
 import type { Camera } from "@/types/camera";
+
+const STAGE_SIZE = "aspect-video w-full max-h-[calc(var(--app-height,100dvh)*0.6)]";
+const STAGE_CONTROL =
+  "inline-flex h-11 w-11 items-center justify-center rounded-full bg-black/60 text-white transition-colors hover:bg-black/80 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white";
 
 async function lockLandscape() {
   try {
@@ -25,6 +29,7 @@ interface CameraPlayerProps {
   fullscreen?: boolean;
   autoLandscape?: boolean;
   onClose?: () => void;
+  onExpand?: () => void;
   onError?: () => void;
 }
 
@@ -34,6 +39,7 @@ export function CameraPlayer({
   fullscreen = false,
   autoLandscape = false,
   onClose,
+  onExpand,
   onError,
 }: CameraPlayerProps) {
   const { videoRef, status, retry } = useHlsPlayer(camera?.streamUrl ?? "", camera !== null);
@@ -83,11 +89,11 @@ export function CameraPlayer({
 
   if (!camera) {
     return (
-      <div className="flex h-full w-full items-center justify-center">
+      <div className={cn("flex items-center justify-center bg-black", STAGE_SIZE)}>
         {loading ? (
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-border border-t-primary" />
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/30 border-t-white" />
         ) : (
-          <p className="px-8 text-center text-sm text-muted-foreground">Nenhuma câmera disponível</p>
+          <p className="px-8 text-center text-sm text-white/80">Nenhuma câmera disponível</p>
         )}
       </div>
     );
@@ -96,8 +102,10 @@ export function CameraPlayer({
   return (
     <div
       className={cn(
-        "relative h-full w-full overflow-hidden",
-        fullscreen && "fixed inset-0 z-[1100] bg-black animate-[camera-fullscreen-in_320ms_ease-out]",
+        "relative overflow-hidden bg-black",
+        fullscreen
+          ? "fixed inset-0 z-[1100] h-full w-full animate-[camera-fullscreen-in_320ms_ease-out]"
+          : STAGE_SIZE,
       )}
     >
       <video ref={videoRef} className="h-full w-full object-contain" playsInline muted />
@@ -109,55 +117,48 @@ export function CameraPlayer({
       )}
 
       {status === "error" && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/80 px-8 text-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/80 px-8 text-center">
           <p className="text-sm text-white">Não foi possível carregar esta câmera</p>
-          <Button onClick={retry}>Tentar novamente</Button>
+          <Button variant="secondary" className="rounded-full" onClick={retry}>
+            Tentar novamente
+          </Button>
         </div>
       )}
 
       {status !== "error" && (
         <div
-          className={cn(
-            "absolute left-3 flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold backdrop-blur-md",
-            fullscreen
-              ? "border-white/20 bg-black/50 text-white"
-              : "border-white/60 bg-white/95 text-foreground shadow-lg",
-          )}
-          style={
-            fullscreen ? { top: "calc(env(safe-area-inset-top) + 1rem)" } : { bottom: "var(--bottom-nav-clearance)" }
-          }
+          className="absolute inset-x-3 flex items-center justify-between gap-2"
+          style={{ bottom: fullscreen ? "calc(env(safe-area-inset-bottom) + 1rem)" : "0.75rem" }}
         >
-          {status === "live" ? (
-            <>
-              <span className="h-2 w-2 rounded-full bg-destructive" aria-hidden="true" />
-              AO VIVO
-            </>
-          ) : (
-            <>
-              <span className="h-2 w-2 animate-pulse rounded-full bg-severity-moderate" aria-hidden="true" />
-              Reconectando
-            </>
-          )}
-        </div>
-      )}
+          <div className="flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-sm font-semibold text-white">
+            {status === "live" ? (
+              <>
+                <span className="h-2 w-2 rounded-full bg-live-indicator" aria-hidden="true" />
+                Ao vivo
+              </>
+            ) : (
+              <>
+                <span className="h-2 w-2 animate-pulse rounded-full bg-severity-moderate" aria-hidden="true" />
+                Conectando
+              </>
+            )}
+          </div>
 
-      {status !== "error" && !fullscreen && (
-        <div
-          className="absolute right-3 flex items-center gap-1.5 rounded-full border border-white/60 bg-white/95 px-2.5 py-1 text-xs font-semibold text-foreground shadow-lg backdrop-blur-md"
-          style={{ bottom: "var(--bottom-nav-clearance)" }}
-        >
-          <span className="max-w-[55vw] truncate">{camera.name}</span>
-          <button
-            type="button"
-            onClick={handleReload}
-            aria-label="Recarregar câmera"
-            className="-mr-0.5 shrink-0 text-foreground/70 transition-colors hover:text-foreground active:scale-90"
-          >
-            <RotateCw
-              className={cn("h-3.5 w-3.5", reloadSpinning && "animate-spin")}
-              onAnimationIteration={() => setSpinOnce(false)}
-            />
-          </button>
+          {!fullscreen && (
+            <div className="flex items-center gap-2">
+              <button type="button" onClick={handleReload} aria-label="Recarregar câmera" className={STAGE_CONTROL}>
+                <RotateCw
+                  className={cn("h-5 w-5", reloadSpinning && "animate-spin")}
+                  onAnimationIteration={() => setSpinOnce(false)}
+                />
+              </button>
+              {onExpand && (
+                <button type="button" onClick={onExpand} aria-label="Tela cheia em paisagem" className={STAGE_CONTROL}>
+                  <Expand className="h-5 w-5" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
       )}
 
