@@ -7,10 +7,13 @@ import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.ConsumptionProbe;
 import io.github.bucket4j.Refill;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
@@ -22,8 +25,11 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 public class RateLimitingFilter extends OncePerRequestFilter {
 
+    private static final Logger log = LoggerFactory.getLogger(RateLimitingFilter.class);
     private static final int TOO_MANY_REQUESTS = 429;
 
     private static final List<RateLimitRule> RULES = List.of(
@@ -50,10 +56,12 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             .build();
     private final ObjectMapper objectMapper;
     private final ClientIpResolver clientIpResolver;
+    private final MeterRegistry meterRegistry;
 
-    public RateLimitingFilter(ObjectMapper objectMapper, ClientIpResolver clientIpResolver) {
+    public RateLimitingFilter(ObjectMapper objectMapper, ClientIpResolver clientIpResolver, MeterRegistry meterRegistry) {
         this.objectMapper = objectMapper;
         this.clientIpResolver = clientIpResolver;
+        this.meterRegistry = meterRegistry;
     }
 
     @Override
@@ -86,6 +94,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         if (probe.isConsumed()) {
             filterChain.doFilter(request, response);
         } else {
+            String ruleName = rule != null ? rule.pathPattern() : "GLOBAL";
+            meterRegistry.counter("rate_limit.rejected", "rule", ruleName).increment();
+            log.debug("Rate limit exceeded {} {}", kv("method", request.getMethod()), kv("rule", ruleName));
             respondTooManyRequests(response, probe.getNanosToWaitForRefill());
         }
     }

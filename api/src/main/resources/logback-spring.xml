@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <springProperty name="LOKI_URL" source="LOKI_URL"/>
+    <springProperty name="LOKI_USERNAME" source="LOKI_USERNAME" defaultValue=""/>
+    <springProperty name="LOKI_PASSWORD" source="LOKI_PASSWORD" defaultValue=""/>
+
+    <springProfile name="!json-logs">
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    </springProfile>
+
+    <springProfile name="json-logs">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <customFields>{"app":"alagou-api"}</customFields>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="loki">
+        <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+            <http>
+                <url>${LOKI_URL}</url>
+                <auth>
+                    <username>${LOKI_USERNAME}</username>
+                    <password>${LOKI_PASSWORD}</password>
+                </auth>
+            </http>
+            <labels>
+                app = alagou-api
+                level = %level
+            </labels>
+            <message>
+                <pattern>traceId=%X{traceId:-} spanId=%X{spanId:-} %logger{36} - %msg%n%ex</pattern>
+            </message>
+            <batch>
+                <timeoutMs>10000</timeoutMs>
+                <maxBytes>1048576</maxBytes>
+                <sendQueueMaxBytes>8388608</sendQueueMaxBytes>
+            </batch>
+        </appender>
+    </springProfile>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <springProfile name="loki">
+            <appender-ref ref="LOKI"/>
+        </springProfile>
+    </root>
+</configuration>

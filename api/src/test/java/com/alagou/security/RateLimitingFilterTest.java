@@ -1,6 +1,7 @@
 package com.alagou.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import jakarta.servlet.FilterChain;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -17,7 +18,20 @@ import static org.mockito.Mockito.verify;
 class RateLimitingFilterTest {
 
     private RateLimitingFilter filterWithoutProxies() {
-        return new RateLimitingFilter(new ObjectMapper(), new ClientIpResolver(List.of()));
+        return new RateLimitingFilter(new ObjectMapper(), new ClientIpResolver(List.of()), new SimpleMeterRegistry());
+    }
+
+    @Test
+    void countsRejectedRequestsByRule() throws Exception {
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        RateLimitingFilter filter = new RateLimitingFilter(new ObjectMapper(), new ClientIpResolver(List.of()), registry);
+        FilterChain chain = mock(FilterChain.class);
+
+        for (int i = 0; i < 7; i++) {
+            filter.doFilter(new MockHttpServletRequest("POST", "/api/alerts"), new MockHttpServletResponse(), chain);
+        }
+
+        assertThat(registry.get("rate_limit.rejected").tag("rule", "/api/alerts").counter().count()).isEqualTo(2.0);
     }
 
     @Test
@@ -147,7 +161,7 @@ class RateLimitingFilterTest {
     @Test
     void usesFirstForwardedForHopWhenPeerIsATrustedProxy() throws Exception {
         RateLimitingFilter filter = new RateLimitingFilter(new ObjectMapper(),
-                new ClientIpResolver(List.of("10.0.0.0/8")));
+                new ClientIpResolver(List.of("10.0.0.0/8")), new SimpleMeterRegistry());
         FilterChain chain = mock(FilterChain.class);
 
         for (int i = 0; i < 30; i++) {

@@ -1,5 +1,6 @@
 package com.alagou.officialdata;
 
+import io.micrometer.observation.ObservationRegistry;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
 import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
@@ -26,10 +27,12 @@ public class HttpClientConfig {
     // called from an hourly background job, not a user-facing request, so a longer timeout is acceptable.
     @Bean
     @Qualifier("civilDefenseNewsRestClientBuilder")
-    public RestClient.Builder civilDefenseNewsRestClientBuilder() {
+    public RestClient.Builder civilDefenseNewsRestClientBuilder(ObservationRegistry observationRegistry) {
         ClientHttpRequestFactorySettings settings = ClientHttpRequestFactorySettings.DEFAULTS
                 .withConnectTimeout(Duration.ofSeconds(3))
                 .withReadTimeout(Duration.ofSeconds(20));
-        return RestClient.builder().requestFactory(ClientHttpRequestFactories.get(settings));
+        return RestClient.builder()
+                .observationRegistry(observationRegistry)
+                .requestFactory(ClientHttpRequestFactories.get(settings));
     }
 }

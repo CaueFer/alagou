@@ -141,7 +141,8 @@ class PushControllerTest {
 
     @Test
     void rateLimitRuleBlocksSubscriptionPostAfterThirtyRequestsPerIp() throws Exception {
-        RateLimitingFilter filter = new RateLimitingFilter(new ObjectMapper(), new ClientIpResolver(List.of()));
+        RateLimitingFilter filter = new RateLimitingFilter(new ObjectMapper(), new ClientIpResolver(List.of()),
+                new io.micrometer.core.instrument.simple.SimpleMeterRegistry());
         FilterChain chain = mock(FilterChain.class);
 
         for (int i = 0; i < 30; i++) {

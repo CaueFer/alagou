@@ -10,11 +10,17 @@ import com.alagou.repository.UsuarioRepository;
 import com.alagou.security.GoogleIdTokenVerifierService;
 import com.alagou.security.GoogleUserInfo;
 import com.alagou.security.JwtTokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Service
 public class AuthService {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     // bcrypt hash of a discarded random value; matched against on the failure path so a missing or
     // Google-only account costs the same wall-clock time as a wrong password (no user enumeration).
@@ -43,6 +49,7 @@ public class AuthService {
         Usuario usuario = usuarioRepository.findByGoogleId(googleUserInfo.googleId())
                 .orElseGet(() -> linkOrCreateGoogleAccount(googleUserInfo));
 
+        log.info("Google login succeeded {}", kv("userId", usuario.getId()));
         return authResponse(usuario);
     }
 
@@ -57,6 +64,7 @@ public class AuthService {
                 passwordEncoder.encode(request.password())
         ));
 
+        log.info("Account registered {}", kv("userId", usuario.getId()));
         return authResponse(usuario);
     }
 
@@ -72,6 +80,7 @@ public class AuthService {
             throw new InvalidCredentialsException("E-mail ou senha inválidos");
         }
 
+        log.info("Login succeeded {}", kv("userId", usuario.getId()));
         return authResponse(usuario);
     }
 

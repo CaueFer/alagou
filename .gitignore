@@ -9,4 +9,6 @@ api/uploads/
 todo.md
 app/node_modules/
 app/dist/
+app/coverage/
+.scannerwork/
 __pycache__/
