@@ -229,7 +229,7 @@ Every place severity or alert type appears in the flows, it is paired with a lab
 
 ### Utility colors
 
-* `live-indicator` (`#DC2626`) — the "AO VIVO" dot on `CameraCard` (Fluxo 2). Distinct from `severity-critical` in intent (liveness, not danger) but visually close by design — both mean "pay attention now."
+* `live-indicator` (`#DC2626`) — the "Ao vivo" dot on `CameraCard` and `CameraPlayer` (Fluxo 2). Distinct from `severity-critical` in intent (liveness, not danger) but visually close by design — both mean "pay attention now."
 * `offline-banner` (`#45464d`, `on-surface-variant` family) — connectivity banners in Fluxo 2 ("Você está offline") and network-error toasts in Fluxos 1, 3, 4.
 
 ---
@@ -372,17 +372,23 @@ Three side-by-side cards, single-select, using `severity-moderate` / `severity-s
 
 ### Fluxo 2 — Câmeras em Tempo Real
 
+**Screen layout**
+One scrolling column, no drawer and no floating controls over empty space. Top to bottom: `CameraPlayer` as a full-width black 16:9 stage, sticky at the top so the video stays visible while the list scrolls under it; the selected camera's region (`body-sm`) over its place as the `h1` (24px bold) with a secondary "Ver no mapa" button on the right; then "Todas as câmeras" and `CameraList`. Choosing a card swaps the stream in place without scrolling. The list ends with the satellite imagery credit. The app runs inside a phone frame on wide viewports, so this screen has no desktop breakpoint.
+
 **`CameraList`**
-Vertical list of `CameraCard`. Skeleton state on first load.
+Cards grouped by region, derived from the part of the camera name before ": " (`lib/cameraName`), in API order. Each group has a 16px semibold `on-surface-variant` heading, 8px between cards and 24px between groups. Cards enter with `.rise-in`. Skeleton state on first load.
 
 **`CameraCard`**
-`rounded.lg`, `elevation.level-1`. Shows point name, static thumbnail or live preview, and a `live-indicator` red dot + "AO VIVO" label (`label-caps`) when the stream is active. Unavailable state replaces the preview with centered text "Câmera temporariamente indisponível" on `surface-container` background — card remains in the list, not hidden.
+Same card language as `CivilDefenseCard` (`rounded-2xl`, 1px `outline-variant/50` border, `elevation.level-1` stepping to `level-2` on hover, 0.99 scale on press), 8px padding, `CameraMapThumbnail` on the left. Text: the place at 16px semibold (never truncated; the region is already the group heading) over a `body-sm` status: `live-indicator` dot + "Ao vivo", "Assistindo agora" (selected, with a 1px `primary` ring), "Sem conexão" (offline) or "Temporariamente indisponível". Unavailable cards stay in the list, dimmed and disabled.
 
-**`CameraPlayer`** (Level 3, fullscreen or large modal)
-Embeds the Prefeitura's iframe/embed directly — no local video processing or storage. States: connecting (spinner over frame), live (continuous playback), error ("Não foi possível carregar esta câmera" + "Tentar novamente" button). Controls: close (X or back), rotate-to-landscape affordance.
+**`CameraMapThumbnail`**
+96x72px `rounded-xl` satellite crop centered on the camera's coordinates (Esri World Imagery, zoom 17 tiles drawn at half size so they stay sharp on 2x screens), with a 12px dot and white ring marking the point: `primary` at rest, pulsing `live-indicator` when selected, gray when unavailable. Purely decorative (`aria-hidden`); streams have no static thumbnail, and opening one HLS connection per card would be too heavy.
+
+**`CameraPlayer`**
+Plays the HLS link in the app's own `<video>` — no local video processing or storage. The inline stage is capped at 60% of the viewport height. A bottom bar over the video holds the status chip on the left (sentence case, `bg-black/60`, solid so no blur over the stream: `live-indicator` dot + "Ao vivo", or "Conectando") and, on the inline stage, 44px round reload and fullscreen controls on the right. The same element goes fullscreen (fixed, black, landscape lock) so playback never restarts; the sticky wrapper must drop `sticky` while fullscreen because it would otherwise trap the player in its stacking context under the bottom navigation. States: connecting (spinner over frame), live, error ("Não foi possível carregar esta câmera" + "Tentar novamente"). Fullscreen controls: close, camera name, rotate-to-landscape. Also opened fullscreen from `CameraMarker` on the map.
 
 **Offline banner**
-Top banner, `offline-banner` background, "Você está offline — câmeras indisponíveis"; all `CameraCard`s visually lock (reduced opacity, tap disabled) while shown.
+`offline-banner` background above the video, inside the sticky stage, "Você está offline — câmeras indisponíveis"; all `CameraCard`s visually lock (reduced opacity, tap disabled) while shown.
 
 ### Fluxo 3 — Avisos da Defesa Civil
 
@@ -518,7 +524,7 @@ Card de alerta com uma faixa superior de severidade, chips para tipo e estado, r
 Reusable controls used across the flows; defined once in the design so each screen does not re-specify interaction details.
 
 **`ScreenHeader`** (`components/layout/ScreenHeader.tsx`)
-Top of a list screen: `h1` title plus an optional one-line description (see Typography, "Screen title"). 16px side padding, top padding of `safe-area-inset-top + 28px`. Not sticky: the filters below it are what stays pinned. Adopted in Defesa Civil (Fluxo 3), Alertas Recentes (Fluxo 4) and Perfil (Fluxo 5), replacing the sticky `FloatingBadge`. `FloatingBadge` stays only where it floats over full-bleed media (map, camera player).
+Top of a list screen: `h1` title plus an optional one-line description (see Typography, "Screen title"). 16px side padding, top padding of `safe-area-inset-top + 28px`. Not sticky: the filters below it are what stays pinned. Adopted in Defesa Civil (Fluxo 3), Alertas Recentes (Fluxo 4) and Perfil (Fluxo 5), replacing the sticky `FloatingBadge`. `FloatingBadge` stays only where it floats over full-bleed media (map).
 
 **`Switch`**
 Toggle control with a 24px-high track and a 20px thumb. Track is `primary` when checked and `outline-variant`/`border` when off; thumb is white with a 1px `black/10` hairline border (no shadow — the app avoids shadows). 150ms color/position transitions, 2px `primary` focus ring. Disabled state at 50% opacity. `role="switch"` with `aria-checked`.
