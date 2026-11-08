@@ -1,9 +1,3 @@
-# CI pipeline — runs on every pull request targeting `main`.
-#
-# v1.0 scope:
-#   - backend  (api/): compile + run all unit tests
-#   - frontend (app/): production build (tsc + vite)
-#
 # To make it block merges, mark the "CI passed" check as required in
 # GitHub → Settings → Branches → Branch protection rules for `main`.
 
@@ -11,6 +5,8 @@ name: CI
 
 on:
   pull_request:
+    branches: [main]
+  push:
     branches: [main]
   merge_group:
 
@@ -24,7 +20,7 @@ permissions:
 
 jobs:
   backend:
-    name: Backend (compile + unit tests)
+    name: Backend (tests + coverage)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,14 +35,29 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Compile
-        run: mvn -B -ntp clean compile
+      - name: Test and enforce coverage
+        run: mvn -B -ntp clean verify
 
-      - name: Unit tests
-        run: mvn -B -ntp test
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-test-reports
+          path: api/target/surefire-reports
+          retention-days: 7
+
+      - name: Upload analysis inputs
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-analysis
+          path: |
+            api/target/classes
+            api/target/test-classes
+            api/target/site/jacoco/jacoco.xml
+          retention-days: 1
 
   frontend:
-    name: Frontend (build)
+    name: Frontend (lint + tests + build)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -64,14 +75,62 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test:coverage
+
       - name: Build
         run: npm run build
+
+      - name: Upload analysis inputs
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-analysis
+          path: app/coverage/lcov.info
+          retention-days: 1
+
+  sonar:
+    name: SonarQube analysis
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      # Secrets are not exposed to fork PRs, and the job must not fail for those.
+      - name: Report skipped analysis
+        if: env.SONAR_TOKEN == ''
+        run: echo "::warning title=SonarQube skipped::SONAR_TOKEN is not available to this run."
+
+      - uses: actions/checkout@v4
+        if: env.SONAR_TOKEN != ''
+        with:
+          fetch-depth: 0
+
+      - name: Download backend analysis inputs
+        if: env.SONAR_TOKEN != ''
+        uses: actions/download-artifact@v8
+        with:
+          name: backend-analysis
+          path: api/target
+
+      - name: Download frontend analysis inputs
+        if: env.SONAR_TOKEN != ''
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-analysis
+          path: app/coverage
+
+      - name: Scan and wait for quality gate
+        if: env.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@v8.4.1
 
   # Single stable status check to require in branch protection.
   ci-passed:
     name: CI passed
     runs-on: ubuntu-latest
-    needs: [backend, frontend]
+    needs: [backend, frontend, sonar]
     if: always()
     steps:
       - name: Verify all jobs passed
